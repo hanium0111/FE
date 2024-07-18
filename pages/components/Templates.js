@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import styles from "./Templates.module.css";
-import { FaEllipsisV, FaHeart, FaSearch } from "react-icons/fa";
+import { FaHeart, FaSearch, FaShare } from "react-icons/fa";
 import Image from "next/image";
 import Btn from "./Btn";
 import Link from "next/link";
@@ -200,7 +200,7 @@ export default function Templates({ showMoreButton, showCategories }) {
                 </div>
                 <div className={styles.cardMenu}>
                   <button className={styles.cardMenuButton}>
-                    <FaEllipsisV />
+                    <FaShare />
                   </button>
                 </div>
               </div>
