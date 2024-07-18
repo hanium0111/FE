@@ -44,8 +44,16 @@
   display: flex;
   border-bottom: 1px solid #888;
   box-sizing: border-box;
-  padding: 0.4rem;
+  padding: 0.6rem 0.4rem;
   align-items: center;
+  transition: box-shadow 0.3s ease;
+  border-radius: 0;
+}
+
+.searchBox:focus-within {
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  box-sizing: border-box;
+  border-radius: 0.4rem;
 }
 
 .searchIcon {
@@ -58,9 +66,11 @@
 .searchInput {
   background: none;
   border: none;
-  color: #888;
+  color: #000;
   font-size: 1rem;
   box-sizing: border-box;
+  font-weight: lighter;
+  outline: none;
 }
 
 .searchInput::placeholder {
@@ -91,9 +101,14 @@
   display: flex;
   flex-direction: column;
   border-radius: 10px;
-  border: 1px solid #ccc;
   box-sizing: border-box;
   height: fit-content;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.3s ease;
+}
+
+.card:hover {
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
 }
 
 .questionWrap {
@@ -101,9 +116,8 @@
   justify-content: space-between;
   align-items: center;
   box-sizing: border-box;
-  padding: 1rem;
+  padding: 1.4rem 2rem;
   height: fit-content;
-  border-bottom: 1px solid #ccc;
   border-radius: 0 0 10px 10px;
 }
 
@@ -134,8 +148,11 @@
   display: -webkit-box;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
-  padding: 1rem;
+  padding: 1.4rem 2rem;
   height: fit-content;
+  background-color: #f9f9f9;
+  border-top: 1px solid #eee;
+  border-radius: 0 0 10px 10px;
 }
 
 .pagination {
@@ -160,10 +177,15 @@
   border-color: #4629f2;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 668px) {
   .sectionControls {
     flex-direction: column;
-    align-items: flex-start;
+    width: 100%;
+  }
+
+  .sectionLeft {
+    width: 100%;
+    justify-content: flex-start;
   }
 
   .sectionRight {
@@ -172,6 +194,10 @@
   }
 
   .searchWrap {
+    margin-top: 1rem;
     justify-content: flex-start;
+  }
+  .searchBox {
+    width: 100%;
   }
 }

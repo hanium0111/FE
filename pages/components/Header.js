@@ -8,11 +8,21 @@ import {
   faTimes,
   faUser,
   faSearch,
-  faQuestionCircle,
+  faHeadset,
   faBell,
   faUsers,
+  faTachometerAlt,
+  faLayerGroup,
+  faGlobe,
+  faChildReaching,
+  faArrowRightToBracket,
+  faTowerCell,
+  faPaintRoller,
 } from "@fortawesome/free-solid-svg-icons";
 import Image from "next/image";
+import Modal from "react-modal";
+
+Modal.setAppElement("#__next");
 
 export default function Header() {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -39,20 +49,52 @@ export default function Header() {
       <button className={styles.menuButton} onClick={togglePopup}>
         <FontAwesomeIcon icon={faBars} />
       </button>
-      <div className={`${styles.popup} ${isPopupOpen ? styles.open : ""}`}>
+      <Modal
+        isOpen={isPopupOpen}
+        onRequestClose={togglePopup}
+        contentLabel="Menu"
+        className={styles.modalContent}
+        overlayClassName={styles.modalOverlay}
+      >
         <ul className={styles.menuList}>
           <li className={styles.menuItem}>
             <Link href="/login" legacyBehavior>
               <a className={styles.menuLink}>
-                <FontAwesomeIcon icon={faUser} className={styles.menuIcon} />
+                <FontAwesomeIcon
+                  icon={faArrowRightToBracket}
+                  className={styles.menuIcon}
+                />
                 로그인
+              </a>
+            </Link>
+          </li>
+          <li className={styles.menuItem}>
+            <Link href="/" legacyBehavior>
+              <a className={styles.menuLink}>
+                <FontAwesomeIcon
+                  icon={faPaintRoller}
+                  className={styles.menuIcon}
+                />
+                사이트 제작
+              </a>
+            </Link>
+          </li>
+
+          <li className={styles.menuItem}>
+            <Link href="/dashboard" legacyBehavior>
+              <a className={styles.menuLink}>
+                <FontAwesomeIcon
+                  icon={faLayerGroup}
+                  className={styles.menuIcon}
+                />
+                대시보드
               </a>
             </Link>
           </li>
           <li className={styles.menuItem}>
             <Link href="/temp" legacyBehavior>
               <a className={styles.menuLink}>
-                <FontAwesomeIcon icon={faSearch} className={styles.menuIcon} />
+                <FontAwesomeIcon icon={faGlobe} className={styles.menuIcon} />
                 템플릿 탐색
               </a>
             </Link>
@@ -60,18 +102,18 @@ export default function Header() {
           <li className={styles.menuItem}>
             <Link href="/qna" legacyBehavior>
               <a className={styles.menuLink}>
-                <FontAwesomeIcon
-                  icon={faQuestionCircle}
-                  className={styles.menuIcon}
-                />
-                질문 (Q&A)
+                <FontAwesomeIcon icon={faHeadset} className={styles.menuIcon} />
+                질문 및 답변
               </a>
             </Link>
           </li>
           <li className={styles.menuItem}>
             <Link href="/notice" legacyBehavior>
               <a className={styles.menuLink}>
-                <FontAwesomeIcon icon={faBell} className={styles.menuIcon} />
+                <FontAwesomeIcon
+                  icon={faTowerCell}
+                  className={styles.menuIcon}
+                />
                 공지사항
               </a>
             </Link>
@@ -79,13 +121,16 @@ export default function Header() {
           <li className={styles.menuItem}>
             <Link href="/team" legacyBehavior>
               <a className={styles.menuLink}>
-                <FontAwesomeIcon icon={faUsers} className={styles.menuIcon} />팀
-                소개
+                <FontAwesomeIcon
+                  icon={faChildReaching}
+                  className={styles.menuIcon}
+                />
+                팀 소개
               </a>
             </Link>
           </li>
         </ul>
-      </div>
+      </Modal>
     </header>
   );
 }

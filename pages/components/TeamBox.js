@@ -5,6 +5,9 @@ export default function TeamBox() {
   return (
     <>
       <div className={styles.wrap}>
+        <div className={styles.sectionHeader}>
+          <h2 className={styles.sectionTitle}>팀 소개</h2>
+        </div>
         <h1 className={styles.title}>
           나만의 웹사이트를 누구나 <br /> 만들 수 있는 세상을 만들어요.
         </h1>

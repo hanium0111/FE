@@ -6,7 +6,7 @@
   height: 40px;
   padding: 3rem 2rem;
   box-sizing: border-box;
-  border-bottom: 2px solid #dbdbdb;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .logoWrap {
@@ -27,21 +27,28 @@
   color: #757575;
 }
 
-.popup {
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: none;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.modalContent {
   position: absolute;
-  top: 70px; /* Header 아래에 위치하도록 설정 */
+  top: 70px;
   right: 2rem;
-  width: 9rem;
+  width: 140px;
   background-color: white;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   border-radius: 4px;
-  overflow: hidden;
-  transition: max-height 0.3s ease-in-out;
-  max-height: 0;
-}
-
-.popup.open {
-  max-height: 300px; /* 최대 높이 */
+  padding: 0.4rem 1rem;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.3s ease;
 }
 
 .menuList {
@@ -53,17 +60,29 @@
 .menuItem {
   display: flex;
   align-items: center;
-  padding: 10px 20px;
+  padding: 10px 0;
   cursor: pointer;
   font-size: 16px;
   color: #757575;
+}
+
+.menuItem:hover {
+  color: #4629f2;
+}
+
+.menuItem:not(:last-child) {
   border-bottom: 1px solid #dbdbdb;
 }
 
-.menuItem:last-child {
-  border-bottom: none;
+.menuLink {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: inherit;
 }
 
 .menuIcon {
+  width: 24px;
+  text-align: center;
   margin-right: 10px;
 }

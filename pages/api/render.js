@@ -31,7 +31,6 @@ export default async function handler(req, res) {
     const zipEntries = zip.getEntries();
 
     if (!filename) {
-      // If no filename is provided, return the structure of the zip file
       const structure = zipEntries.map((entry) => ({
         name: entry.entryName,
         isDirectory: entry.isDirectory,

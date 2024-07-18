@@ -12,6 +12,12 @@
   text-align: start;
 }
 
+.sectionTitle {
+  font-size: 3rem;
+  padding: 1rem 0;
+  font-weight: lighter;
+}
+
 .title {
   margin-top: 3rem;
   font-weight: bold;

@@ -52,7 +52,7 @@ export default function GenerateBox() {
         }))
       );
 
-      const htmlContent = await fetchFile("templatemo_559_zay_shop/index.html"); // Adjust the path as needed
+      const htmlContent = await fetchFile("templatemo_559_zay_shop/index.html");
       setContent(htmlContent.content);
       setHtmlLoaded(true);
     };

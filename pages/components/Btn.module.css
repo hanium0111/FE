@@ -5,6 +5,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: box-shadow 0.3s ease;
 }
 
 .icon {
@@ -23,4 +24,8 @@
 
 .textUnderline {
   text-decoration: underline;
+}
+
+.btnWrap:hover {
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
 }

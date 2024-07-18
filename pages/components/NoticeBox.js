@@ -76,7 +76,7 @@ export default function NoticeBox() {
     <>
       <section className={styles.section}>
         <div className={styles.sectionHeader}>
-          <h2 className={styles.sectionTitle}>Notices</h2>
+          <h2 className={styles.sectionTitle}>공지사항</h2>
         </div>
         <div className={styles.sectionControls}>
           <div className={styles.sectionLeft}>

@@ -1,5 +1,10 @@
 .section {
   padding: 2rem;
+  height: 100%;
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
 }
 
 .sectionControls {
@@ -14,11 +19,7 @@
   display: flex;
   align-items: flex-start;
   margin-bottom: 2rem;
-  align-items: center;
-}
-
-.moreBtn {
-  margin-left: 1rem;
+  flex-direction: column;
 }
 
 .sectionLeft {
@@ -27,15 +28,15 @@
   gap: 1rem;
 }
 
+.sectionRight {
+  display: flex;
+  width: 100%;
+}
+
 .sectionTitle {
   font-size: 3rem;
   padding: 1rem 0;
   font-weight: lighter;
-}
-
-.sectionRight {
-  display: flex;
-  gap: 1rem;
 }
 
 .grid {
@@ -53,6 +54,7 @@
   height: 400px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   transition: box-shadow 0.3s ease;
+  margin-bottom: 1rem;
 }
 
 .card:hover {
@@ -164,32 +166,20 @@
 
 .category {
   flex: 0 0 auto;
-  margin: 1rem 0;
-  padding: 0.6rem 1rem;
-  background: #fff;
-  border: 1px solid #4629f2;
-  border-radius: 100rem;
+  padding: 0.5rem 1rem;
+  background: #f4f4f4;
+  border-radius: 20px;
   white-space: nowrap;
   cursor: pointer;
-  font-size: 0.9rem;
-  color: #3b3b3b;
-  transition: box-shadow 0.3s ease;
-  box-sizing: border-box;
-}
-
-.category:hover {
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .activeCategory {
-  background-color: #4629f2;
+  background: #4629f2;
   color: #fff;
-  border: 1px solid #4629f2;
-  transition: box-shadow 0.3s ease;
-  box-sizing: border-box;
 }
 
 .searchWrap {
+  width: 100%;
   border: none;
   display: flex;
   justify-content: flex-end;
@@ -252,57 +242,10 @@
   }
 
   .searchWrap {
-    width: 100%;
-    margin-top: 1rem;
     justify-content: flex-start;
   }
+
   .searchBox {
     width: 100%;
   }
-}
-
-.tempform {
-  font-size: 10px;
-}
-
-.tempcoment {
-  font-size: 25px;
-  text-align: center;
-  margin-bottom: 0;
-}
-.pageinputform {
-  display: block;
-  margin: auto;
-  font-size: medium;
-  width: 290px;
-  height: 30px;
-
-  padding: 5px;
-  margin-top: 30px;
-}
-
-.okbutton {
-  border-radius: 5px;
-  width: 300px;
-  height: 40px;
-  box-sizing: border-box;
-  display: block;
-  text-align: center;
-  margin: 10px auto;
-  background-color: #4629f2;
-  color: #fff;
-}
-
-.closebutton {
-  border-radius: 4px;
-  width: 300px;
-  height: 30px;
-  box-sizing: border-box;
-  display: block;
-  align-items: center;
-  justify-content: center;
-  margin: auto;
-  border: 1px solid #4629f2;
-  background-color: #fff;
-  color: #4629f2;
 }

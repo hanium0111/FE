@@ -1,19 +1,17 @@
 import { useEffect, useState } from "react";
-import styles from "./Templates.module.css";
+import styles from "./Dash.module.css";
 import { FaEllipsisV, FaHeart, FaSearch } from "react-icons/fa";
 import Image from "next/image";
 import Btn from "./Btn";
 import Link from "next/link";
 import Modal from "react-modal";
 
-export default function Templates({ showMoreButton, showCategories }) {
+export default function Templates({}) {
   const [templates, setTemplates] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState("모든 카테고리");
   const [sortOrder, setSortOrder] = useState("최신순");
   const [searchQuery, setSearchQuery] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalContent, setModalContent] = useState("");
-  const [pageName, setPageName] = useState("");
 
   useEffect(() => {
     const fetchTemplates = async () => {
@@ -25,31 +23,9 @@ export default function Templates({ showMoreButton, showCategories }) {
     fetchTemplates();
   }, []);
 
-  const categories = [
-    "모든 카테고리",
-    "웹 디자인",
-    "포트폴리오",
-    "이커머스",
-    "블로그",
-    "포럼",
-    "포토 갤러리",
-    "기업",
-    "제품 소개",
-    "이벤트",
-    "뉴스레터",
-    "커뮤니티",
-    "비즈니스",
-  ];
-
-  const filteredTemplates = templates
-    .filter(
-      (template) =>
-        selectedCategory === "모든 카테고리" ||
-        template.category === selectedCategory
-    )
-    .filter((template) =>
-      template.templateName.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+  const filteredTemplates = templates.filter((template) =>
+    template.templateName.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   const sortedTemplates = filteredTemplates.sort((a, b) => {
     if (sortOrder === "최신순") {
@@ -60,16 +36,13 @@ export default function Templates({ showMoreButton, showCategories }) {
     return 0;
   });
 
-  const openModal = () => {
-    setModalContent("페이지 이름을 입력해주세요!");
+  const openModal = (content) => {
+    setModalContent(content);
     setIsModalOpen(true);
   };
 
   const closeModal = () => {
     setIsModalOpen(false);
-  };
-  const pageNameInputValue = ({ input }) => {
-    setPageName(input);
   };
 
   const customStyles = {
@@ -77,10 +50,10 @@ export default function Templates({ showMoreButton, showCategories }) {
       backgroundColor: "rgba(0, 0, 0, 0.5)",
     },
     content: {
-      width: "500px",
-      height: "270px",
+      width: "300px",
+      height: "400px",
       margin: "auto",
-      borderRadius: "10px",
+      borderRadius: "4px",
       boxShadow: "0 2px 4px rgba(0, 0, 0, 0.2)",
       padding: "20px",
     },
@@ -93,62 +66,14 @@ export default function Templates({ showMoreButton, showCategories }) {
         onRequestClose={closeModal}
         style={customStyles}
       >
-        <form>
-          <h1 className={styles.tempform}>템플릿 이름이랑 연결할 예정</h1>
-          <p className={styles.tempcoment}>{modalContent}</p>
-          <div>
-            <input
-              className={styles.pageinputform}
-              type="text"
-              onChange={(e) => setPageName(e.target.value)}
-            />
-            <button
-              className={styles.okbutton}
-              onClick={() => pageNameInputValue(pageName)}
-            >
-              확인
-            </button>
-            <button className={styles.closebutton} onClick={closeModal}>
-              닫기
-            </button>
-          </div>
-        </form>
+        <h1>Modal</h1>
+        <p>{modalContent}</p>
+        <button onClick={closeModal}>닫기</button>
       </Modal>
-
       <section className={styles.section}>
         <div className={styles.sectionHeader}>
-          <h2 className={styles.sectionTitle}>템플릿 탐색</h2>
-          {showMoreButton && (
-            <Link className href={"/temp"} legacyBehavior>
-              <a className={styles.moreBtn}>
-                <Btn
-                  text={"더보기"}
-                  background={"none"}
-                  border={"none"}
-                  textColor={"#000"}
-                  textBorder={true}
-                />
-              </a>
-            </Link>
-          )}
+          <h2 className={styles.sectionTitle}>대시보드</h2>
         </div>
-        {showCategories && (
-          <div className={styles.categoriesWrapper}>
-            <div className={styles.categories}>
-              {categories.map((category) => (
-                <div
-                  key={category}
-                  className={`${styles.category} ${
-                    selectedCategory === category ? styles.activeCategory : ""
-                  }`}
-                  onClick={() => setSelectedCategory(category)}
-                >
-                  {category}
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
         <div className={styles.sectionControls}>
           <div className={styles.sectionLeft}>
             <Btn
@@ -224,7 +149,7 @@ export default function Templates({ showMoreButton, showCategories }) {
                   border={"#4629F2"}
                   textColor={"#fff"}
                   width="7rem"
-                  onClick={openModal}
+                  onClick={() => openModal(template.description)}
                 />
               </div>
             </div>

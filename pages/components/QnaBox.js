@@ -88,10 +88,16 @@ export default function QnaBox() {
     <>
       <section className={styles.section}>
         <div className={styles.sectionHeader}>
-          <h2 className={styles.sectionTitle}>Q&A</h2>
+          <h2 className={styles.sectionTitle}>질문 및 답변</h2>
         </div>
         <div className={styles.sectionControls}>
           <div className={styles.sectionLeft}>
+            <Btn
+              text={"질문 작성"}
+              background={"#000"}
+              border={"#000"}
+              textColor={"#fff"}
+            />
             <Btn
               text={"최신순"}
               background={sortOrder === "최신순" ? "#4629F2" : "#fff"}
@@ -112,12 +118,6 @@ export default function QnaBox() {
               border={"#4629F2"}
               textColor={showMyQuestions ? "#fff" : "#4629F2"}
               onClick={handleShowMyQuestions}
-            />
-            <Btn
-              text={"질문 작성"}
-              background={"#000"}
-              border={"#000"}
-              textColor={"#fff"}
             />
           </div>
           <div className={styles.sectionRight}>
