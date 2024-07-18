@@ -3,19 +3,19 @@ import styles from "./Dash.module.css";
 import { FaEllipsisV, FaHeart, FaSearch } from "react-icons/fa";
 import Image from "next/image";
 import Btn from "./Btn";
-import Link from "next/link";
 import Modal from "react-modal";
 
-export default function Templates({}) {
+export default function Dash() {
   const [templates, setTemplates] = useState([]);
   const [sortOrder, setSortOrder] = useState("최신순");
   const [searchQuery, setSearchQuery] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalContent, setModalContent] = useState("");
+  const [showDeployed, setShowDeployed] = useState(true);
 
   useEffect(() => {
     const fetchTemplates = async () => {
-      const res = await fetch("/api/data?filename=templates");
+      const res = await fetch("/api/data?filename=dashs");
       const data = await res.json();
       setTemplates(data);
     };
@@ -23,9 +23,11 @@ export default function Templates({}) {
     fetchTemplates();
   }, []);
 
-  const filteredTemplates = templates.filter((template) =>
-    template.templateName.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredTemplates = templates
+    .filter((template) =>
+      template.templateName.toLowerCase().includes(searchQuery.toLowerCase())
+    )
+    .filter((template) => (showDeployed ? !template.deploy : true));
 
   const sortedTemplates = filteredTemplates.sort((a, b) => {
     if (sortOrder === "최신순") {
@@ -90,6 +92,19 @@ export default function Templates({}) {
               textColor={sortOrder === "인기순" ? "#fff" : "#4629F2"}
               onClick={() => setSortOrder("인기순")}
             />
+            <div className={styles.switchContainer}>
+              <label className={styles.switchLabel}>
+                {showDeployed ? "배포 대기" : "모든 상태"}
+              </label>
+              <label className={styles.switch}>
+                <input
+                  type="checkbox"
+                  checked={showDeployed}
+                  onChange={() => setShowDeployed((prev) => !prev)}
+                />
+                <span className={styles.slider}></span>
+              </label>
+            </div>
           </div>
           <div className={styles.sectionRight}>
             <div className={styles.searchWrap}>
@@ -143,14 +158,25 @@ export default function Templates({}) {
                   border={"#4629F2"}
                   textColor={"#4629F2"}
                 />
-                <Btn
-                  text={"템플릿 사용"}
-                  background={"#4629F2"}
-                  border={"#4629F2"}
-                  textColor={"#fff"}
-                  width="7rem"
-                  onClick={() => openModal(template.description)}
-                />
+                {template.deploy ? (
+                  <Btn
+                    text={"배포 완료"}
+                    background={"#E0E0E0"}
+                    border={"#E0E0E0"}
+                    textColor={"#7D7D7D"}
+                    width="7rem"
+                    onClick={() => openModal(template.description)}
+                  />
+                ) : (
+                  <Btn
+                    text={"배포하기"}
+                    background={"#4629F2"}
+                    border={"#4629F2"}
+                    textColor={"#fff"}
+                    width="7rem"
+                    onClick={() => openModal(template.description)}
+                  />
+                )}
               </div>
             </div>
           ))}
