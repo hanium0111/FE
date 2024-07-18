@@ -1,9 +1,37 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import styles from "./Dash.module.css";
 import { FaEllipsisV, FaHeart, FaSearch } from "react-icons/fa";
 import Image from "next/image";
 import Btn from "./Btn";
 import Modal from "react-modal";
+
+const DropdownMenu = ({
+  isDeployed,
+  onEdit,
+  onDelete,
+  onDeploy,
+  onShare,
+  onUse,
+  onRename,
+}) => {
+  return (
+    <div className={styles.dropdownMenu}>
+      {isDeployed ? (
+        <>
+          <button onClick={onUse}>템플릿 사용</button>
+          <button onClick={onShare}>배포 링크 공유</button>
+        </>
+      ) : (
+        <>
+          <button onClick={onDeploy}>프로젝트 배포</button>
+          <button onClick={onEdit}>프로젝트 편집</button>
+        </>
+      )}
+      <button onClick={onDelete}>프로젝트 삭제</button>
+      <button onClick={onRename}>이름 변경</button>
+    </div>
+  );
+};
 
 export default function Dash() {
   const [templates, setTemplates] = useState([]);
@@ -12,6 +40,7 @@ export default function Dash() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalContent, setModalContent] = useState("");
   const [showDeployed, setShowDeployed] = useState(true);
+  const [dropdownOpen, setDropdownOpen] = useState(null);
 
   useEffect(() => {
     const fetchTemplates = async () => {
@@ -45,6 +74,10 @@ export default function Dash() {
 
   const closeModal = () => {
     setIsModalOpen(false);
+  };
+
+  const toggleDropdown = (id) => {
+    setDropdownOpen(dropdownOpen === id ? null : id);
   };
 
   const customStyles = {
@@ -138,10 +171,27 @@ export default function Dash() {
                 <div className={styles.cardHeaderInfo}>
                   <div className={styles.cardUser}>{template.user}</div>
                 </div>
-                <div className={styles.cardMenu}>
-                  <button className={styles.cardMenuButton}>
+                <div
+                  className={styles.cardMenu}
+                  style={{ position: "relative" }}
+                >
+                  <button
+                    className={styles.cardMenuButton}
+                    onClick={() => toggleDropdown(template.id)}
+                  >
                     <FaEllipsisV />
                   </button>
+                  {dropdownOpen === template.id && (
+                    <DropdownMenu
+                      isDeployed={template.deploy}
+                      onShare={() => console.log("Share")}
+                      onUse={() => console.log("Use")}
+                      onDeploy={() => console.log("Deploy")}
+                      onEdit={() => console.log("Edit")}
+                      onRename={() => console.log("Rename")}
+                      onDelete={() => console.log("Delete")}
+                    />
+                  )}
                 </div>
               </div>
               <div className={styles.cardImage}></div>

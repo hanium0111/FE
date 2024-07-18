@@ -307,3 +307,30 @@ input:checked + .slider {
 input:checked + .slider:before {
   transform: translateX(1.6rem);
 }
+
+.dropdownMenu {
+  position: absolute;
+  background: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+  z-index: 10;
+  right: 0;
+  top: 2rem;
+  display: flex;
+  flex-direction: column;
+  width: 10rem;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.dropdownMenu button {
+  background: none;
+  border: none;
+  padding: 0.8rem 1rem;
+  cursor: pointer;
+  text-align: left;
+  width: 100%;
+}
+
+.dropdownMenu button:hover {
+  background: #f4f4f4;
+}

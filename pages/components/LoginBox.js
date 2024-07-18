@@ -1,8 +1,13 @@
 import styles from "./LoginBox.module.css";
 import Image from "next/image";
-
 import Btn from "./Btn";
+
 export default function LoginBox() {
+  const handleGoogleLogin = () => {
+    window.location.href =
+      "https://964a-125-176-145-224.ngrok-free.app/auth/google";
+  };
+
   return (
     <div className={styles.wrap}>
       <div className={styles.imgBox}>
@@ -24,6 +29,7 @@ export default function LoginBox() {
           border={"000"}
           textColor={"#fff"}
           width={"20rem"}
+          onClick={handleGoogleLogin}
         />
       </div>
     </div>
