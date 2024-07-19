@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import styles from "./QnaBox.module.css";
 import { FaChevronDown, FaChevronUp, FaSearch } from "react-icons/fa";
 import Btn from "./Btn";
+import Modal from "react-modal";
 
 const ITEMS_PER_PAGE = 3;
 
@@ -12,6 +13,9 @@ export default function QnaBox() {
   const [expandedItems, setExpandedItems] = useState({});
   const [showMyQuestions, setShowMyQuestions] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [question, setQuestion] = useState("");
+  const [title, setTitle] = useState("");
 
   useEffect(() => {
     const fetchTemplates = async () => {
@@ -84,8 +88,73 @@ export default function QnaBox() {
     resetExpandedItems();
   };
 
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+
+  const qna = ({ title, question }) => {
+    axios.post("/api/data?filename=qnas", {
+      title: title,
+      description: question,
+    });
+  };
+
+  const customStyles = {
+    overlay: {
+      backgroundColor: "rgba(0, 0, 0, 0.5)",
+    },
+    content: {
+      width: "1000px",
+      height: "500px",
+      margin: "auto",
+      borderRadius: "10px",
+      boxShadow: "0 2px 4px rgba(0, 0, 0, 0.2)",
+      padding: "20px",
+    },
+  };
+
   return (
     <>
+      <Modal
+        isOpen={isModalOpen}
+        onRequestClose={closeModal}
+        style={customStyles}
+      >
+        <form>
+          <h1 className={styles.qnaform}>질문 작성</h1>
+          <p className={styles.qnacoment}>제목</p>
+          <input
+            className={styles.qnatitleinput}
+            type="text"
+            onChange={(e) => {
+              setTitle(e.target.value);
+            }}
+          />
+          <div>
+            <textarea
+              className={styles.qnainput}
+              type="text"
+              onChange={(e) => setQuestion(e.target.value)}
+            />
+            <div className={styles.buttons}>
+              <button className={styles.closebutton} onClick={closeModal}>
+                취소
+              </button>
+              <button
+                className={styles.okbutton}
+                onClick={() => qna(title, question)}
+              >
+                등록
+              </button>
+            </div>
+          </div>
+        </form>
+      </Modal>
+
       <section className={styles.section}>
         <div className={styles.sectionHeader}>
           <h2 className={styles.sectionTitle}>질문 및 답변</h2>
@@ -97,6 +166,7 @@ export default function QnaBox() {
               background={"#000"}
               border={"#000"}
               textColor={"#fff"}
+              onClick={openModal}
             />
             <Btn
               text={"최신순"}

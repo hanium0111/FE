@@ -206,3 +206,67 @@
     width: 100%;
   }
 }
+
+.qnaform {
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+
+.qnacoment {
+  font-size: 15px;
+  margin-bottom: 0;
+  display: inline-block;
+  margin-right: 10px;
+}
+
+.qnatitleinput {
+  display: inline-block;
+  font-size: medium;
+  width: 800px;
+  height: 20px;
+  border-color: #888;
+
+  padding: 5px;
+}
+
+.qnainput {
+  display: block;
+  font-size: medium;
+  margin: auto;
+  width: 914px;
+  height: 330px;
+  border-color: #888;
+
+  padding: 5px;
+  margin-top: 30px;
+}
+
+.buttons {
+  text-align: right;
+}
+
+.okbutton {
+  border-radius: 5px;
+  width: 70px;
+  height: 35px;
+  box-sizing: border-box;
+  display: inline-block;
+  text-align: center;
+  margin: 10px 7px;
+  margin-right: 34px;
+  background-color: #4629f2;
+  color: #fff;
+}
+
+.closebutton {
+  border-radius: 5px;
+  width: 70px;
+  height: 35px;
+  box-sizing: border-box;
+  display: inline-block;
+  text-align: center;
+  margin: 10px auto;
+  border: 1px solid #4629f2;
+  background-color: #fff;
+  color: #4629f2;
+}
