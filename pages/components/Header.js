@@ -1,23 +1,18 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import styles from "./Header.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faBars,
-  faTimes,
-  faUser,
-  faSearch,
-  faHeadset,
-  faBell,
-  faUsers,
-  faTachometerAlt,
+  faArrowRightToBracket,
+  faPaintRoller,
   faLayerGroup,
   faGlobe,
-  faChildReaching,
-  faArrowRightToBracket,
+  faHeadset,
   faTowerCell,
-  faPaintRoller,
+  faChildReaching,
+  faUserEdit,
 } from "@fortawesome/free-solid-svg-icons";
 import Image from "next/image";
 import Modal from "react-modal";
@@ -26,7 +21,16 @@ Modal.setAppElement("#__next");
 
 export default function Header() {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(true);
   const router = useRouter();
+
+  useEffect(() => {
+    // localStorage를 사용하여, 구글 로그인 세션 확인 로직 구현
+    const session = localStorage.getItem("google_session");
+    if (session) {
+      setIsLoggedIn(true);
+    }
+  }, []);
 
   const togglePopup = () => {
     setIsPopupOpen(!isPopupOpen);
@@ -58,15 +62,27 @@ export default function Header() {
       >
         <ul className={styles.menuList}>
           <li className={styles.menuItem}>
-            <Link href="/login" legacyBehavior>
-              <a className={styles.menuLink}>
-                <FontAwesomeIcon
-                  icon={faArrowRightToBracket}
-                  className={styles.menuIcon}
-                />
-                로그인
-              </a>
-            </Link>
+            {isLoggedIn ? (
+              <Link href="/profile" legacyBehavior>
+                <a className={styles.menuLink}>
+                  <FontAwesomeIcon
+                    icon={faUserEdit}
+                    className={styles.menuIcon}
+                  />
+                  회원 정보
+                </a>
+              </Link>
+            ) : (
+              <Link href="/login" legacyBehavior>
+                <a className={styles.menuLink}>
+                  <FontAwesomeIcon
+                    icon={faArrowRightToBracket}
+                    className={styles.menuIcon}
+                  />
+                  로그인
+                </a>
+              </Link>
+            )}
           </li>
           <li className={styles.menuItem}>
             <Link href="/" legacyBehavior>
@@ -79,7 +95,6 @@ export default function Header() {
               </a>
             </Link>
           </li>
-
           <li className={styles.menuItem}>
             <Link href="/dashboard" legacyBehavior>
               <a className={styles.menuLink}>
