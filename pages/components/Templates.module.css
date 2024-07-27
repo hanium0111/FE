@@ -261,48 +261,60 @@
   }
 }
 
-.tempform {
-  font-size: 10px;
-}
-
-.tempcoment {
-  font-size: 25px;
-  text-align: center;
-  margin-bottom: 0;
-}
 .pageinputform {
   display: block;
   margin: auto;
   font-size: medium;
-  width: 290px;
-  height: 30px;
-
-  padding: 5px;
-  margin-top: 30px;
+  width: 100%;
+  height: 2rem;
+  box-sizing: border-box;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  margin: 1.4rem 0;
+  border: 1px solid #888;
 }
 
-.okbutton {
-  border-radius: 5px;
-  width: 300px;
-  height: 40px;
-  box-sizing: border-box;
-  display: block;
+.modalContent {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  right: auto;
+  bottom: auto;
+  margin-right: -50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 20rem;
   text-align: center;
-  margin: 10px auto;
-  background-color: #4629f2;
-  color: #fff;
 }
 
-.closebutton {
-  border-radius: 4px;
-  width: 300px;
-  height: 30px;
-  box-sizing: border-box;
-  display: block;
-  align-items: center;
+.modalOverlay {
+  background-color: rgba(0, 0, 0, 0.75);
+}
+
+.modalButtons {
+  display: flex;
   justify-content: center;
-  margin: auto;
-  border: 1px solid #4629f2;
-  background-color: #fff;
-  color: #4629f2;
+  margin-top: 1rem;
+  gap: 1rem;
+}
+
+.confirmButton,
+.cancelButton {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.confirmButton {
+  background-color: #4629f2;
+  color: white;
+}
+
+.cancelButton {
+  background-color: #ccc;
+  color: black;
 }

@@ -91,26 +91,29 @@ export default function Templates({ showMoreButton, showCategories }) {
       <Modal
         isOpen={isModalOpen}
         onRequestClose={closeModal}
-        style={customStyles}
+        className={styles.modalContent}
+        overlayClassName={styles.modalOverlay}
       >
         <form>
-          <h1 className={styles.tempform}>템플릿 이름이랑 연결할 예정</h1>
-          <p className={styles.tempcoment}>{modalContent}</p>
+          <h2>페이지 이름을 입력해주세요!</h2>
           <div>
             <input
               className={styles.pageinputform}
               type="text"
+              placeholder="이름 입력.."
               onChange={(e) => setPageName(e.target.value)}
             />
-            <button
-              className={styles.okbutton}
-              onClick={() => pageNameInputValue(pageName)}
-            >
-              확인
-            </button>
-            <button className={styles.closebutton} onClick={closeModal}>
-              닫기
-            </button>
+            <div className={styles.modalButtons}>
+              <button
+                className={styles.confirmButton}
+                onClick={() => pageNameInputValue(pageName)}
+              >
+                확인
+              </button>
+              <button className={styles.cancelButton} onClick={closeModal}>
+                닫기
+              </button>
+            </div>
           </div>
         </form>
       </Modal>
