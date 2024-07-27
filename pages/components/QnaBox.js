@@ -103,33 +103,21 @@ export default function QnaBox() {
     });
   };
 
-  const customStyles = {
-    overlay: {
-      backgroundColor: "rgba(0, 0, 0, 0.5)",
-    },
-    content: {
-      width: "1000px",
-      height: "500px",
-      margin: "auto",
-      borderRadius: "10px",
-      boxShadow: "0 2px 4px rgba(0, 0, 0, 0.2)",
-      padding: "20px",
-    },
-  };
-
   return (
     <>
       <Modal
         isOpen={isModalOpen}
         onRequestClose={closeModal}
-        style={customStyles}
+        contentLabel="질문 입력"
+        className={styles.modalContent}
+        overlayClassName={styles.modalOverlay}
       >
         <form>
-          <h1 className={styles.qnaform}>질문 작성</h1>
-          <p className={styles.qnacoment}>제목</p>
+          <h2>어떤 점이 궁금하신가요?</h2>
           <input
             className={styles.qnatitleinput}
             type="text"
+            placeholder="제목을 입력하세요."
             onChange={(e) => {
               setTitle(e.target.value);
             }}
@@ -138,17 +126,18 @@ export default function QnaBox() {
             <textarea
               className={styles.qnainput}
               type="text"
+              placeholder="질문 내용을 입력하세요."
               onChange={(e) => setQuestion(e.target.value)}
             />
-            <div className={styles.buttons}>
-              <button className={styles.closebutton} onClick={closeModal}>
-                취소
-              </button>
+            <div className={styles.modalButtons}>
               <button
-                className={styles.okbutton}
+                className={styles.confirmButton}
                 onClick={() => qna(title, question)}
               >
                 등록
+              </button>
+              <button className={styles.cancelButton} onClick={closeModal}>
+                취소
               </button>
             </div>
           </div>
