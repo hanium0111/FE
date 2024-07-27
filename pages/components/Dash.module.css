@@ -334,3 +334,28 @@ input:checked + .slider:before {
 .dropdownMenu button:hover {
   background: #f4f4f4;
 }
+
+.modalButtons {
+  display: flex;
+  justify-content: flex-start;
+  margin-top: 1rem;
+  gap: 1rem;
+}
+
+.confirmButton,
+.cancelButton {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.confirmButton {
+  background-color: #4629f2;
+  color: white;
+}
+
+.cancelButton {
+  background-color: #ccc;
+  color: black;
+}

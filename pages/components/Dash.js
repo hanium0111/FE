@@ -41,6 +41,8 @@ export default function Dash() {
   const [modalContent, setModalContent] = useState("");
   const [showDeployed, setShowDeployed] = useState(true);
   const [dropdownOpen, setDropdownOpen] = useState(null);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [selectedTemplate, setSelectedTemplate] = useState(null);
 
   useEffect(() => {
     const fetchTemplates = async () => {
@@ -76,6 +78,21 @@ export default function Dash() {
     setIsModalOpen(false);
   };
 
+  const openDeleteModal = (template) => {
+    setSelectedTemplate(template);
+    setIsDeleteModalOpen(true);
+  };
+
+  const closeDeleteModal = () => {
+    setIsDeleteModalOpen(false);
+  };
+
+  const handleDeleteTemplate = () => {
+    // 여기에 삭제 로직 구현
+    console.log("Deleting template:", selectedTemplate);
+    closeDeleteModal();
+  };
+
   const toggleDropdown = (id) => {
     setDropdownOpen(dropdownOpen === id ? null : id);
   };
@@ -83,28 +100,41 @@ export default function Dash() {
   const customStyles = {
     overlay: {
       backgroundColor: "rgba(0, 0, 0, 0.5)",
+      zIndex: 1000,
     },
     content: {
-      width: "300px",
-      height: "400px",
+      width: "20rem",
+      height: "8rem",
       margin: "auto",
-      borderRadius: "4px",
+      borderRadius: "1rem",
       boxShadow: "0 2px 4px rgba(0, 0, 0, 0.2)",
-      padding: "20px",
+      padding: "2rem",
+      zIndex: 1001,
     },
   };
 
   return (
     <>
       <Modal
-        isOpen={isModalOpen}
-        onRequestClose={closeModal}
+        isOpen={isDeleteModalOpen}
+        onRequestClose={closeDeleteModal}
         style={customStyles}
       >
-        <h1>Modal</h1>
-        <p>{modalContent}</p>
-        <button onClick={closeModal}>닫기</button>
+        <h1>정말로 삭제하겠습니까?</h1>
+        <p>이 작업은 되돌릴 수 없습니다.</p>
+        <div className={styles.modalButtons}>
+          <button
+            onClick={handleDeleteTemplate}
+            className={styles.confirmButton}
+          >
+            예
+          </button>
+          <button onClick={closeDeleteModal} className={styles.cancelButton}>
+            아니요
+          </button>
+        </div>
       </Modal>
+
       <section className={styles.section}>
         <div className={styles.sectionHeader}>
           <h2 className={styles.sectionTitle}>대시보드</h2>
@@ -189,7 +219,7 @@ export default function Dash() {
                       onDeploy={() => console.log("Deploy")}
                       onEdit={() => console.log("Edit")}
                       onRename={() => console.log("Rename")}
-                      onDelete={() => console.log("Delete")}
+                      onDelete={() => openDeleteModal(template)}
                     />
                   )}
                 </div>
