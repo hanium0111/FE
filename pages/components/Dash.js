@@ -42,7 +42,9 @@ export default function Dash() {
   const [showDeployed, setShowDeployed] = useState(true);
   const [dropdownOpen, setDropdownOpen] = useState(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isRenameModalOpen, setIsRenameModalOpen] = useState(false);
   const [selectedTemplate, setSelectedTemplate] = useState(null);
+  const [pageName, setPageName] = useState("");
 
   useEffect(() => {
     const fetchTemplates = async () => {
@@ -93,6 +95,21 @@ export default function Dash() {
     closeDeleteModal();
   };
 
+  const openRenameModal = (template) => {
+    setSelectedTemplate(template);
+    setIsRenameModalOpen(true);
+  };
+
+  const closeRenameModal = () => {
+    setIsRenameModalOpen(false);
+  };
+
+  const handleRenameTemplate = () => {
+    // 여기에 이름 변경 로직 구현
+    console.log("Renaming template:", selectedTemplate);
+    closeRenameModal();
+  };
+
   const toggleDropdown = (id) => {
     setDropdownOpen(dropdownOpen === id ? null : id);
   };
@@ -103,8 +120,8 @@ export default function Dash() {
       zIndex: 1000,
     },
     content: {
-      width: "20rem",
-      height: "8rem",
+      width: "24rem",
+      height: "max-content",
       margin: "auto",
       borderRadius: "1rem",
       boxShadow: "0 2px 4px rgba(0, 0, 0, 0.2)",
@@ -130,6 +147,31 @@ export default function Dash() {
             예
           </button>
           <button onClick={closeDeleteModal} className={styles.cancelButton}>
+            아니요
+          </button>
+        </div>
+      </Modal>
+
+      <Modal
+        isOpen={isRenameModalOpen}
+        onRequestClose={closeRenameModal}
+        style={customStyles}
+      >
+        <h1>이름을 변경하시겠습니까?</h1>
+        <input
+          className={styles.pageinputform}
+          type="text"
+          placeholder="이름 입력.."
+          onChange={(e) => setPageName(e.target.value)}
+        />{" "}
+        <div className={styles.modalButtons}>
+          <button
+            onClick={handleRenameTemplate}
+            className={styles.confirmButton}
+          >
+            예
+          </button>
+          <button onClick={closeRenameModal} className={styles.cancelButton}>
             아니요
           </button>
         </div>
@@ -218,7 +260,7 @@ export default function Dash() {
                       onUse={() => console.log("Use")}
                       onDeploy={() => console.log("Deploy")}
                       onEdit={() => console.log("Edit")}
-                      onRename={() => console.log("Rename")}
+                      onRename={() => openRenameModal(template)}
                       onDelete={() => openDeleteModal(template)}
                     />
                   )}
