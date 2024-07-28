@@ -21,7 +21,7 @@ Modal.setAppElement("#__next");
 
 export default function Header() {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(true);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const router = useRouter();
 
   useEffect(() => {

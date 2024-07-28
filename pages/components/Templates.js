@@ -14,12 +14,26 @@ export default function Templates({ showMoreButton, showCategories }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalContent, setModalContent] = useState("");
   const [pageName, setPageName] = useState("");
-
   useEffect(() => {
     const fetchTemplates = async () => {
-      const res = await fetch("/api/data?filename=templates");
-      const data = await res.json();
-      setTemplates(data);
+      try {
+        const res = await fetch(
+          "https://6bd3-2001-e60-9075-96e6-7cad-92b6-b389-3b7d.ngrok-free.app/templates/sharedTemplates/get",
+          {
+            method: "get",
+            headers: new Headers({
+              "ngrok-skip-browser-warning": "69420",
+            }),
+          }
+        );
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+        const data = await res.json();
+        setTemplates(data);
+      } catch (error) {
+        console.error("Failed to fetch templates:", error);
+      }
     };
 
     fetchTemplates();
