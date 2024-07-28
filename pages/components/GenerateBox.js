@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Iframe from "react-iframe";
 import styles from "./GenerateBox.module.css";
+import Btn from "./Btn";
 
 export default function GenerateBox() {
   const [content, setContent] = useState("");
@@ -134,6 +135,12 @@ export default function GenerateBox() {
             </svg>
           </button>
         </form>
+        <Btn
+          text={"수정 완료"}
+          background={"#666"}
+          border={"#666"}
+          textColor={"#FFF"}
+        />
       </div>
     </div>
   );
