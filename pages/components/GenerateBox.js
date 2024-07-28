@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from "react";
-import Iframe from "react-iframe";
+import React, { useEffect, useState, useRef } from "react";
 import styles from "./GenerateBox.module.css";
 import Btn from "./Btn";
 
@@ -9,6 +8,7 @@ export default function GenerateBox() {
   const [jsContent, setJsContent] = useState([]);
   const [htmlLoaded, setHtmlLoaded] = useState(false);
   const [imageContent, setImageContent] = useState([]);
+  const iframeRef = useRef(null);
 
   const fetchFile = async (filename) => {
     const res = await fetch(`/api/render?filename=${filename}`);
@@ -61,6 +61,25 @@ export default function GenerateBox() {
     fetchFiles();
   }, []);
 
+  useEffect(() => {
+    const handleIframeLoad = () => {
+      const iframeDoc =
+        iframeRef.current.contentDocument ||
+        iframeRef.current.contentWindow.document;
+      iframeDoc.body.addEventListener("click", (event) => {
+        console.log(event.target);
+      });
+    };
+
+    if (htmlLoaded && iframeRef.current) {
+      const iframe = iframeRef.current;
+      iframe.addEventListener("load", handleIframeLoad);
+      return () => {
+        iframe.removeEventListener("load", handleIframeLoad);
+      };
+    }
+  }, [htmlLoaded]);
+
   const createMarkup = () => {
     if (!htmlLoaded) return "";
 
@@ -101,6 +120,7 @@ export default function GenerateBox() {
       <div className={styles.genBoxWrap}>
         {htmlLoaded && (
           <iframe
+            ref={iframeRef}
             className={styles.generateBox}
             srcDoc={createMarkup()}
             width="100%"
