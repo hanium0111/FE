@@ -9,6 +9,7 @@ export default function GenerateBox() {
   const [htmlLoaded, setHtmlLoaded] = useState(false);
   const [imageContent, setImageContent] = useState([]);
   const iframeRef = useRef(null);
+  const highlightedElementRef = useRef(null);
 
   const fetchFile = async (filename) => {
     const res = await fetch(`/api/render?filename=${filename}`);
@@ -66,8 +67,17 @@ export default function GenerateBox() {
       const iframeDoc =
         iframeRef.current.contentDocument ||
         iframeRef.current.contentWindow.document;
+
       iframeDoc.body.addEventListener("click", (event) => {
         console.log(event.target);
+
+        if (highlightedElementRef.current) {
+          highlightedElementRef.current.style.border = "";
+        }
+
+        event.target.style.border = "2px solid #4629f2";
+
+        highlightedElementRef.current = event.target;
       });
     };
 
