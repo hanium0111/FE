@@ -37,8 +37,7 @@ const nextConfig = {
   },
 };
 
-module.exports = {
+export default {
+  ...nextConfig,
   assetPrefix: "0111.site",
 };
-
-export default nextConfig;
