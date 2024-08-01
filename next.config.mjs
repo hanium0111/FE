@@ -39,5 +39,5 @@ const nextConfig = {
 
 export default {
   ...nextConfig,
-  assetPrefix: "0111.site",
+  assetPrefix: "",
 };
