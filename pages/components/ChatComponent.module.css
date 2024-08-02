@@ -3,6 +3,9 @@
   margin: 40px auto;
   padding: 1rem;
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .title {
@@ -17,12 +20,11 @@
   border-radius: 16px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   height: 400px;
+  width: 100%;
   overflow-y: auto;
   margin-bottom: 1rem;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: flex-end;
 }
 
 .chatWrap {
@@ -31,6 +33,7 @@
   flex-direction: column;
   align-items: flex-start;
   margin-bottom: 20px;
+  position: relative;
 }
 
 .userChatWrap {
@@ -75,8 +78,9 @@
   border: 1px solid #4629f2;
   border-radius: 16px;
   background-color: #fff;
-  width: 90%;
+  width: 100%;
   box-sizing: border-box;
+  padding: 0.5rem;
 }
 
 .input {
@@ -99,7 +103,6 @@
 
 .input:disabled {
   background: none;
-  display: none;
 }
 
 .button {
@@ -125,4 +128,14 @@
   border-radius: 14px;
   font-size: 1rem;
   width: 100%;
+}
+
+.editButton,
+.saveButton {
+  background: none;
+  border: none;
+  color: #4629f2;
+  cursor: pointer;
+  font-size: 0.8rem;
+  margin-top: 5px;
 }

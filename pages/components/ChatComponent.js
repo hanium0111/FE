@@ -1,8 +1,5 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import styles from "./ChatComponent.module.css";
-
-// [POST] /generate/process-requirments
-// websiteType, feature, mood, content, pageName
 
 export default function ChatComponent() {
   const [inputValue, setInputValue] = useState("");
@@ -13,6 +10,8 @@ export default function ChatComponent() {
   const [mood, setMood] = useState("");
   const [content, setContent] = useState("");
   const [pageName, setPageName] = useState("");
+  const [isEditing, setIsEditing] = useState(null); // 현재 편집 중인 메시지의 인덱스
+  const chatBoxRef = useRef(null);
 
   useEffect(() => {
     if (step === 1 && messages.length === 0) {
@@ -33,6 +32,10 @@ export default function ChatComponent() {
       });
     }
   }, [step, websiteType, feature, mood, content, pageName]);
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -106,12 +109,30 @@ export default function ChatComponent() {
     setStep((prevStep) => prevStep + 1);
   };
 
+  const scrollToBottom = () => {
+    if (chatBoxRef.current) {
+      chatBoxRef.current.scrollTop = chatBoxRef.current.scrollHeight;
+    }
+  };
+
+  const editMessage = (index) => {
+    setIsEditing(index);
+  };
+
+  const saveEditedMessage = (index, text) => {
+    const updatedMessages = messages.map((message, i) =>
+      i === index ? { ...message, text } : message
+    );
+    setMessages(updatedMessages);
+    setIsEditing(null);
+  };
+
   return (
     <div className={styles.chatContainer}>
       <h1 className={styles.title}>
         웹사이트 만들기, <br /> 누구나 쉽게 할 수 있어요!
       </h1>
-      <div className={styles.chatBox}>
+      <div className={styles.chatBox} ref={chatBoxRef}>
         {messages.map((message, index) => (
           <div
             className={`${styles.chatWrap} ${
@@ -133,56 +154,70 @@ export default function ChatComponent() {
                   : styles.userMessage
               }`}
             >
-              <p>{message.text}</p>
+              <p
+                contentEditable={isEditing === index}
+                suppressContentEditableWarning={true}
+                onBlur={(e) => saveEditedMessage(index, e.target.innerText)}
+              >
+                {message.text}
+              </p>
             </div>
+            {message.sender === "user" && isEditing !== index && (
+              <button
+                onClick={() => editMessage(index)}
+                className={styles.editButton}
+              >
+                편집
+              </button>
+            )}
+            {isEditing === index && (
+              <button
+                onClick={() => saveEditedMessage(index, messages[index].text)}
+                className={styles.saveButton}
+              >
+                저장
+              </button>
+            )}
           </div>
         ))}
-        {step <= 5 && (
-          <form onSubmit={handleSubmit} className={styles.form}>
-            <input
-              type="text"
-              value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
-              className={styles.input}
-              placeholder="텍스트를 입력하세요"
-              disabled={step > 5}
-            />
-            <button type="submit" className={styles.button}>
-              <svg
-                className={styles.icon}
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M14 5l7 7m0 0l-7 7m7-7H3"
-                ></path>
-              </svg>
-            </button>
-          </form>
-        )}
-        {step > 5 && (
-          <form className={styles.form}>
-            <input
-              type="text"
-              className={styles.input}
-              placeholder="웹사이트 생성 버튼을 눌러주세요!"
-              disabled
-            />
-            <button
-              type="button"
-              className={styles.generateButton}
-              onClick={handleGenerateClick}
-            >
-              웹사이트 생성
-            </button>
-          </form>
-        )}
       </div>
+      {step <= 5 && (
+        <form onSubmit={handleSubmit} className={styles.form}>
+          <input
+            type="text"
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+            className={styles.input}
+            placeholder="텍스트를 입력하세요"
+            disabled={step > 5}
+          />
+          <button type="submit" className={styles.button}>
+            <svg
+              className={styles.icon}
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M14 5l7 7m0 0l-7 7m7-7H3"
+              ></path>
+            </svg>
+          </button>
+        </form>
+      )}
+      {step > 5 && (
+        <button
+          type="button"
+          className={styles.generateButton}
+          onClick={handleGenerateClick}
+        >
+          웹사이트 생성
+        </button>
+      )}
     </div>
   );
 }
