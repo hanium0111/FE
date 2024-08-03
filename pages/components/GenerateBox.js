@@ -13,13 +13,14 @@ export default function GenerateBox() {
 
   const cleanContent = (content) => {
     return content
+      .replace(/\\&quot;/g, '"')
       .replace(/&quot;/g, '"')
       .replace(/&lt;/g, "<")
       .replace(/&gt;/g, ">")
       .replace(/&amp;/g, "&")
-      .replace(/\\t/g, "\t")
       .replace(/\\n/g, "\n")
-      .replace(/\\r/g, "")
+      .replace(/\\r/g, "\r")
+      .replace(/\\t/g, "\t")
       .replace(/\s+/g, " ");
   };
 
