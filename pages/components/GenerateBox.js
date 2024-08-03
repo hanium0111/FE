@@ -14,7 +14,11 @@ export default function GenerateBox() {
   const cleanContent = (content) => {
     return content
       .replace(/&quot;/g, '"')
-      .replace(/\\n/g, "")
+      .replace(/&lt;/g, "<")
+      .replace(/&gt;/g, ">")
+      .replace(/&amp;/g, "&")
+      .replace(/\\t/g, "\t")
+      .replace(/\\n/g, "\n")
       .replace(/\\r/g, "")
       .replace(/\s+/g, " ");
   };
@@ -136,7 +140,7 @@ export default function GenerateBox() {
       );
     });
 
-    return `
+    const fullContent = `
       <html>
         <head>
           ${cssLinks}
@@ -147,6 +151,10 @@ export default function GenerateBox() {
         </body>
       </html>
     `;
+
+    console.log(fullContent);
+
+    return fullContent;
   };
 
   return (
