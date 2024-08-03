@@ -4,8 +4,7 @@ import Btn from "./Btn";
 
 export default function LoginBox() {
   const handleGoogleLogin = () => {
-    window.location.href =
-      "https://6bd3-2001-e60-9075-96e6-7cad-92b6-b389-3b7d.ngrok-free.app/auth/google";
+    window.location.href = "https://1am11m.store/auth/google";
   };
 
   return (
