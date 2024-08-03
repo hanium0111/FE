@@ -14,6 +14,7 @@ export default function Templates({ showMoreButton, showCategories }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalContent, setModalContent] = useState("");
   const [pageName, setPageName] = useState("");
+
   useEffect(() => {
     const fetchTemplates = async () => {
       try {
@@ -58,13 +59,15 @@ export default function Templates({ showMoreButton, showCategories }) {
         selectedCategory === "모든 카테고리" ||
         template.category === selectedCategory
     )
-    .filter((template) =>
-      template.templateName.toLowerCase().includes(searchQuery.toLowerCase())
+    .filter(
+      (template) =>
+        template.templateName &&
+        template.templateName.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
   const sortedTemplates = filteredTemplates.sort((a, b) => {
     if (sortOrder === "최신순") {
-      return new Date(b.date) - new Date(a.date);
+      return new Date(b.createdAt) - new Date(a.createdAt);
     } else if (sortOrder === "인기순") {
       return b.likes - a.likes;
     }
