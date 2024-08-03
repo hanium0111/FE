@@ -18,7 +18,7 @@ export default function Templates({ showMoreButton, showCategories }) {
     const fetchTemplates = async () => {
       try {
         const res = await fetch(
-          "https://6bd3-2001-e60-9075-96e6-7cad-92b6-b389-3b7d.ngrok-free.app/templates/sharedTemplates/get",
+          "https://1am11m.store/templates/sharedTemplates/get",
           {
             method: "get",
             headers: new Headers({
