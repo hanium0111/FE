@@ -21,9 +21,7 @@ export default function Templates({ showMoreButton, showCategories }) {
           "https://1am11m.store/templates/sharedTemplates/get",
           {
             method: "get",
-            headers: new Headers({
-              "ngrok-skip-browser-warning": "69420",
-            }),
+            mode: "no-cors",
           }
         );
         if (!res.ok) {
