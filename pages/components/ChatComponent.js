@@ -1,5 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import styles from "./ChatComponent.module.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPen } from "@fortawesome/free-solid-svg-icons";
 
 export default function ChatComponent() {
   const [inputValue, setInputValue] = useState("");
@@ -10,7 +12,7 @@ export default function ChatComponent() {
   const [mood, setMood] = useState("");
   const [content, setContent] = useState("");
   const [pageName, setPageName] = useState("");
-  const [isEditing, setIsEditing] = useState(null); // 현재 편집 중인 메시지의 인덱스
+  const [isEditing, setIsEditing] = useState(null);
   const chatBoxRef = useRef(null);
 
   useEffect(() => {
@@ -117,6 +119,13 @@ export default function ChatComponent() {
 
   const editMessage = (index) => {
     setIsEditing(index);
+    setTimeout(() => {
+      const editableElement = document.querySelector(`[data-index="${index}"]`);
+      if (editableElement) {
+        editableElement.focus();
+        editableElement.classList.add(styles.editing);
+      }
+    }, 0);
   };
 
   const saveEditedMessage = (index, text) => {
@@ -125,6 +134,11 @@ export default function ChatComponent() {
     );
     setMessages(updatedMessages);
     setIsEditing(null);
+
+    const editableElement = document.querySelector(`[data-index="${index}"]`);
+    if (editableElement) {
+      editableElement.classList.remove(styles.editing);
+    }
   };
 
   return (
@@ -152,32 +166,34 @@ export default function ChatComponent() {
                 message.sender === "assistant"
                   ? styles.assistantMessage
                   : styles.userMessage
-              }`}
+              } ${message.sender === "user" ? styles.flexContainer : ""}`}
             >
               <p
                 contentEditable={isEditing === index}
                 suppressContentEditableWarning={true}
                 onBlur={(e) => saveEditedMessage(index, e.target.innerText)}
+                data-index={index}
+                className={`${styles.flexText} ${
+                  isEditing === index ? styles.editing : ""
+                }`}
               >
                 {message.text}
               </p>
+              {message.sender === "user" && isEditing !== index && (
+                <button
+                  onClick={() => editMessage(index)}
+                  className={styles.editButton}
+                >
+                  <FontAwesomeIcon icon={faPen} />
+                </button>
+              )}
+              {isEditing === index && (
+                <button
+                  onClick={() => saveEditedMessage(index, messages[index].text)}
+                  className={styles.saveButton}
+                ></button>
+              )}
             </div>
-            {message.sender === "user" && isEditing !== index && (
-              <button
-                onClick={() => editMessage(index)}
-                className={styles.editButton}
-              >
-                편집
-              </button>
-            )}
-            {isEditing === index && (
-              <button
-                onClick={() => saveEditedMessage(index, messages[index].text)}
-                className={styles.saveButton}
-              >
-                저장
-              </button>
-            )}
           </div>
         ))}
       </div>

@@ -16,22 +16,22 @@
 
 .chatBox {
   background-color: #fff;
-  padding: 2rem;
-  border-radius: 16px;
+  border-radius: 1rem;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  height: 400px;
+  height: 14rem;
   width: 100%;
   overflow-y: auto;
   margin-bottom: 1rem;
   display: flex;
   flex-direction: column;
+  padding: 2rem 0;
 }
 
 .chatWrap {
   width: 90%;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
   margin-bottom: 20px;
   position: relative;
 }
@@ -41,6 +41,7 @@
 }
 
 .sender {
+  display: none;
   width: 100%;
   font-weight: bold;
   margin-bottom: 0.25rem;
@@ -120,7 +121,7 @@
 }
 
 .generateButton {
-  background-color: #4629f2;
+  background-color: #fff;
   color: #fff;
   border: none;
   padding: 0.75rem 1.5rem;
@@ -134,8 +135,37 @@
 .saveButton {
   background: none;
   border: none;
-  color: #4629f2;
+  color: #fff;
   cursor: pointer;
   font-size: 0.8rem;
   margin-top: 5px;
+}
+
+.editButton,
+.saveButton {
+  display: flex;
+  flex-wrap: row;
+  gap: 0.2rem;
+  font-weight: bold;
+  opacity: 0.4;
+}
+
+.editButton,
+.saveButton:hover {
+  opacity: 1;
+}
+
+.editing {
+  border-bottom: 2px solid #ffffff88;
+  outline: none;
+}
+
+.flexContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.flexText {
+  flex: 1;
 }
