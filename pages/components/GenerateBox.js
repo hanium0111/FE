@@ -12,7 +12,11 @@ export default function GenerateBox() {
   const highlightedElementRef = useRef(null);
 
   const cleanContent = (content) => {
-    return content.replace(/\\n/g, "").replace(/\\r/g, "").replace(/\s+/g, " ");
+    return content
+      .replace(/&quot;/g, '"')
+      .replace(/\\n/g, "")
+      .replace(/\\r/g, "")
+      .replace(/\s+/g, " ");
   };
 
   const fetchFile = async (filename) => {
