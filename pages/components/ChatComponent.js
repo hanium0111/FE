@@ -2,6 +2,7 @@ import { useEffect, useState, useRef } from "react";
 import styles from "./ChatComponent.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPen } from "@fortawesome/free-solid-svg-icons";
+import { TourGuideProvider, TourButton } from "./TourGuide";
 
 export default function ChatComponent() {
   const [inputValue, setInputValue] = useState("");
@@ -142,98 +143,105 @@ export default function ChatComponent() {
   };
 
   return (
-    <div className={styles.chatContainer}>
-      <h1 className={styles.title}>
-        웹사이트 만들기, <br /> 누구나 쉽게 할 수 있어요!
-      </h1>
-      <div className={styles.chatBox} ref={chatBoxRef}>
-        {messages.map((message, index) => (
-          <div
-            className={`${styles.chatWrap} ${
-              message.sender === "user" ? styles.userChatWrap : ""
-            }`}
-            key={index}
-          >
-            <span
-              className={`${styles.sender} ${
-                message.sender === "user" ? styles.userSender : ""
-              }`}
-            >
-              {message.sender === "assistant" ? "Assistant" : "User"}
-            </span>
+    <TourGuideProvider>
+      <div className={styles.chatContainer}>
+        <h1 className={styles.title}>
+          웹사이트 만들기, <br /> 누구나 쉽게 할 수 있어요!
+        </h1>
+        <div className={styles.menuContainer}>
+          <TourButton />
+        </div>
+        <div className={styles.chatBox} ref={chatBoxRef}>
+          {messages.map((message, index) => (
             <div
-              className={`${styles.message} ${
-                message.sender === "assistant"
-                  ? styles.assistantMessage
-                  : styles.userMessage
-              } ${message.sender === "user" ? styles.flexContainer : ""}`}
+              className={`${styles.chatWrap} ${
+                message.sender === "user" ? styles.userChatWrap : ""
+              }`}
+              key={index}
             >
-              <p
-                contentEditable={isEditing === index}
-                suppressContentEditableWarning={true}
-                onBlur={(e) => saveEditedMessage(index, e.target.innerText)}
-                data-index={index}
-                className={`${styles.flexText} ${
-                  isEditing === index ? styles.editing : ""
+              <span
+                className={`${styles.sender} ${
+                  message.sender === "user" ? styles.userSender : ""
                 }`}
               >
-                {message.text}
-              </p>
-              {message.sender === "user" && isEditing !== index && (
-                <button
-                  onClick={() => editMessage(index)}
-                  className={styles.editButton}
+                {message.sender === "assistant" ? "Assistant" : "User"}
+              </span>
+              <div
+                className={`${styles.message} ${
+                  message.sender === "assistant"
+                    ? styles.assistantMessage
+                    : styles.userMessage
+                } ${message.sender === "user" ? styles.flexContainer : ""}`}
+              >
+                <p
+                  contentEditable={isEditing === index}
+                  suppressContentEditableWarning={true}
+                  onBlur={(e) => saveEditedMessage(index, e.target.innerText)}
+                  data-index={index}
+                  className={`${styles.flexText} ${
+                    isEditing === index ? styles.editing : ""
+                  }`}
                 >
-                  <FontAwesomeIcon icon={faPen} />
-                </button>
-              )}
-              {isEditing === index && (
-                <button
-                  onClick={() => saveEditedMessage(index, messages[index].text)}
-                  className={styles.saveButton}
-                ></button>
-              )}
+                  {message.text}
+                </p>
+                {message.sender === "user" && isEditing !== index && (
+                  <button
+                    onClick={() => editMessage(index)}
+                    className={styles.editButton}
+                  >
+                    <FontAwesomeIcon icon={faPen} />
+                  </button>
+                )}
+                {isEditing === index && (
+                  <button
+                    onClick={() =>
+                      saveEditedMessage(index, messages[index].text)
+                    }
+                    className={styles.saveButton}
+                  ></button>
+                )}
+              </div>
             </div>
-          </div>
-        ))}
-      </div>
-      {step <= 5 && (
-        <form onSubmit={handleSubmit} className={styles.form}>
-          <input
-            type="text"
-            value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)}
-            className={styles.input}
-            placeholder="텍스트를 입력하세요"
-            disabled={step > 5}
-          />
-          <button type="submit" className={styles.button}>
-            <svg
-              className={styles.icon}
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M14 5l7 7m0 0l-7 7m7-7H3"
-              ></path>
-            </svg>
+          ))}
+        </div>
+        {step <= 5 && (
+          <form onSubmit={handleSubmit} className={styles.form}>
+            <input
+              type="text"
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+              className={`${styles.input} input`}
+              placeholder="텍스트를 입력하세요"
+              disabled={step > 5}
+            />
+            <button type="submit" className={`${styles.button} button`}>
+              <svg
+                className={styles.icon}
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M14 5l7 7m0 0l-7 7m7-7H3"
+                ></path>
+              </svg>
+            </button>
+          </form>
+        )}
+        {step > 5 && (
+          <button
+            type="button"
+            className={styles.generateButton}
+            onClick={handleGenerateClick}
+          >
+            웹사이트 생성
           </button>
-        </form>
-      )}
-      {step > 5 && (
-        <button
-          type="button"
-          className={styles.generateButton}
-          onClick={handleGenerateClick}
-        >
-          웹사이트 생성
-        </button>
-      )}
-    </div>
+        )}
+      </div>
+    </TourGuideProvider>
   );
 }
