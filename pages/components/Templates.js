@@ -21,7 +21,6 @@ export default function Templates({ showMoreButton, showCategories }) {
           "https://1am11m.store/templates/sharedTemplates/get",
           {
             method: "get",
-            mode: "no-cors",
           }
         );
         if (!res.ok) {
