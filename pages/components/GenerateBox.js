@@ -11,12 +11,17 @@ export default function GenerateBox() {
   const iframeRef = useRef(null);
   const highlightedElementRef = useRef(null);
 
+  const cleanContent = (content) => {
+    return content.replace(/\\n/g, "").replace(/\\r/g, "").replace(/\s+/g, " ");
+  };
+
   const fetchFile = async (filename) => {
     const res = await fetch(
       `https://1am11m.store/user-templates/file?filePath=${filename}`
     );
     if (res.ok) {
-      const content = await res.text();
+      let content = await res.text();
+      content = cleanContent(content);
       const isBinary = /\.(jpg|jpeg|png|gif|svg|webp|woff|woff2|ttf)$/.test(
         filename
       );
