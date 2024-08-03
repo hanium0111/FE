@@ -12,18 +12,29 @@ export default function GenerateBox() {
   const highlightedElementRef = useRef(null);
 
   const fetchFile = async (filename) => {
-    const res = await fetch(`/api/render?filename=${filename}`);
+    const res = await fetch(
+      `https://1am11m.store/user-templates/file?filePath=${filename}`
+    );
     if (res.ok) {
-      const data = await res.json();
-      return data;
+      const content = await res.text();
+      const isBinary = /\.(jpg|jpeg|png|gif|svg|webp|woff|woff2|ttf)$/.test(
+        filename
+      );
+      return {
+        content: isBinary ? content : content,
+        isBinary,
+        name: filename,
+      };
     }
     return { content: "", isBinary: false, name: filename };
   };
 
   const fetchStructure = async () => {
-    const res = await fetch(`/api/render`);
+    const res = await fetch(
+      `https://1am11m.store/user-templates/directory?dirPath=copied_userTemplates/test`
+    );
     const data = await res.json();
-    return data.structure;
+    return data;
   };
 
   useEffect(() => {
@@ -31,15 +42,17 @@ export default function GenerateBox() {
       const structure = await fetchStructure();
       const cssFiles = structure
         .filter((file) => file.name.endsWith(".css"))
-        .map((file) => file.name);
+        .map((file) => file.path);
       const jsFiles = structure
         .filter((file) => file.name.endsWith(".js"))
-        .map((file) => file.name);
+        .map((file) => file.path);
       const imageFiles = structure
-        .filter((file) =>
-          /\.(jpg|jpeg|png|gif|svg|webp|woff|woff2|ttf)$/.test(file.name)
+        .filter(
+          (file) =>
+            !file.isDirectory &&
+            /\.(jpg|jpeg|png|gif|svg|webp|woff|woff2|ttf)$/.test(file.name)
         )
-        .map((file) => file.name);
+        .map((file) => file.path);
 
       const cssContents = await Promise.all(cssFiles.map(fetchFile));
       const jsContents = await Promise.all(jsFiles.map(fetchFile));
@@ -54,7 +67,9 @@ export default function GenerateBox() {
         }))
       );
 
-      const htmlContent = await fetchFile("templatemo_559_zay_shop/index.html");
+      const htmlContent = await fetchFile(
+        "copied_userTemplates/test/index.html"
+      );
       setContent(htmlContent.content);
       setHtmlLoaded(true);
     };

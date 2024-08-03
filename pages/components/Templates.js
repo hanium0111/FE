@@ -221,7 +221,14 @@ export default function Templates({ showMoreButton, showCategories }) {
                   </button>
                 </div>
               </div>
-              <div className={styles.cardImage}></div>
+              <div className={styles.cardImage}>
+                <Image
+                  className={styles.cardProfileImg}
+                  alt="profile"
+                  layout="fill"
+                  src={template.profileImage}
+                />
+              </div>
               <div className={styles.cardContent}>
                 <div className={styles.cardTitle}>{template.displayName}</div>
                 <div className={styles.cardSubhead}>{template.date}</div>
