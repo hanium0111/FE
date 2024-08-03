@@ -61,8 +61,8 @@ export default function Templates({ showMoreButton, showCategories }) {
     )
     .filter(
       (template) =>
-        template.templateName &&
-        template.templateName.toLowerCase().includes(searchQuery.toLowerCase())
+        template.displayName &&
+        template.displayName.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
   const sortedTemplates = filteredTemplates.sort((a, b) => {
@@ -223,7 +223,7 @@ export default function Templates({ showMoreButton, showCategories }) {
               </div>
               <div className={styles.cardImage}></div>
               <div className={styles.cardContent}>
-                <div className={styles.cardTitle}>{template.templateName}</div>
+                <div className={styles.cardTitle}>{template.displayName}</div>
                 <div className={styles.cardSubhead}>{template.date}</div>
                 <p>{template.description}</p>
               </div>
