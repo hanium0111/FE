@@ -9,9 +9,12 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@emotion/react": "^11.13.0",
+    "@emotion/styled": "^11.13.0",
     "@fortawesome/fontawesome-svg-core": "^6.5.2",
     "@fortawesome/free-solid-svg-icons": "^6.5.2",
     "@fortawesome/react-fontawesome": "^0.2.2",
+    "@mui/material": "^5.16.6",
     "@reactour/tour": "^3.7.0",
     "adm-zip": "^0.5.14",
     "fs-extra": "^11.2.0",
