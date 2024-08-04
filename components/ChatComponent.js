@@ -9,7 +9,7 @@ export default function ChatComponent() {
   const [messages, setMessages] = useState([]);
   const [step, setStep] = useState(1);
   const [websiteType, setWebsiteType] = useState("");
-  const [feature, setFeature] = useState("");
+  const [features, setFeatures] = useState("");
   const [mood, setMood] = useState("");
   const [content, setContent] = useState("");
   const [pageName, setPageName] = useState("");
@@ -28,13 +28,13 @@ export default function ChatComponent() {
     if (step > 5) {
       console.log({
         websiteType,
-        feature,
+        features,
         mood,
         content,
         pageName,
       });
     }
-  }, [step, websiteType, feature, mood, content, pageName]);
+  }, [step, websiteType, features, mood, content, pageName]);
 
   useEffect(() => {
     scrollToBottom();
@@ -58,7 +58,7 @@ export default function ChatComponent() {
         setWebsiteType(response);
         break;
       case 2:
-        setFeature(response);
+        setFeatures(response); // Updated to set 'features'
         break;
       case 3:
         setMood(response);
@@ -74,14 +74,36 @@ export default function ChatComponent() {
     }
   };
 
-  const handleGenerateClick = () => {
-    console.log({
+  const handleGenerateClick = async () => {
+    const requestData = {
       websiteType,
-      feature,
+      features, // Using the renamed 'features' state
       mood,
       content,
       pageName,
-    });
+    };
+
+    try {
+      const response = await fetch(
+        "https://1am11m.store/generate/process-requirments",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(requestData),
+        }
+      );
+
+      if (response.ok) {
+        const result = await response.json();
+        console.log("Generated Website Path:", result);
+      } else {
+        console.error("Failed to generate website:", response.statusText);
+      }
+    } catch (error) {
+      console.error("Error during the fetch operation:", error);
+    }
   };
 
   const nextStep = () => {
