@@ -47,13 +47,24 @@ export default function Dash() {
   const [pageName, setPageName] = useState("");
 
   useEffect(() => {
-    const fetchTemplates = async () => {
-      const res = await fetch("/api/data?filename=dashs");
-      const data = await res.json();
-      setTemplates(data);
+    const fetchDash = async () => {
+      try {
+        const res = await fetch(
+          "https://1am11m.store/dashboards/dashboard/mydashboard",
+          {
+            method: "get",
+          }
+        );
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+        const data = await res.json();
+        setTemplates(data);
+      } catch (error) {
+        console.error("Failed to fetch fetchDash:", error);
+      }
     };
-
-    fetchTemplates();
+    fetchDash();
   }, []);
 
   const filteredTemplates = templates
