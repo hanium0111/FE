@@ -77,3 +77,13 @@ export const TourButton = () => {
 
   return <button onClick={() => setIsOpen(true)}>도움말</button>;
 };
+
+const TourGuidePage = () => {
+  return (
+    <div>
+      <TourButton />
+    </div>
+  );
+};
+
+export default TourGuidePage;
