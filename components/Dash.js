@@ -52,7 +52,8 @@ export default function Dash() {
         const res = await fetch(
           "https://1am11m.store/dashboards/dashboard/mydashboard",
           {
-            method: "get",
+            method: "GET",
+            credentials: "include",
           }
         );
         if (!res.ok) {
