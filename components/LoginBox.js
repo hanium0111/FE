@@ -3,28 +3,8 @@ import Image from "next/image";
 import Btn from "./Btn";
 
 export default function LoginBox() {
-  // const handleGoogleLogin = () => {
-  //   window.location.href = "https://1am11m.store/auth/google";
-  // };
-
-  const handleGoogleLogin = async () => {
-    try {
-      const response = await fetch("https://1am11m.store/auth/google", {
-        method: "GET",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      if (response.ok) {
-        window.location.href = "https://0111.site";
-      } else {
-        console.error("데이터 가져오기 실패. 상태:", response.status);
-      }
-    } catch (error) {
-      console.error("데이터 가져오기 중 에러 발생:", error);
-    }
+  const handleGoogleLogin = () => {
+    window.location.href = "https://1am11m.store/auth/google";
   };
 
   return (
