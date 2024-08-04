@@ -1,5 +1,5 @@
-import Header from "./components/Header";
-import Templates from "./components/Templates";
+import Header from "../components/Header";
+import Templates from "../components/Templates";
 import styles from "../styles/Wrap.module.css";
 
 export default function Temp() {

@@ -1,5 +1,5 @@
-import Header from "./components/Header";
-import NoticeBox from "./components/NoticeBox";
+import Header from "../components/Header";
+import NoticeBox from "../components/NoticeBox";
 import styles from "../styles/Wrap.module.css";
 
 export default function notice() {

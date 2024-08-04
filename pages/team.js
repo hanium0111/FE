@@ -1,6 +1,6 @@
-import Header from "./components/Header";
+import Header from "../components/Header";
 import styles from "../styles/Wrap.module.css";
-import TeamBox from "./components/TeamBox";
+import TeamBox from "../components/TeamBox";
 
 export default function team() {
   return (
