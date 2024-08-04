@@ -213,7 +213,7 @@ export default function Templates({ showMoreButton, showCategories }) {
                   </div>
                 </div>
                 <div className={styles.cardHeaderInfo}>
-                  <div className={styles.cardUser}>{template.user}</div>
+                  <div className={styles.cardUser}>{template.displayName}</div>
                 </div>
                 <div className={styles.cardMenu}>
                   <button className={styles.cardMenuButton}>
@@ -223,7 +223,7 @@ export default function Templates({ showMoreButton, showCategories }) {
               </div>
               <div className={styles.cardImage}></div>
               <div className={styles.cardContent}>
-                <div className={styles.cardTitle}>{template.displayName}</div>
+                <div className={styles.cardTitle}>{template.templateName}</div>
                 <div className={styles.cardSubhead}>{template.date}</div>
                 <p>{template.description}</p>
               </div>
