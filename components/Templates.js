@@ -14,6 +14,7 @@ export default function Templates({ showMoreButton, showCategories }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalContent, setModalContent] = useState("");
   const [pageName, setPageName] = useState("");
+  const [selectedTemplateId, setSelectedTemplateId] = useState(null);
 
   useEffect(() => {
     const fetchTemplates = async () => {
@@ -74,7 +75,8 @@ export default function Templates({ showMoreButton, showCategories }) {
     return 0;
   });
 
-  const openModal = () => {
+  const openModal = (templateId) => {
+    setSelectedTemplateId(templateId);
     setModalContent("페이지 이름을 입력해주세요!");
     setIsModalOpen(true);
   };
@@ -82,8 +84,35 @@ export default function Templates({ showMoreButton, showCategories }) {
   const closeModal = () => {
     setIsModalOpen(false);
   };
-  const pageNameInputValue = ({ input }) => {
-    setPageName(input);
+
+  const handleConfirm = async () => {
+    if (!selectedTemplateId || !pageName) {
+      alert("페이지 이름을 입력해주세요.");
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        `https://1am11m.store/templates/sharedTemplates/${selectedTemplateId}/use`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ pageName }),
+        }
+      );
+
+      if (response.ok) {
+        const result = await response.json();
+        console.log("Saved Template Path:", result);
+        closeModal();
+      } else {
+        console.error("Failed to save template:", response.statusText);
+      }
+    } catch (error) {
+      console.error("Error during the fetch operation:", error);
+    }
   };
 
   const customStyles = {
@@ -115,16 +144,22 @@ export default function Templates({ showMoreButton, showCategories }) {
               className={styles.pageinputform}
               type="text"
               placeholder="이름 입력.."
+              value={pageName}
               onChange={(e) => setPageName(e.target.value)}
             />
             <div className={styles.modalButtons}>
               <button
+                type="button"
                 className={styles.confirmButton}
-                onClick={() => pageNameInputValue(pageName)}
+                onClick={handleConfirm}
               >
                 확인
               </button>
-              <button className={styles.cancelButton} onClick={closeModal}>
+              <button
+                type="button"
+                className={styles.cancelButton}
+                onClick={closeModal}
+              >
                 닫기
               </button>
             </div>
@@ -241,7 +276,7 @@ export default function Templates({ showMoreButton, showCategories }) {
                   border={"#4629F2"}
                   textColor={"#fff"}
                   width="7rem"
-                  onClick={openModal}
+                  onClick={() => openModal(template.id)}
                 />
               </div>
             </div>
