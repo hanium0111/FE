@@ -70,7 +70,7 @@ export default function Dash() {
 
   const filteredTemplates = templates
     .filter((template) =>
-      template.templateName.toLowerCase().includes(searchQuery.toLowerCase())
+      template.projectName.toLowerCase().includes(searchQuery.toLowerCase())
     )
     .filter((template) => (showDeployed ? !template.deploy : true));
 
@@ -280,8 +280,8 @@ export default function Dash() {
               </div>
               <div className={styles.cardImage}></div>
               <div className={styles.cardContent}>
-                <div className={styles.cardTitle}>{template.templateName}</div>
-                <div className={styles.cardSubhead}>{template.date}</div>
+                <div className={styles.cardTitle}>{template.projectName}</div>
+                <div className={styles.cardSubhead}>{template.updatedAt}</div>
                 <p>{template.description}</p>
               </div>
               <div className={styles.cardFooter}>
