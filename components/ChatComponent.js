@@ -92,6 +92,7 @@ export default function ChatComponent() {
             "Content-Type": "application/json",
           },
           body: JSON.stringify(requestData),
+          credentials: "include",
         }
       );
 
