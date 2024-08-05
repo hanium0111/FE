@@ -5,6 +5,7 @@ import Image from "next/image";
 import Btn from "./Btn";
 import Link from "next/link";
 import Modal from "react-modal";
+import SkeletonTemplates from "./Skeleton";
 
 export default function Templates({ showMoreButton, showCategories }) {
   const [templates, setTemplates] = useState([]);
@@ -14,6 +15,8 @@ export default function Templates({ showMoreButton, showCategories }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalContent, setModalContent] = useState("");
   const [pageName, setPageName] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [templateStructure, setTemplateStructure] = useState([]);
 
   useEffect(() => {
     const fetchTemplates = async () => {
@@ -29,8 +32,11 @@ export default function Templates({ showMoreButton, showCategories }) {
         }
         const data = await res.json();
         setTemplates(data);
+        setTemplateStructure(new Array(data.length).fill(null));
+        setLoading(false);
       } catch (error) {
         console.error("Failed to fetch templates:", error);
+        setLoading(false);
       }
     };
 
@@ -198,55 +204,59 @@ export default function Templates({ showMoreButton, showCategories }) {
             </div>
           </div>
         </div>
-        <div className={styles.grid}>
-          {sortedTemplates.map((template) => (
-            <div key={template.id} className={styles.card}>
-              <div className={styles.cardHeader}>
-                <div className={styles.cardProfileWrap}>
-                  <div className={styles.cardProfile}>
-                    <Image
-                      className={styles.cardProfileImg}
-                      alt="profile"
-                      layout="fill"
-                      src={template.profileImage}
-                    />
+        {loading ? (
+          <SkeletonTemplates templateStructure={templateStructure} />
+        ) : (
+          <div className={styles.grid}>
+            {sortedTemplates.map((template) => (
+              <div key={template.id} className={styles.card}>
+                <div className={styles.cardHeader}>
+                  <div className={styles.cardProfileWrap}>
+                    <div className={styles.cardProfile}>
+                      <Image
+                        className={styles.cardProfileImg}
+                        alt="profile"
+                        layout="fill"
+                        src={template.profileImage}
+                      />
+                    </div>
+                  </div>
+                  <div className={styles.cardHeaderInfo}>
+                    <div className={styles.cardUser}>{template.user}</div>
+                  </div>
+                  <div className={styles.cardMenu}>
+                    <button className={styles.cardMenuButton}>
+                      <FaShare />
+                    </button>
                   </div>
                 </div>
-                <div className={styles.cardHeaderInfo}>
-                  <div className={styles.cardUser}>{template.user}</div>
+                <div className={styles.cardImage}></div>
+                <div className={styles.cardContent}>
+                  <div className={styles.cardTitle}>{template.displayName}</div>
+                  <div className={styles.cardSubhead}>{template.date}</div>
+                  <p>{template.description}</p>
                 </div>
-                <div className={styles.cardMenu}>
-                  <button className={styles.cardMenuButton}>
-                    <FaShare />
-                  </button>
+                <div className={styles.cardFooter}>
+                  <Btn
+                    icon={<FaHeart className={styles.likeIcon} />}
+                    text={template.likes}
+                    background={"none"}
+                    border={"#4629F2"}
+                    textColor={"#4629F2"}
+                  />
+                  <Btn
+                    text={"템플릿 사용"}
+                    background={"#4629F2"}
+                    border={"#4629F2"}
+                    textColor={"#fff"}
+                    width="7rem"
+                    onClick={openModal}
+                  />
                 </div>
               </div>
-              <div className={styles.cardImage}></div>
-              <div className={styles.cardContent}>
-                <div className={styles.cardTitle}>{template.displayName}</div>
-                <div className={styles.cardSubhead}>{template.date}</div>
-                <p>{template.description}</p>
-              </div>
-              <div className={styles.cardFooter}>
-                <Btn
-                  icon={<FaHeart className={styles.likeIcon} />}
-                  text={template.likes}
-                  background={"none"}
-                  border={"#4629F2"}
-                  textColor={"#4629F2"}
-                />
-                <Btn
-                  text={"템플릿 사용"}
-                  background={"#4629F2"}
-                  border={"#4629F2"}
-                  textColor={"#fff"}
-                  width="7rem"
-                  onClick={openModal}
-                />
-              </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </section>
     </>
   );

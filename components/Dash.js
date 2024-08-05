@@ -4,6 +4,7 @@ import { FaEllipsisV, FaHeart, FaSearch } from "react-icons/fa";
 import Image from "next/image";
 import Btn from "./Btn";
 import Modal from "react-modal";
+import { SkeletonDash } from "./Skeleton";
 
 const DropdownMenu = ({
   isDeployed,
@@ -45,12 +46,16 @@ export default function Dash() {
   const [isRenameModalOpen, setIsRenameModalOpen] = useState(false);
   const [selectedTemplate, setSelectedTemplate] = useState(null);
   const [pageName, setPageName] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [dashStructure, setDashStructure] = useState([]);
 
   useEffect(() => {
     const fetchTemplates = async () => {
       const res = await fetch("/api/data?filename=dashs");
       const data = await res.json();
       setTemplates(data);
+      setDashStructure(new Array(data.length).fill(null));
+      setLoading(false);
     };
 
     fetchTemplates();
@@ -226,83 +231,89 @@ export default function Dash() {
             </div>
           </div>
         </div>
-        <div className={styles.grid}>
-          {sortedTemplates.map((template) => (
-            <div key={template.id} className={styles.card}>
-              <div className={styles.cardHeader}>
-                <div className={styles.cardProfileWrap}>
-                  <div className={styles.cardProfile}>
-                    <Image
-                      className={styles.cardProfileImg}
-                      alt="profile"
-                      layout="fill"
-                      src={template.profileImage}
-                    />
+        {loading ? (
+          <SkeletonDash dashStructure={dashStructure} />
+        ) : (
+          <div className={styles.grid}>
+            {sortedTemplates.map((template) => (
+              <div key={template.id} className={styles.card}>
+                <div className={styles.cardHeader}>
+                  <div className={styles.cardProfileWrap}>
+                    <div className={styles.cardProfile}>
+                      <Image
+                        className={styles.cardProfileImg}
+                        alt="profile"
+                        layout="fill"
+                        src={template.profileImage}
+                      />
+                    </div>
+                  </div>
+                  <div className={styles.cardHeaderInfo}>
+                    <div className={styles.cardUser}>{template.user}</div>
+                  </div>
+                  <div
+                    className={styles.cardMenu}
+                    style={{ position: "relative" }}
+                  >
+                    <button
+                      className={styles.cardMenuButton}
+                      onClick={() => toggleDropdown(template.id)}
+                    >
+                      <FaEllipsisV />
+                    </button>
+                    {dropdownOpen === template.id && (
+                      <DropdownMenu
+                        isDeployed={template.deploy}
+                        onShare={() => console.log("Share")}
+                        onUse={() => console.log("Use")}
+                        onDeploy={() => console.log("Deploy")}
+                        onEdit={() => console.log("Edit")}
+                        onRename={() => openRenameModal(template)}
+                        onDelete={() => openDeleteModal(template)}
+                      />
+                    )}
                   </div>
                 </div>
-                <div className={styles.cardHeaderInfo}>
-                  <div className={styles.cardUser}>{template.user}</div>
+                <div className={styles.cardImage}></div>
+                <div className={styles.cardContent}>
+                  <div className={styles.cardTitle}>
+                    {template.templateName}
+                  </div>
+                  <div className={styles.cardSubhead}>{template.date}</div>
+                  <p>{template.description}</p>
                 </div>
-                <div
-                  className={styles.cardMenu}
-                  style={{ position: "relative" }}
-                >
-                  <button
-                    className={styles.cardMenuButton}
-                    onClick={() => toggleDropdown(template.id)}
-                  >
-                    <FaEllipsisV />
-                  </button>
-                  {dropdownOpen === template.id && (
-                    <DropdownMenu
-                      isDeployed={template.deploy}
-                      onShare={() => console.log("Share")}
-                      onUse={() => console.log("Use")}
-                      onDeploy={() => console.log("Deploy")}
-                      onEdit={() => console.log("Edit")}
-                      onRename={() => openRenameModal(template)}
-                      onDelete={() => openDeleteModal(template)}
+                <div className={styles.cardFooter}>
+                  <Btn
+                    icon={<FaHeart className={styles.likeIcon} />}
+                    text={template.likes}
+                    background={"none"}
+                    border={"#4629F2"}
+                    textColor={"#4629F2"}
+                  />
+                  {template.deploy ? (
+                    <Btn
+                      text={"배포 완료"}
+                      background={"#E0E0E0"}
+                      border={"#E0E0E0"}
+                      textColor={"#7D7D7D"}
+                      width="7rem"
+                      onClick={() => openModal(template.description)}
+                    />
+                  ) : (
+                    <Btn
+                      text={"배포하기"}
+                      background={"#4629F2"}
+                      border={"#4629F2"}
+                      textColor={"#fff"}
+                      width="7rem"
+                      onClick={() => openModal(template.description)}
                     />
                   )}
                 </div>
               </div>
-              <div className={styles.cardImage}></div>
-              <div className={styles.cardContent}>
-                <div className={styles.cardTitle}>{template.templateName}</div>
-                <div className={styles.cardSubhead}>{template.date}</div>
-                <p>{template.description}</p>
-              </div>
-              <div className={styles.cardFooter}>
-                <Btn
-                  icon={<FaHeart className={styles.likeIcon} />}
-                  text={template.likes}
-                  background={"none"}
-                  border={"#4629F2"}
-                  textColor={"#4629F2"}
-                />
-                {template.deploy ? (
-                  <Btn
-                    text={"배포 완료"}
-                    background={"#E0E0E0"}
-                    border={"#E0E0E0"}
-                    textColor={"#7D7D7D"}
-                    width="7rem"
-                    onClick={() => openModal(template.description)}
-                  />
-                ) : (
-                  <Btn
-                    text={"배포하기"}
-                    background={"#4629F2"}
-                    border={"#4629F2"}
-                    textColor={"#fff"}
-                    width="7rem"
-                    onClick={() => openModal(template.description)}
-                  />
-                )}
-              </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </section>
     </>
   );
