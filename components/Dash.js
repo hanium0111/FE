@@ -346,12 +346,14 @@ export default function Dash() {
                   </div>
                 </div>
                 <div className={styles.cardImage}>
-                  <Image
-                    src={`https://1am11m.store${template.imagePath}`}
-                    alt="Template Screenshot"
-                    layout="fill"
-                    objectFit="cover"
-                  />
+                  <div className={styles.imageWrapper}>
+                    <Image
+                      src={`https://1am11m.store${template.imagePath}`}
+                      alt="Template Screenshot"
+                      layout="fill"
+                      objectFit="cover"
+                    />
+                  </div>
                 </div>
                 <div className={styles.cardContent}>
                   <div className={styles.cardTitle}>{template.projectName}</div>
