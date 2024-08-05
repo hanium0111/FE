@@ -261,7 +261,7 @@ export default function Templates({ showMoreButton, showCategories }) {
                 </div>
               </div>
               <div className={styles.cardImage}>
-                <img
+                <Image
                   src={`https://1am11m.store${template.imagePath}`}
                   alt="Template Screenshot"
                   style={{ width: "100%", height: "auto", objectFit: "cover" }}
