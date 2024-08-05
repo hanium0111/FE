@@ -101,10 +101,30 @@ export default function Dash() {
     setIsDeleteModalOpen(false);
   };
 
-  const handleDeleteTemplate = () => {
-    // 여기에 삭제 로직 구현
-    console.log("Deleting template:", selectedTemplate);
-    closeDeleteModal();
+  const handleDeleteTemplate = async () => {
+    try {
+      const res = await fetch(
+        `https://1am11m.store/dashboards/dashboard/remove/${selectedTemplate.id}`,
+        {
+          method: "DELETE",
+          credentials: "include",
+        }
+      );
+
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }
+
+      setTemplates((prevTemplates) =>
+        prevTemplates.filter((template) => template.id !== selectedTemplate.id)
+      );
+
+      console.log("Template deleted successfully:", selectedTemplate);
+      closeDeleteModal();
+    } catch (error) {
+      console.error("Failed to delete template:", error);
+      alert("프로젝트 삭제에 실패했습니다.");
+    }
   };
 
   const openRenameModal = (template) => {
