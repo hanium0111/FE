@@ -1,3 +1,38 @@
+import { useState, useEffect } from "react";
+import styles from "./Dash.module.css";
+import { FaEllipsisV, FaHeart, FaSearch } from "react-icons/fa";
+import Image from "next/image";
+import Btn from "./Btn";
+import Modal from "react-modal";
+
+const DropdownMenu = ({
+  isDeployed,
+  onEdit,
+  onDelete,
+  onDeploy,
+  onShare,
+  onUse,
+  onRename,
+}) => {
+  return (
+    <div className={styles.dropdownMenu}>
+      {isDeployed ? (
+        <>
+          <button onClick={onUse}>템플릿 사용</button>
+          <button onClick={onShare}>배포 링크 공유</button>
+        </>
+      ) : (
+        <>
+          <button onClick={onDeploy}>프로젝트 배포</button>
+          <button onClick={onEdit}>프로젝트 편집</button>
+        </>
+      )}
+      <button onClick={onDelete}>프로젝트 삭제</button>
+      <button onClick={onRename}>이름 변경</button>
+    </div>
+  );
+};
+
 export default function Dash() {
   const [templates, setTemplates] = useState([]);
   const [sortOrder, setSortOrder] = useState("최신순");
