@@ -342,11 +342,10 @@ export default function Dash() {
                 </div>
               </div>
               <div className={styles.cardImage}>
-                <Image
+                <img
                   src={`https://1am11m.store${template.imagePath}`}
                   alt="Template Screenshot"
-                  layout="fill"
-                  objectFit="cover"
+                  style={{ width: "100%", height: "auto", objectFit: "cover" }}
                 />
               </div>
               <div className={styles.cardContent}>
