@@ -116,10 +116,45 @@ export default function Dash() {
     setIsRenameModalOpen(false);
   };
 
-  const handleRenameTemplate = () => {
-    // 여기에 이름 변경 로직 구현
-    console.log("Renaming template:", selectedTemplate);
-    closeRenameModal();
+  const handleRenameTemplate = async () => {
+    if (!pageName.trim()) {
+      alert("새로운 이름을 입력하세요.");
+      return;
+    }
+
+    try {
+      const res = await fetch(
+        `https://1am11m.store/dashboards/${selectedTemplate.id}/name`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ name: pageName }),
+          credentials: "include",
+        }
+      );
+
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }
+
+      const updatedTemplate = await res.json();
+
+      setTemplates((prevTemplates) =>
+        prevTemplates.map((template) =>
+          template.id === updatedTemplate.id
+            ? { ...template, projectName: updatedTemplate.projectName }
+            : template
+        )
+      );
+
+      console.log("Template renamed successfully:", updatedTemplate);
+      closeRenameModal();
+    } catch (error) {
+      console.error("Failed to rename template:", error);
+      alert("이름 변경에 실패했습니다.");
+    }
   };
 
   const toggleDropdown = (id) => {
