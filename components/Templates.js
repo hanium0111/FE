@@ -1,11 +1,3 @@
-import { useEffect, useState } from "react";
-import styles from "./Templates.module.css";
-import { FaHeart, FaSearch, FaShare } from "react-icons/fa";
-import Image from "next/image";
-import Btn from "./Btn";
-import Link from "next/link";
-import Modal from "react-modal";
-
 export default function Templates({ showMoreButton, showCategories }) {
   const [templates, setTemplates] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("모든 카테고리");
@@ -244,7 +236,11 @@ export default function Templates({ showMoreButton, showCategories }) {
                       className={styles.cardProfileImg}
                       alt="profile"
                       layout="fill"
-                      src={template.profileImage}
+                      src={
+                        template.profileImage
+                          ? template.profileImage
+                          : "/public/profile.png"
+                      }
                     />
                   </div>
                 </div>
