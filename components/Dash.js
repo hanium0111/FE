@@ -33,7 +33,6 @@ const DropdownMenu = ({
     </div>
   );
 };
-
 export default function Dash() {
   const [templates, setTemplates] = useState([]);
   const [sortOrder, setSortOrder] = useState("최신순");
@@ -50,20 +49,33 @@ export default function Dash() {
   const [dashStructure, setDashStructure] = useState([]);
 
   useEffect(() => {
-    const fetchTemplates = async () => {
-      const res = await fetch("/api/data?filename=dashs");
-      const data = await res.json();
-      setTemplates(data);
-      setDashStructure(new Array(data.length).fill(null));
-      setLoading(false);
+    const fetchDash = async () => {
+      try {
+        const res = await fetch(
+          "https://1am11m.store/dashboards/dashboard/mydashboard",
+          {
+            method: "GET",
+            credentials: "include",
+          }
+        );
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+        const data = await res.json();
+        setTemplates(data);
+        setDashStructure(new Array(data.length).fill(null));
+        setLoading(false);
+      } catch (error) {
+        console.error("Failed to fetch fetchDash:", error);
+        setLoading(false);
+      }
     };
-
-    fetchTemplates();
+    fetchDash();
   }, []);
 
   const filteredTemplates = templates
     .filter((template) =>
-      template.templateName.toLowerCase().includes(searchQuery.toLowerCase())
+      template.projectName.toLowerCase().includes(searchQuery.toLowerCase())
     )
     .filter((template) => (showDeployed ? !template.deploy : true));
 
@@ -75,6 +87,10 @@ export default function Dash() {
     }
     return 0;
   });
+
+  const formatDate = (dateString) => {
+    return new Date(dateString).toISOString().split("T")[0];
+  };
 
   const openModal = (content) => {
     setModalContent(content);
@@ -94,10 +110,30 @@ export default function Dash() {
     setIsDeleteModalOpen(false);
   };
 
-  const handleDeleteTemplate = () => {
-    // 여기에 삭제 로직 구현
-    console.log("Deleting template:", selectedTemplate);
-    closeDeleteModal();
+  const handleDeleteTemplate = async () => {
+    try {
+      const res = await fetch(
+        `https://1am11m.store/dashboards/dashboard/remove/${selectedTemplate.id}`,
+        {
+          method: "DELETE",
+          credentials: "include",
+        }
+      );
+
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }
+
+      setTemplates((prevTemplates) =>
+        prevTemplates.filter((template) => template.id !== selectedTemplate.id)
+      );
+
+      console.log("Template deleted successfully:", selectedTemplate);
+      closeDeleteModal();
+    } catch (error) {
+      console.error("Failed to delete template:", error);
+      alert("프로젝트 삭제에 실패했습니다.");
+    }
   };
 
   const openRenameModal = (template) => {
@@ -109,10 +145,45 @@ export default function Dash() {
     setIsRenameModalOpen(false);
   };
 
-  const handleRenameTemplate = () => {
-    // 여기에 이름 변경 로직 구현
-    console.log("Renaming template:", selectedTemplate);
-    closeRenameModal();
+  const handleRenameTemplate = async () => {
+    if (!pageName.trim()) {
+      alert("새로운 이름을 입력하세요.");
+      return;
+    }
+
+    try {
+      const res = await fetch(
+        `https://1am11m.store/dashboards/${selectedTemplate.id}/name`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ name: pageName }),
+          credentials: "include",
+        }
+      );
+
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }
+
+      const updatedTemplate = await res.json();
+
+      setTemplates((prevTemplates) =>
+        prevTemplates.map((template) =>
+          template.id === updatedTemplate.id
+            ? { ...template, projectName: updatedTemplate.projectName }
+            : template
+        )
+      );
+
+      console.log("Template renamed successfully:", updatedTemplate);
+      closeRenameModal();
+    } catch (error) {
+      console.error("Failed to rename template:", error);
+      alert("이름 변경에 실패했습니다.");
+    }
   };
 
   const toggleDropdown = (id) => {
@@ -235,83 +306,104 @@ export default function Dash() {
           <SkeletonDash dashStructure={dashStructure} />
         ) : (
           <div className={styles.grid}>
-            {sortedTemplates.map((template) => (
-              <div key={template.id} className={styles.card}>
-                <div className={styles.cardHeader}>
-                  <div className={styles.cardProfileWrap}>
-                    <div className={styles.cardProfile}>
+            {sortedTemplates.length === 0 ? (
+              <p className={styles.emptyMessage}>대시보드가 비어있어요.</p>
+            ) : (
+              sortedTemplates.map((template) => (
+                <div key={template.id} className={styles.card}>
+                  <div className={styles.cardHeader}>
+                    <div className={styles.cardProfileWrap}>
+                      <div className={styles.cardProfile}>
+                        <Image
+                          className={styles.cardProfileImg}
+                          alt="profile"
+                          layout="fill"
+                          src={
+                            template.profileImage
+                              ? template.profileImage
+                              : "/profile.png"
+                          }
+                        />
+                      </div>
+                    </div>
+                    <div className={styles.cardHeaderInfo}>
+                      <div className={styles.cardUser}>
+                        {template.displayName}
+                      </div>
+                    </div>
+                    <div
+                      className={styles.cardMenu}
+                      style={{ position: "relative" }}
+                    >
+                      <button
+                        className={styles.cardMenuButton}
+                        onClick={() => toggleDropdown(template.id)}
+                      >
+                        <FaEllipsisV />
+                      </button>
+                      {dropdownOpen === template.id && (
+                        <DropdownMenu
+                          isDeployed={template.deploy}
+                          onShare={() => console.log("Share")}
+                          onUse={() => console.log("Use")}
+                          onDeploy={() => console.log("Deploy")}
+                          onEdit={() => console.log("Edit")}
+                          onRename={() => openRenameModal(template)}
+                          onDelete={() => openDeleteModal(template)}
+                        />
+                      )}
+                    </div>
+                  </div>
+                  <div className={styles.cardImage}>
+                    <div className={styles.imageWrapper}>
                       <Image
-                        className={styles.cardProfileImg}
-                        alt="profile"
+                        src={`https://1am11m.store${template.imagePath}`}
+                        alt="Template Screenshot"
                         layout="fill"
-                        src={template.profileImage}
+                        objectFit="cover"
                       />
                     </div>
                   </div>
-                  <div className={styles.cardHeaderInfo}>
-                    <div className={styles.cardUser}>{template.user}</div>
+                  <div className={styles.cardContent}>
+                    <div className={styles.cardTitle}>
+                      {template.projectName}
+                    </div>
+                    <div className={styles.cardSubhead}>
+                      {formatDate(template.updatedAt)}
+                    </div>
+                    <p>{template.content}</p>
                   </div>
-                  <div
-                    className={styles.cardMenu}
-                    style={{ position: "relative" }}
-                  >
-                    <button
-                      className={styles.cardMenuButton}
-                      onClick={() => toggleDropdown(template.id)}
-                    >
-                      <FaEllipsisV />
-                    </button>
-                    {dropdownOpen === template.id && (
-                      <DropdownMenu
-                        isDeployed={template.deploy}
-                        onShare={() => console.log("Share")}
-                        onUse={() => console.log("Use")}
-                        onDeploy={() => console.log("Deploy")}
-                        onEdit={() => console.log("Edit")}
-                        onRename={() => openRenameModal(template)}
-                        onDelete={() => openDeleteModal(template)}
+                  <div className={styles.cardFooter}>
+                    <Btn
+                      icon={<FaHeart className={styles.likeIcon} />}
+                      text={template.likes}
+                      background={"none"}
+                      border={"#4629F2"}
+                      textColor={"#4629F2"}
+                    />
+                    {template.deploy ? (
+                      <Btn
+                        text={"배포 완료"}
+                        background={"#E0E0E0"}
+                        border={"#E0E0E0"}
+                        textColor={"#7D7D7D"}
+                        width="7rem"
+                        onClick={() => openModal(template.description)}
+                      />
+                    ) : (
+                      <Btn
+                        text={"배포하기"}
+                        background={"#4629F2"}
+                        border={"#4629F2"}
+                        textColor={"#fff"}
+                        width="7rem"
+                        onClick={() => openModal(template.description)}
                       />
                     )}
                   </div>
                 </div>
-                <div className={styles.cardImage}></div>
-                <div className={styles.cardContent}>
-                  <div className={styles.cardTitle}>
-                    {template.templateName}
-                  </div>
-                  <div className={styles.cardSubhead}>{template.date}</div>
-                  <p>{template.description}</p>
-                </div>
-                <div className={styles.cardFooter}>
-                  <Btn
-                    icon={<FaHeart className={styles.likeIcon} />}
-                    text={template.likes}
-                    background={"none"}
-                    border={"#4629F2"}
-                    textColor={"#4629F2"}
-                  />
-                  {template.deploy ? (
-                    <Btn
-                      text={"배포 완료"}
-                      background={"#E0E0E0"}
-                      border={"#E0E0E0"}
-                      textColor={"#7D7D7D"}
-                      width="7rem"
-                      onClick={() => openModal(template.description)}
-                    />
-                  ) : (
-                    <Btn
-                      text={"배포하기"}
-                      background={"#4629F2"}
-                      border={"#4629F2"}
-                      textColor={"#fff"}
-                      width="7rem"
-                      onClick={() => openModal(template.description)}
-                    />
-                  )}
-                </div>
-              </div>
-            ))}
+              ))
+            )}
           </div>
         )}
       </section>
