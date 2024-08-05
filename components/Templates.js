@@ -247,7 +247,7 @@ export default function Templates({ showMoreButton, showCategories }) {
                       src={
                         template.profileImage
                           ? template.profileImage
-                          : "/public/profile.png"
+                          : "/profile.png"
                       }
                     />
                   </div>
