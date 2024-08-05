@@ -303,12 +303,16 @@ export default function Dash() {
                       className={styles.cardProfileImg}
                       alt="profile"
                       layout="fill"
-                      src={template.profileImage}
+                      src={
+                        template.profileImage
+                          ? template.profileImage
+                          : "/profile.png"
+                      }
                     />
                   </div>
                 </div>
                 <div className={styles.cardHeaderInfo}>
-                  <div className={styles.cardUser}>{template.user}</div>
+                  <div className={styles.cardUser}>{template.displayName}</div>
                 </div>
                 <div
                   className={styles.cardMenu}
@@ -337,7 +341,7 @@ export default function Dash() {
               <div className={styles.cardContent}>
                 <div className={styles.cardTitle}>{template.projectName}</div>
                 <div className={styles.cardSubhead}>{template.updatedAt}</div>
-                <p>{template.description}</p>
+                <p>{template.content}</p>
               </div>
               <div className={styles.cardFooter}>
                 <Btn
