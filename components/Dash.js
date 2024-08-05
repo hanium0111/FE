@@ -1,38 +1,3 @@
-import { useState, useEffect } from "react";
-import styles from "./Dash.module.css";
-import { FaEllipsisV, FaHeart, FaSearch } from "react-icons/fa";
-import Image from "next/image";
-import Btn from "./Btn";
-import Modal from "react-modal";
-
-const DropdownMenu = ({
-  isDeployed,
-  onEdit,
-  onDelete,
-  onDeploy,
-  onShare,
-  onUse,
-  onRename,
-}) => {
-  return (
-    <div className={styles.dropdownMenu}>
-      {isDeployed ? (
-        <>
-          <button onClick={onUse}>템플릿 사용</button>
-          <button onClick={onShare}>배포 링크 공유</button>
-        </>
-      ) : (
-        <>
-          <button onClick={onDeploy}>프로젝트 배포</button>
-          <button onClick={onEdit}>프로젝트 편집</button>
-        </>
-      )}
-      <button onClick={onDelete}>프로젝트 삭제</button>
-      <button onClick={onRename}>이름 변경</button>
-    </div>
-  );
-};
-
 export default function Dash() {
   const [templates, setTemplates] = useState([]);
   const [sortOrder, setSortOrder] = useState("최신순");
@@ -82,6 +47,10 @@ export default function Dash() {
     }
     return 0;
   });
+
+  const formatDate = (dateString) => {
+    return new Date(dateString).toISOString().split("T")[0];
+  };
 
   const openModal = (content) => {
     setModalContent(content);
@@ -337,10 +306,19 @@ export default function Dash() {
                   )}
                 </div>
               </div>
-              <div className={styles.cardImage}></div>
+              <div className={styles.cardImage}>
+                <Image
+                  src={`https://1am11m.store${template.imagePath}`}
+                  alt="Template Screenshot"
+                  layout="fill"
+                  objectFit="cover"
+                />
+              </div>
               <div className={styles.cardContent}>
                 <div className={styles.cardTitle}>{template.projectName}</div>
-                <div className={styles.cardSubhead}>{template.updatedAt}</div>
+                <div className={styles.cardSubhead}>
+                  {formatDate(template.updatedAt)}
+                </div>
                 <p>{template.content}</p>
               </div>
               <div className={styles.cardFooter}>
