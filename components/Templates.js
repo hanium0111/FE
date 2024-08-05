@@ -239,7 +239,7 @@ export default function Templates({ showMoreButton, showCategories }) {
               <div className={styles.cardHeader}>
                 <div className={styles.cardProfileWrap}>
                   <div className={styles.cardProfile}>
-                    <Image
+                    <img
                       className={styles.cardProfileImg}
                       alt="profile"
                       layout="fill"
