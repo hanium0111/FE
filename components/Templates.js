@@ -253,7 +253,11 @@ export default function Templates({ showMoreButton, showCategories }) {
                         className={styles.cardProfileImg}
                         alt="profile"
                         layout="fill"
-                        src={template.profileImage}
+                        src={
+                          template.profileImage
+                            ? template.profileImage
+                            : "/profile.png"
+                        }
                       />
                     </div>
                   </div>
@@ -266,7 +270,16 @@ export default function Templates({ showMoreButton, showCategories }) {
                     </button>
                   </div>
                 </div>
-                <div className={styles.cardImage}></div>
+                <div className={styles.cardImage}>
+                  <div className={styles.imageWrapper}>
+                    <Image
+                      src={`https://1am11m.store${template.imagePath}`}
+                      alt="Template Screenshot"
+                      layout="fill"
+                      objectFit="cover"
+                    />
+                  </div>
+                </div>
                 <div className={styles.cardContent}>
                   <div className={styles.cardTitle}>{template.displayName}</div>
                   <div className={styles.cardSubhead}>{template.date}</div>
@@ -286,7 +299,7 @@ export default function Templates({ showMoreButton, showCategories }) {
                     border={"#4629F2"}
                     textColor={"#fff"}
                     width="7rem"
-                    onClick={openModal}
+                    onClick={() => openModal(template.id)}
                   />
                 </div>
               </div>
