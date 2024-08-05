@@ -5,7 +5,6 @@ import Image from "next/image";
 import Btn from "./Btn";
 import Link from "next/link";
 import Modal from "react-modal";
-
 export default function Templates({ showMoreButton, showCategories }) {
   const [templates, setTemplates] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("모든 카테고리");
@@ -261,7 +260,13 @@ export default function Templates({ showMoreButton, showCategories }) {
                   </button>
                 </div>
               </div>
-              <div className={styles.cardImage}></div>
+              <div className={styles.cardImage}>
+                <img
+                  src={`https://1am11m.store${template.imagePath}`}
+                  alt="Template Screenshot"
+                  style={{ width: "100%", height: "auto", objectFit: "cover" }}
+                />
+              </div>
               <div className={styles.cardContent}>
                 <div className={styles.cardTitle}>{template.templateName}</div>
                 <div className={styles.cardSubhead}>{template.date}</div>
