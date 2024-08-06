@@ -59,7 +59,7 @@ export default function ChatComponent() {
         setWebsiteType(response);
         break;
       case 2:
-        setFeatures(response); // Updated to set 'features'
+        setFeatures(response);
         break;
       case 3:
         setMood(response);
@@ -176,95 +176,98 @@ export default function ChatComponent() {
           <TourButton />
         </div>
         <div className={styles.chatBox} ref={chatBoxRef}>
-          {messages.map((message, index) => (
-            <div
-              className={`${styles.chatWrap} ${
-                message.sender === "user"
-                  ? styles.userChatWrap
-                  : styles.assistantChatWrap
-              }`}
-              key={index}
-            >
+          <div className={styles.messagesContainer}>
+            {messages.map((message, index) => (
               <div
-                className={`${styles.message} ${
-                  message.sender === "assistant"
-                    ? styles.assistantMessage
-                    : styles.userMessage
-                } ${message.sender === "user" ? styles.flexContainer : ""}`}
+                className={`${styles.chatWrap} ${
+                  message.sender === "user"
+                    ? styles.userChatWrap
+                    : styles.assistantChatWrap
+                }`}
+                key={index}
               >
-                <p
-                  contentEditable={isEditing === index}
-                  suppressContentEditableWarning={true}
-                  onBlur={(e) => saveEditedMessage(index, e.target.innerText)}
-                  data-index={index}
-                  className={`${styles.flexText} ${
-                    isEditing === index ? styles.editing : ""
-                  }`}
+                <div
+                  className={`${styles.message} ${
+                    message.sender === "assistant"
+                      ? styles.assistantMessage
+                      : styles.userMessage
+                  } ${message.sender === "user" ? styles.flexContainer : ""}`}
                 >
-                  {message.text}
-                </p>
-                {message.sender === "user" && isEditing !== index && (
-                  <button
-                    onClick={() => editMessage(index)}
-                    className={styles.editButton}
+                  <p
+                    contentEditable={isEditing === index}
+                    suppressContentEditableWarning={true}
+                    onBlur={(e) => saveEditedMessage(index, e.target.innerText)}
+                    data-index={index}
+                    className={`${styles.flexText} ${
+                      isEditing === index ? styles.editing : ""
+                    }`}
                   >
-                    <FontAwesomeIcon icon={faPen} />
-                  </button>
-                )}
-                {isEditing === index && (
-                  <button
-                    onClick={() =>
-                      saveEditedMessage(index, messages[index].text)
-                    }
-                    className={styles.saveButton}
-                  ></button>
-                )}
+                    {message.text}
+                  </p>
+                  {message.sender === "user" && isEditing !== index && (
+                    <button
+                      onClick={() => editMessage(index)}
+                      className={styles.editButton}
+                    >
+                      <FontAwesomeIcon icon={faPen} />
+                    </button>
+                  )}
+                  {isEditing === index && (
+                    <button
+                      onClick={() =>
+                        saveEditedMessage(index, messages[index].text)
+                      }
+                      className={styles.saveButton}
+                    ></button>
+                  )}
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
-        {step <= 5 && (
-          <form onSubmit={handleSubmit} className={styles.form}>
-            <>
-              <FontAwesomeIcon icon={faGreaterThan} />
-              <input
-                type="text"
-                value={inputValue}
-                onChange={(e) => setInputValue(e.target.value)}
-                className={`${styles.input} input`}
-                placeholder="여기에 답변을 입력하세요."
-                disabled={step > 5}
-              />
-            </>
+            ))}
+          </div>
+          {step <= 5 && (
+            <form onSubmit={handleSubmit} className={styles.form}>
+              <>
+                <FontAwesomeIcon icon={faGreaterThan} />
+                <input
+                  type="text"
+                  value={inputValue}
+                  onChange={(e) => setInputValue(e.target.value)}
+                  className={`${styles.input} input`}
+                  placeholder="여기에 답변을 입력하세요."
+                  disabled={step > 5}
+                />
+              </>
 
-            <button type="submit" className={`${styles.button} button`}>
-              <svg
-                className={styles.icon}
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M14 5l7 7m0 0l-7 7m7-7H3"
-                ></path>
-              </svg>
-            </button>
-          </form>
-        )}
+              <button type="submit" className={`${styles.button} button`}>
+                <svg
+                  className={styles.icon}
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M14 5l7 7m0 0l-7 7m7-7H3"
+                  ></path>
+                </svg>
+              </button>
+            </form>
+          )}
+        </div>
         {step > 5 && (
           <Btn
             onClick={() => {
-              handleGenerateClick;
+              handleGenerateClick();
             }}
             text={">>> 웹사이트 생성 <<<"}
             background={"#000"}
             border={"#4629F2"}
             textColor={"#fff"}
             width={"100%"}
+            height={"10rem"}
           ></Btn>
         )}
       </div>
