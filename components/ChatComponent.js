@@ -17,11 +17,34 @@ export default function ChatComponent() {
   const [isEditing, setIsEditing] = useState(null);
   const [displayedText, setDisplayedText] = useState("");
   const [isTyping, setIsTyping] = useState(true);
-
-  const fullText = "웹 사이트 만들기, 누구나 쉽게 할 수 있어요!";
+  const [userName, setUserName] = useState(null);
 
   const chatBoxRef = useRef(null);
+
   useEffect(() => {
+    const fetchUserProfile = async () => {
+      try {
+        const response = await fetch("https://1am11m.store/auth/profile", {
+          credentials: "include",
+        });
+        const data = await response.json();
+
+        if (response.ok) {
+          setUserName(data.displayName);
+        }
+      } catch (error) {
+        console.error("Error fetching user profile:", error);
+      }
+    };
+
+    fetchUserProfile();
+  }, []);
+
+  useEffect(() => {
+    const fullText = userName
+      ? `${userName}님, 지금 무엇이든 만들어보세요!`
+      : "웹 사이트 만들기, 누구나 쉽게 할 수 있어요!";
+
     let index = 0;
     const typingInterval = setInterval(() => {
       if (index < fullText.length) {
@@ -39,7 +62,7 @@ export default function ChatComponent() {
     }, 100);
 
     return () => clearInterval(typingInterval);
-  }, [fullText]);
+  }, [userName]);
 
   useEffect(() => {
     if (step === 1 && messages.length === 0) {
@@ -189,6 +212,7 @@ export default function ChatComponent() {
       editableElement.classList.remove(styles.editing);
     }
   };
+
   return (
     <TourGuideProvider>
       <div className={styles.chatContainer}>
