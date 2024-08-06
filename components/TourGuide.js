@@ -1,6 +1,8 @@
 import React from "react";
 import { TourProvider, useTour } from "@reactour/tour";
-
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCircleQuestion } from "@fortawesome/free-solid-svg-icons";
+import Btn from "@/components/Btn";
 const steps = [
   {
     selector: ".input",
@@ -75,7 +77,19 @@ export const TourGuideProvider = ({ children }) => {
 export const TourButton = () => {
   const { setIsOpen } = useTour();
 
-  return <button onClick={() => setIsOpen(true)}>도움말</button>;
+  return (
+    <>
+      <Btn
+        text={"도움말"}
+        background={"#444"}
+        border={"#444"}
+        textColor={"#fff"}
+        width={"6rem"}
+        onClick={() => setIsOpen(true)}
+        icon={<FontAwesomeIcon icon={faCircleQuestion} />}
+      />
+    </>
+  );
 };
 
 const TourGuidePage = () => {

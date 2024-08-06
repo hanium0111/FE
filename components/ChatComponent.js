@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import styles from "./ChatComponent.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPen } from "@fortawesome/free-solid-svg-icons";
+import { faPen, faCircleQuestion } from "@fortawesome/free-solid-svg-icons";
 import { TourGuideProvider, TourButton } from "./TourGuide";
 
 export default function ChatComponent() {
