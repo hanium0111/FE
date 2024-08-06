@@ -109,17 +109,19 @@ export default function Header() {
               </a>
             </Link>
           </li>
-          <li className={styles.menuItem}>
-            <Link href="/dashboard" legacyBehavior>
-              <a className={styles.menuLink}>
-                <FontAwesomeIcon
-                  icon={faLayerGroup}
-                  className={styles.menuIcon}
-                />
-                대시보드
-              </a>
-            </Link>
-          </li>
+          {isLoggedIn && (
+            <li className={styles.menuItem}>
+              <Link href="/dashboard" legacyBehavior>
+                <a className={styles.menuLink}>
+                  <FontAwesomeIcon
+                    icon={faLayerGroup}
+                    className={styles.menuIcon}
+                  />
+                  대시보드
+                </a>
+              </Link>
+            </li>
+          )}
           <li className={styles.menuItem}>
             <Link href="/temp" legacyBehavior>
               <a className={styles.menuLink}>

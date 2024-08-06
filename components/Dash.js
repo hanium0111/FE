@@ -33,6 +33,7 @@ const DropdownMenu = ({
     </div>
   );
 };
+
 export default function Dash() {
   const [templates, setTemplates] = useState([]);
   const [sortOrder, setSortOrder] = useState("최신순");
@@ -47,6 +48,28 @@ export default function Dash() {
   const [pageName, setPageName] = useState("");
   const [loading, setLoading] = useState(true);
   const [dashStructure, setDashStructure] = useState([]);
+  const [profileImage, setProfileImage] = useState("/profile.png"); // 기본 프로필 이미지
+  const [displayName, setDisplayName] = useState("");
+
+  useEffect(() => {
+    const fetchProfileData = async () => {
+      try {
+        const response = await fetch("https://1am11m.store/auth/profile", {
+          credentials: "include",
+        });
+        const data = await response.json();
+
+        if (response.ok) {
+          setProfileImage(data.profileImageUrl || "/profile.png");
+          setDisplayName(data.displayName || "사용자");
+        }
+      } catch (error) {
+        console.error("Error fetching profile data:", error);
+      }
+    };
+
+    fetchProfileData();
+  }, []);
 
   useEffect(() => {
     const fetchDash = async () => {
@@ -318,17 +341,13 @@ export default function Dash() {
                           className={styles.cardProfileImg}
                           alt="profile"
                           layout="fill"
-                          src={
-                            template.profileImage
-                              ? template.profileImage
-                              : "/profile.png"
-                          }
+                          src={profileImage} // 수정된 부분: 사용자의 프로필 이미지 사용
                         />
                       </div>
                     </div>
                     <div className={styles.cardHeaderInfo}>
                       <div className={styles.cardUser}>
-                        {template.displayName}
+                        {displayName} {/* 수정된 부분: 사용자의 이름 사용 */}
                       </div>
                     </div>
                     <div
