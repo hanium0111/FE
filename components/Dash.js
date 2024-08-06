@@ -223,7 +223,8 @@ export default function Dash() {
 
   const handleShareTemplate = async () => {
     if (!category.trim() || !description.trim()) {
-      alert("카테고리와 설명을 입력해주세요.");
+      setModalContent("카테고리와 설명을 입력해주세요.");
+      setIsModalOpen(true);
       return;
     }
 
@@ -250,7 +251,8 @@ export default function Dash() {
       closeShareModal();
     } catch (error) {
       console.error("Failed to share template:", error);
-      alert("템플릿 공유에 실패했습니다.");
+      setModalContent("템플릿 공유에 실패했습니다.");
+      setIsModalOpen(true);
     }
   };
 
@@ -350,6 +352,20 @@ export default function Dash() {
           </button>
           <button onClick={closeShareModal} className={styles.cancelButton}>
             취소
+          </button>
+        </div>
+      </Modal>
+
+      <Modal
+        isOpen={isModalOpen}
+        onRequestClose={closeModal}
+        style={customStyles}
+      >
+        <h1>알림</h1>
+        <p>{modalContent}</p>
+        <div className={styles.modalButtons}>
+          <button onClick={closeModal} className={styles.confirmButton}>
+            닫기
           </button>
         </div>
       </Modal>
