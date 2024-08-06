@@ -3,6 +3,7 @@ import { TourProvider, useTour } from "@reactour/tour";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleQuestion } from "@fortawesome/free-solid-svg-icons";
 import Btn from "@/components/Btn";
+
 const steps = [
   {
     selector: ".input",
@@ -23,12 +24,10 @@ const tourStyles = {
     padding: "30px",
     maxWidth: "300px",
   }),
-
   arrow: (base, state) => ({
     ...base,
     color: "ccc",
   }),
-
   badge: (base) => ({
     ...base,
     backgroundColor: "#4629f2",
@@ -68,7 +67,7 @@ const tourStyles = {
 
 export const TourGuideProvider = ({ children }) => {
   return (
-    <TourProvider steps={steps} styles={tourStyles}>
+    <TourProvider steps={steps} styles={tourStyles} scrollAdjustment={true}>
       {children}
     </TourProvider>
   );
@@ -76,6 +75,10 @@ export const TourGuideProvider = ({ children }) => {
 
 export const TourButton = () => {
   const { setIsOpen } = useTour();
+
+  const handleTourStart = () => {
+    setIsOpen(true); // 투어를 시작합니다.
+  };
 
   return (
     <>
@@ -85,7 +88,7 @@ export const TourButton = () => {
         border={"#333"}
         textColor={"#fff"}
         width={"6rem"}
-        onClick={() => setIsOpen(true)}
+        onClick={handleTourStart}
         icon={<FontAwesomeIcon icon={faCircleQuestion} />}
       />
     </>
