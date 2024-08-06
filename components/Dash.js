@@ -10,8 +10,7 @@ const DropdownMenu = ({
   isDeployed,
   onEdit,
   onDelete,
-  onDeploy,
-  onShare,
+  onDeploy, // 템플릿으로 공유 버튼에 사용될 핸들러
   onUse,
   onRename,
 }) => {
@@ -20,11 +19,13 @@ const DropdownMenu = ({
       {isDeployed ? (
         <>
           <button onClick={onUse}>템플릿 사용</button>
-          <button onClick={onShare}>배포 링크 공유</button>
+          <button onClick={() => console.log("배포 링크 공유")}>
+            배포 링크 공유
+          </button>
         </>
       ) : (
         <>
-          <button onClick={onDeploy}>템플릿으로 공유</button>{" "}
+          <button onClick={onDeploy}>템플릿으로 공유</button>
           <button onClick={onEdit}>프로젝트 편집</button>
         </>
       )}
@@ -213,7 +214,6 @@ export default function Dash() {
   };
 
   const openShareModal = (template) => {
-    console.log("Share modal opened for template:", template);
     setSelectedTemplate(template);
     setIsShareModalOpen(true);
   };
@@ -456,9 +456,9 @@ export default function Dash() {
                       {dropdownOpen === template.id && (
                         <DropdownMenu
                           isDeployed={template.deploy}
-                          onShare={() => openShareModal(template)}
+                          onShare={() => console.log("배포 링크 공유")}
                           onUse={() => console.log("Use")}
-                          onDeploy={() => console.log("Deploy")}
+                          onDeploy={() => openShareModal(template)}
                           onEdit={() => console.log("Edit")}
                           onRename={() => openRenameModal(template)}
                           onDelete={() => openDeleteModal(template)}
