@@ -27,9 +27,11 @@ export default function Header() {
   useEffect(() => {
     const checkSession = () => {
       const cookies = document.cookie.split(";").map((cookie) => cookie.trim());
+      console.log(cookies);
       const sessionCookie = cookies.find((cookie) =>
         cookie.startsWith("connect.sid=")
       );
+      console.log(sessionCookie);
 
       if (sessionCookie) {
         setIsLoggedIn(true);
