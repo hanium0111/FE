@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import styles from "./ChatComponent.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPen, faCircleQuestion } from "@fortawesome/free-solid-svg-icons";
+import { faPen, faGreaterThan } from "@fortawesome/free-solid-svg-icons";
 import { TourGuideProvider, TourButton } from "./TourGuide";
 import Btn from "./Btn";
 
@@ -225,14 +225,18 @@ export default function ChatComponent() {
         </div>
         {step <= 5 && (
           <form onSubmit={handleSubmit} className={styles.form}>
-            <input
-              type="text"
-              value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
-              className={`${styles.input} input`}
-              placeholder="여기에 답변을 입력하세요."
-              disabled={step > 5}
-            />
+            <>
+              <FontAwesomeIcon icon={faGreaterThan} />
+              <input
+                type="text"
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+                className={`${styles.input} input`}
+                placeholder="여기에 답변을 입력하세요."
+                disabled={step > 5}
+              />
+            </>
+
             <button type="submit" className={`${styles.button} button`}>
               <svg
                 className={styles.icon}
