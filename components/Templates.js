@@ -16,10 +16,13 @@ export default function Templates({ showMoreButton, showCategories }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalContent, setModalContent] = useState("");
   const [pageName, setPageName] = useState("");
+  const [category, setCategory] = useState("");
+  const [description, setDescription] = useState("");
   const [selectedTemplateId, setSelectedTemplateId] = useState(null);
   const [loading, setLoading] = useState(true);
   const [templateStructure, setTemplateStructure] = useState([]);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -117,8 +120,19 @@ export default function Templates({ showMoreButton, showCategories }) {
     setIsModalOpen(true);
   };
 
+  const openShareModal = (templateId) => {
+    if (!isLoggedIn) {
+      router.push("/login");
+      return;
+    }
+
+    setSelectedTemplateId(templateId);
+    setIsShareModalOpen(true);
+  };
+
   const closeModal = () => {
     setIsModalOpen(false);
+    setIsShareModalOpen(false);
   };
 
   const formatDate = (dateString) => {
@@ -154,6 +168,37 @@ export default function Templates({ showMoreButton, showCategories }) {
       }
     } catch (error) {
       console.error("Error during the fetch operation:", error);
+    }
+  };
+
+  const handleShareConfirm = async () => {
+    if (!selectedTemplateId || !category || !description) {
+      alert("카테고리와 설명을 입력해주세요.");
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        `https://1am11m.store/dashboards/dashboard/${selectedTemplateId}/share`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ category, description }),
+          credentials: "include",
+        }
+      );
+
+      if (response.ok) {
+        const result = await response.json();
+        console.log("Shared Template:", result);
+        closeModal();
+      } else {
+        console.error("Failed to share template:", response.statusText);
+      }
+    } catch (error) {
+      console.error("Error during the share operation:", error);
     }
   };
 
@@ -194,6 +239,49 @@ export default function Templates({ showMoreButton, showCategories }) {
                 type="button"
                 className={styles.confirmButton}
                 onClick={handleConfirm}
+              >
+                확인
+              </button>
+              <button
+                type="button"
+                className={styles.cancelButton}
+                onClick={closeModal}
+              >
+                닫기
+              </button>
+            </div>
+          </div>
+        </form>
+      </Modal>
+
+      <Modal
+        isOpen={isShareModalOpen}
+        onRequestClose={closeModal}
+        className={styles.modalContent}
+        overlayClassName={styles.modalOverlay}
+      >
+        <form>
+          <h2>템플릿 공유</h2>
+          <div>
+            <input
+              className={styles.pageinputform}
+              type="text"
+              placeholder="카테고리 입력.."
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+            />
+            <input
+              className={styles.pageinputform}
+              type="text"
+              placeholder="설명 입력.."
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+            />
+            <div className={styles.modalButtons}>
+              <button
+                type="button"
+                className={styles.confirmButton}
+                onClick={handleShareConfirm}
               >
                 확인
               </button>
@@ -302,7 +390,10 @@ export default function Templates({ showMoreButton, showCategories }) {
                     </div>
                   </div>
                   <div className={styles.cardMenu}>
-                    <button className={styles.cardMenuButton}>
+                    <button
+                      className={styles.cardMenuButton}
+                      onClick={() => openShareModal(template.id)}
+                    >
                       <FaShare />
                     </button>
                   </div>
