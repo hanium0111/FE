@@ -148,7 +148,7 @@ export default function Templates({ showMoreButton, showCategories }) {
         const result = await response.json();
         console.log("Saved Template Path:", result);
         closeModal();
-        router.push("/dash");
+        router.push("/dashboard");
       } else {
         console.error("Failed to save template:", response.statusText);
       }
