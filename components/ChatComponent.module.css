@@ -11,17 +11,9 @@
   height: 52rem;
 }
 
-.title {
-  font-size: 1.8rem;
-  margin: 2rem 0;
-  font-weight: bold;
-  opacity: 0;
-  animation: fadeIn 2s ease-in-out forwards;
-}
-
 .menuContainer {
   position: absolute;
-  top: 12rem;
+  top: 10rem;
   right: 4rem;
   z-index: 1000;
 }
@@ -84,7 +76,8 @@
 }
 
 .userMessage {
-  color: #351fb0;
+  background-color: #351fb0;
+  color: #fff;
 }
 
 .form {
@@ -150,21 +143,16 @@
 
 .editButton,
 .saveButton {
-  background: none;
-  border: none;
-  color: #4629f2;
-  cursor: pointer;
-  font-size: 0.8rem;
-  margin-right: 0.2rem;
-}
-
-.editButton,
-.saveButton {
   display: flex;
   flex-wrap: row;
   gap: 0.2rem;
   font-weight: bold;
-  opacity: 0.4;
+  background: none;
+  border: none;
+  color: #ffffff66;
+  cursor: pointer;
+  font-size: 0.8rem;
+  margin-right: 0.2rem;
 }
 
 .editButton,
@@ -173,7 +161,7 @@
 }
 
 .editing {
-  border-bottom: 0.2rem solid #4629f2;
+  border-bottom: 0.2rem solid #ffffff88;
   box-sizing: border-box;
   outline: none;
 }
@@ -196,7 +184,7 @@
   width: 0;
   height: 0;
   border: 2rem solid transparent;
-  border-left-color: #fff;
+  border-left-color: #351fb0;
   border-right: 0;
   border-bottom: 0;
   transform: rotate(-45deg);
@@ -233,7 +221,8 @@
 .typingTitle {
   display: inline-block;
   font-size: 1.8rem;
-  margin: 2rem 0;
+  margin-bottom: 1rem;
+  padding: 2rem 0;
   font-weight: bold;
   white-space: nowrap;
   overflow: hidden;
