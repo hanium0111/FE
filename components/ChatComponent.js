@@ -21,18 +21,22 @@ export default function ChatComponent() {
   const fullText = "웹 사이트 만들기, 누구나 쉽게 할 수 있어요!";
 
   const chatBoxRef = useRef(null);
-
   useEffect(() => {
     let index = 0;
     const typingInterval = setInterval(() => {
       if (index < fullText.length) {
-        setDisplayedText((prev) => prev + fullText.charAt(index));
+        setDisplayedText((prev) => {
+          if (prev.slice(-1) !== fullText.charAt(index)) {
+            return prev + fullText.charAt(index);
+          }
+          return prev;
+        });
         index++;
       } else {
         clearInterval(typingInterval);
         setIsTyping(false);
       }
-    }, 50);
+    }, 100);
 
     return () => clearInterval(typingInterval);
   }, [fullText]);

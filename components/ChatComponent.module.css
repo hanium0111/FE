@@ -230,7 +230,6 @@
     opacity: 1;
   }
 }
-
 .typingTitle {
   display: inline-block;
   font-size: 1.8rem;
@@ -238,13 +237,11 @@
   font-weight: bold;
   white-space: nowrap;
   overflow: hidden;
-  border-right: 0.15em solid #333;
-  animation: typing 3.5s steps(40, end), blink-caret 0.75s step-end infinite;
+  animation: typing 3.5s steps(40, end);
 }
 
 .noBlink {
   animation: typing 3.5s steps(40, end);
-  border-right: none;
 }
 
 @keyframes typing {
@@ -253,15 +250,5 @@
   }
   to {
     width: 100%;
-  }
-}
-
-@keyframes blink-caret {
-  from,
-  to {
-    border-color: transparent;
-  }
-  50% {
-    border-color: #333;
   }
 }
