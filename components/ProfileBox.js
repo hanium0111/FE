@@ -1,9 +1,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
-import Modal from "react-modal";
+import Image from "next/image";
 import styles from "./ProfileBox.module.css";
-
-Modal.setAppElement("#__next");
 
 export default function ProfileBox() {
   const [profileData, setProfileData] = useState({
@@ -62,10 +60,12 @@ export default function ProfileBox() {
           <div className={styles.list}>
             <div className={styles.profileImgWrap}>
               {profileData.profileImageUrl && (
-                <img
+                <Image
                   src={profileData.profileImageUrl}
                   alt="Profile Image"
                   className={styles.profileImg}
+                  layout="fill"
+                  objectFit="cover"
                 />
               )}
             </div>
