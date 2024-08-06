@@ -24,7 +24,7 @@ const DropdownMenu = ({
         </>
       ) : (
         <>
-          <button onClick={onDeploy}>템플릿으로 공유</button>
+          <button onClick={onDeploy}>템플릿으로 공유</button>{" "}
           <button onClick={onEdit}>프로젝트 편집</button>
         </>
       )}
@@ -213,6 +213,7 @@ export default function Dash() {
   };
 
   const openShareModal = (template) => {
+    console.log("Share modal opened for template:", template);
     setSelectedTemplate(template);
     setIsShareModalOpen(true);
   };
