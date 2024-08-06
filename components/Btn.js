@@ -10,12 +10,14 @@ const Btn = ({
   width = "5rem",
   textBorder = false,
   onClick,
+  height = "3rem",
 }) => {
   const buttonStyle = {
     backgroundColor: background !== "none" ? background : "transparent",
     border: border !== "none" ? `1px solid ${border}` : "none",
     color: textColor,
     width: width,
+    height: height,
   };
 
   return (
