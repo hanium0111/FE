@@ -15,7 +15,27 @@ export default function ChatComponent() {
   const [content, setContent] = useState("");
   const [pageName, setPageName] = useState("");
   const [isEditing, setIsEditing] = useState(null);
+  const [displayedText, setDisplayedText] = useState("");
+  const [isTyping, setIsTyping] = useState(true);
+
+  const fullText = "웹 사이트 만들기, 누구나 쉽게 할 수 있어요!";
+
   const chatBoxRef = useRef(null);
+
+  useEffect(() => {
+    let index = 0;
+    const typingInterval = setInterval(() => {
+      if (index < fullText.length) {
+        setDisplayedText((prev) => prev + fullText.charAt(index));
+        index++;
+      } else {
+        clearInterval(typingInterval);
+        setIsTyping(false);
+      }
+    }, 50);
+
+    return () => clearInterval(typingInterval);
+  }, [fullText]);
 
   useEffect(() => {
     if (step === 1 && messages.length === 0) {
@@ -165,12 +185,11 @@ export default function ChatComponent() {
       editableElement.classList.remove(styles.editing);
     }
   };
-
   return (
     <TourGuideProvider>
       <div className={styles.chatContainer}>
-        <h1 className={styles.title}>
-          웹사이트 만들기, <br /> 누구나 쉽게 할 수 있어요!
+        <h1 className={`${styles.typingTitle} ${!isTyping && styles.noBlink}`}>
+          {displayedText}
         </h1>
         <div className={styles.menuContainer}>
           <TourButton />
@@ -182,7 +201,7 @@ export default function ChatComponent() {
                 className={`${styles.chatWrap} ${
                   message.sender === "user"
                     ? styles.userChatWrap
-                    : styles.assistantChatWrap
+                    : `${styles.assistantChatWrap} ${styles.fadeInMessage}`
                 }`}
                 key={index}
               >
@@ -263,7 +282,7 @@ export default function ChatComponent() {
               handleGenerateClick();
             }}
             text={">>> 웹사이트 생성 <<<"}
-            background={"#000"}
+            background={"#351fb0"}
             border={"#4629F2"}
             textColor={"#fff"}
             width={"100%"}

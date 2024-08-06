@@ -15,13 +15,15 @@
   font-size: 1.8rem;
   margin: 2rem 0;
   font-weight: bold;
+  opacity: 0;
+  animation: fadeIn 2s ease-in-out forwards;
 }
 
 .menuContainer {
-  display: flex;
-  justify-content: flex-end;
-  width: 100%;
-  margin-bottom: 1rem;
+  position: absolute;
+  top: 12rem;
+  right: 4rem;
+  z-index: 1000;
 }
 
 .chatBox {
@@ -78,6 +80,7 @@
 
 .assistantMessage {
   color: #222;
+  animation-delay: 0.5s;
 }
 
 .userMessage {
@@ -211,4 +214,54 @@
   border-left: 0;
   border-bottom: 0;
   transform: rotate(45deg);
+}
+
+.fadeInMessage {
+  opacity: 0;
+  animation: fadeIn 0.3s ease-in-out forwards;
+  animation-delay: 0.2s;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.typingTitle {
+  display: inline-block;
+  font-size: 1.8rem;
+  margin: 2rem 0;
+  font-weight: bold;
+  white-space: nowrap;
+  overflow: hidden;
+  border-right: 0.15em solid #333;
+  animation: typing 3.5s steps(40, end), blink-caret 0.75s step-end infinite;
+}
+
+.noBlink {
+  animation: typing 3.5s steps(40, end);
+  border-right: none;
+}
+
+@keyframes typing {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+@keyframes blink-caret {
+  from,
+  to {
+    border-color: transparent;
+  }
+  50% {
+    border-color: #333;
+  }
 }
