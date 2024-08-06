@@ -25,11 +25,20 @@ export default function Header() {
   const router = useRouter();
 
   useEffect(() => {
-    // localStorage를 사용하여, 구글 로그인 세션 확인 로직 구현
-    const session = localStorage.getItem("google_session");
-    if (session) {
-      setIsLoggedIn(true);
-    }
+    const checkSession = () => {
+      const cookies = document.cookie.split(";").map((cookie) => cookie.trim());
+      const sessionCookie = cookies.find((cookie) =>
+        cookie.startsWith("connect.sid=")
+      );
+
+      if (sessionCookie) {
+        setIsLoggedIn(true);
+      } else {
+        setIsLoggedIn(false);
+      }
+    };
+
+    checkSession();
   }, []);
 
   const togglePopup = () => {
