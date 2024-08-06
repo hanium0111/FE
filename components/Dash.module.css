@@ -92,6 +92,7 @@
 }
 
 .cardTitle {
+  padding-top: 2rem;
   font-weight: bold;
   font-size: 1.4rem;
   white-space: nowrap;
