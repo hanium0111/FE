@@ -81,8 +81,8 @@ export const TourButton = () => {
     <>
       <Btn
         text={"도움말"}
-        background={"#444"}
-        border={"#444"}
+        background={"#666"}
+        border={"#666"}
         textColor={"#fff"}
         width={"6rem"}
         onClick={() => setIsOpen(true)}

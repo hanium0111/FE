@@ -6,118 +6,113 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  position: relative;
 }
 
 .title {
   font-size: 1.8rem;
-  margin-bottom: 4rem;
+  margin: 2rem 0;
   font-weight: bold;
 }
 
 .chatBox {
-  background-color: #fff;
+  background-color: #4629f2;
   border-radius: 1rem;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  height: 14rem;
+  height: 20rem;
   width: 100%;
   overflow-y: auto;
   margin-bottom: 1rem;
   display: flex;
   flex-direction: column;
   padding: 2rem 0;
+  align-items: center;
+  flex-grow: 1;
 }
 
 .chatWrap {
-  width: 90%;
+  width: 80%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: 40px;
   position: relative;
+}
+
+.assistantChatWrap {
+  align-items: flex-start;
 }
 
 .userChatWrap {
   align-items: flex-end;
 }
 
-.sender {
-  display: none;
-  width: 100%;
-  font-weight: bold;
-  margin-bottom: 0.25rem;
-  text-align: left;
-  font-size: 0.9rem;
-  color: #424242;
-}
-
-.userSender {
-  display: none;
-}
-
 .message {
-  width: 80%;
-  border-radius: 16px;
+  width: 40%;
+  border-radius: 1rem;
   padding: 0 1rem;
   margin-bottom: 1rem;
   text-align: left;
   box-sizing: border-box;
+  color: #000;
+  font-weight: bold;
+  background-color: #fff;
+  font-size: 1.1rem;
 }
 
 .assistantMessage {
-  background-color: #f1f7ff;
+  color: #222;
 }
 
 .userMessage {
-  color: white;
-  background-color: #4629f2;
+  color: #351fb0;
 }
 
 .form {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border: 1px solid #4629f2;
-  border-radius: 16px;
+  border: 0.2rem solid #4629f2;
+  box-sizing: border-box;
+  border-radius: 1rem;
   background-color: #fff;
   width: 100%;
   box-sizing: border-box;
-  padding: 0.5rem;
+  padding: 1rem;
+  position: absolute;
+  bottom: 0;
+  left: 0;
 }
 
 .input {
   flex: 1;
   border: none;
   outline: none;
-  padding: 0.5rem;
-  font-size: 1rem;
+  padding: 0.6rem;
+  font-size: 1.2rem;
+  font-weight: bold;
   color: #4629f2;
-  padding-left: 1rem;
-  border-radius: 16px;
+  border-radius: 1rem;
+  margin-left: 1rem;
 }
 
 .input::placeholder {
-  color: #4629f2;
-  font-size: 0.8rem;
-  opacity: 0.8;
-  border-radius: 16px;
+  color: #c1baea;
+  font-size: 1.2rem;
+  opacity: 1;
+  border-radius: 1rem;
 }
 
 .input:disabled {
   background: none;
 }
-
 .button {
   background-color: #4629f2;
   color: #fff;
   border: none;
   padding: 0.5rem 1.6rem;
   cursor: pointer;
-  border-radius: 14px;
-}
-
-.icon {
-  width: 24px;
-  height: 24px;
+  border-radius: 0.8rem;
 }
 
 .generateButton {
@@ -126,19 +121,24 @@
   border: none;
   padding: 0.75rem 1.5rem;
   cursor: pointer;
-  border-radius: 14px;
+  border-radius: 1rem;
   font-size: 1rem;
   width: 100%;
+}
+
+.icon {
+  width: 24px;
+  height: 24px;
 }
 
 .editButton,
 .saveButton {
   background: none;
   border: none;
-  color: #fff;
+  color: #4629f2;
   cursor: pointer;
   font-size: 0.8rem;
-  margin-top: 5px;
+  margin-right: 0.2rem;
 }
 
 .editButton,
@@ -156,7 +156,8 @@
 }
 
 .editing {
-  border-bottom: 2px solid #ffffff88;
+  border-bottom: 0.2rem solid #4629f2;
+  box-sizing: border-box;
   outline: none;
 }
 
@@ -177,12 +178,30 @@
   margin-bottom: 1rem;
 }
 
-.helpButton {
-  background-color: #4629f2;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 5px;
-  cursor: pointer;
-  margin-left: 10px;
+.userChatWrap .message.userMessage::after {
+  content: "";
+  position: absolute;
+  bottom: 0.8rem;
+  right: 0.8rem;
+  width: 0;
+  height: 0;
+  border: 2rem solid transparent;
+  border-left-color: #fff;
+  border-right: 0;
+  border-bottom: 0;
+  transform: rotate(-45deg);
+}
+
+.chatWrap .message.assistantMessage::after {
+  content: "";
+  position: absolute;
+  bottom: 0.8rem;
+  left: 0.8rem;
+  width: 0;
+  height: 0;
+  border: 2rem solid transparent;
+  border-right-color: #fff;
+  border-left: 0;
+  border-bottom: 0;
+  transform: rotate(45deg);
 }

@@ -3,6 +3,7 @@ import styles from "./ChatComponent.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPen, faCircleQuestion } from "@fortawesome/free-solid-svg-icons";
 import { TourGuideProvider, TourButton } from "./TourGuide";
+import Btn from "./Btn";
 
 export default function ChatComponent() {
   const [inputValue, setInputValue] = useState("");
@@ -77,7 +78,7 @@ export default function ChatComponent() {
   const handleGenerateClick = async () => {
     const requestData = {
       websiteType,
-      features, // Using the renamed 'features' state
+      features,
       mood,
       content,
       pageName,
@@ -178,17 +179,12 @@ export default function ChatComponent() {
           {messages.map((message, index) => (
             <div
               className={`${styles.chatWrap} ${
-                message.sender === "user" ? styles.userChatWrap : ""
+                message.sender === "user"
+                  ? styles.userChatWrap
+                  : styles.assistantChatWrap
               }`}
               key={index}
             >
-              <span
-                className={`${styles.sender} ${
-                  message.sender === "user" ? styles.userSender : ""
-                }`}
-              >
-                {message.sender === "assistant" ? "Assistant" : "User"}
-              </span>
               <div
                 className={`${styles.message} ${
                   message.sender === "assistant"
@@ -234,7 +230,7 @@ export default function ChatComponent() {
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               className={`${styles.input} input`}
-              placeholder="텍스트를 입력하세요"
+              placeholder="여기에 답변을 입력하세요."
               disabled={step > 5}
             />
             <button type="submit" className={`${styles.button} button`}>
@@ -256,13 +252,16 @@ export default function ChatComponent() {
           </form>
         )}
         {step > 5 && (
-          <button
-            type="button"
-            className={styles.generateButton}
-            onClick={handleGenerateClick}
-          >
-            웹사이트 생성
-          </button>
+          <Btn
+            onClick={() => {
+              handleGenerateClick;
+            }}
+            text={">>> 웹사이트 생성 <<<"}
+            background={"#000"}
+            border={"#4629F2"}
+            textColor={"#fff"}
+            width={"100%"}
+          ></Btn>
         )}
       </div>
     </TourGuideProvider>
