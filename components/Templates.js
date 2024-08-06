@@ -91,6 +91,10 @@ export default function Templates({ showMoreButton, showCategories }) {
     setIsModalOpen(false);
   };
 
+  const formatDate = (dateString) => {
+    return new Date(dateString).toISOString().split("T")[0];
+  };
+
   const handleConfirm = async () => {
     if (!selectedTemplateId || !pageName) {
       alert("페이지 이름을 입력해주세요.");
@@ -262,7 +266,9 @@ export default function Templates({ showMoreButton, showCategories }) {
                     </div>
                   </div>
                   <div className={styles.cardHeaderInfo}>
-                    <div className={styles.cardUser}>{template.user}</div>
+                    <div className={styles.cardUser}>
+                      {template.displayName}
+                    </div>
                   </div>
                   <div className={styles.cardMenu}>
                     <button className={styles.cardMenuButton}>
@@ -281,8 +287,12 @@ export default function Templates({ showMoreButton, showCategories }) {
                   </div>
                 </div>
                 <div className={styles.cardContent}>
-                  <div className={styles.cardTitle}>{template.displayName}</div>
-                  <div className={styles.cardSubhead}>{template.date}</div>
+                  <div className={styles.cardTitle}>
+                    {template.templateName}
+                  </div>
+                  <div className={styles.cardSubhead}>
+                    {formatDate(template.updatedAt)}
+                  </div>
                   <p>{template.description}</p>
                 </div>
                 <div className={styles.cardFooter}>
