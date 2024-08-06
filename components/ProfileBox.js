@@ -1,24 +1,57 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/router";
 import Modal from "react-modal";
 import styles from "./ProfileBox.module.css";
 
 Modal.setAppElement("#__next");
 
 export default function ProfileBox() {
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [profileData, setProfileData] = useState({
+    displayName: "",
+    profileImageUrl: "",
+  });
+  const router = useRouter();
 
-  const openDeleteModal = () => {
-    setIsDeleteModalOpen(true);
-  };
+  useEffect(() => {
+    const fetchProfileData = async () => {
+      try {
+        const response = await fetch("https://1am11m.store/auth/profile", {
+          credentials: "include",
+        });
+        const data = await response.json();
 
-  const closeDeleteModal = () => {
-    setIsDeleteModalOpen(false);
-  };
+        if (response.ok) {
+          setProfileData({
+            displayName: data.displayName,
+            profileImageUrl: data.profileImageUrl,
+          });
+        } else {
+          console.error("Failed to fetch profile data");
+        }
+      } catch (error) {
+        console.error("Error fetching profile data:", error);
+      }
+    };
 
-  const handleDeleteAccount = () => {
-    // 회원 탈퇴 처리 로직
-    console.log("회원 탈퇴 처리");
-    closeDeleteModal();
+    fetchProfileData();
+  }, []);
+
+  const handleLogout = async () => {
+    try {
+      const response = await fetch("https://1am11m.store/auth/logout", {
+        method: "GET",
+        credentials: "include",
+      });
+
+      if (response.ok) {
+        console.log("로그아웃 성공");
+        router.push("/");
+      } else {
+        console.error("로그아웃 실패");
+      }
+    } catch (error) {
+      console.error("로그아웃 중 오류 발생:", error);
+    }
   };
 
   return (
@@ -27,39 +60,26 @@ export default function ProfileBox() {
         <h1 className={styles.title}>회원 정보</h1>
         <div className={styles.listWrap}>
           <div className={styles.list}>
-            <div className={styles.profileImgWrap}></div>
+            <div className={styles.profileImgWrap}>
+              {profileData.profileImageUrl && (
+                <img
+                  src={profileData.profileImageUrl}
+                  alt="Profile Image"
+                  className={styles.profileImg}
+                />
+              )}
+            </div>
             <div className={styles.profileInfoWrap}>
-              <div className={styles.profileEmail}>test@gmail.com</div>
-              <div className={styles.profileName}>김이름</div>
+              <div className={styles.profileName}>
+                {profileData.displayName}
+              </div>
             </div>
           </div>
-          <div className={styles.list}>로그아웃</div>
-          <div className={styles.list} onClick={openDeleteModal}>
-            회원탈퇴
+          <div className={styles.list} onClick={handleLogout}>
+            로그아웃
           </div>
         </div>
       </div>
-
-      <Modal
-        isOpen={isDeleteModalOpen}
-        onRequestClose={closeDeleteModal}
-        contentLabel="회원 탈퇴 확인"
-        className={styles.modalContent}
-        overlayClassName={styles.modalOverlay}
-      >
-        <h2>정말로 탈퇴하시겠습니까?</h2>
-        <div className={styles.modalButtons}>
-          <button
-            onClick={handleDeleteAccount}
-            className={styles.confirmButton}
-          >
-            예
-          </button>
-          <button onClick={closeDeleteModal} className={styles.cancelButton}>
-            아니요
-          </button>
-        </div>
-      </Modal>
     </>
   );
 }
