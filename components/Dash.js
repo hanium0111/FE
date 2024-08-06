@@ -44,11 +44,14 @@ export default function Dash() {
   const [dropdownOpen, setDropdownOpen] = useState(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isRenameModalOpen, setIsRenameModalOpen] = useState(false);
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [selectedTemplate, setSelectedTemplate] = useState(null);
   const [pageName, setPageName] = useState("");
+  const [category, setCategory] = useState("");
+  const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(true);
   const [dashStructure, setDashStructure] = useState([]);
-  const [profileImage, setProfileImage] = useState("/profile.png"); // 기본 프로필 이미지
+  const [profileImage, setProfileImage] = useState("/profile.png");
   const [displayName, setDisplayName] = useState("");
 
   useEffect(() => {
@@ -209,6 +212,48 @@ export default function Dash() {
     }
   };
 
+  const openShareModal = (template) => {
+    setSelectedTemplate(template);
+    setIsShareModalOpen(true);
+  };
+
+  const closeShareModal = () => {
+    setIsShareModalOpen(false);
+  };
+
+  const handleShareTemplate = async () => {
+    if (!category.trim() || !description.trim()) {
+      alert("카테고리와 설명을 입력해주세요.");
+      return;
+    }
+
+    try {
+      const res = await fetch(
+        `https://1am11m.store/dashboards/dashboard/${selectedTemplate.id}/share`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ category, description }),
+          credentials: "include",
+        }
+      );
+
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }
+
+      const sharedTemplate = await res.json();
+
+      console.log("Template shared successfully:", sharedTemplate);
+      closeShareModal();
+    } catch (error) {
+      console.error("Failed to share template:", error);
+      alert("템플릿 공유에 실패했습니다.");
+    }
+  };
+
   const toggleDropdown = (id) => {
     setDropdownOpen(dropdownOpen === id ? null : id);
   };
@@ -272,6 +317,39 @@ export default function Dash() {
           </button>
           <button onClick={closeRenameModal} className={styles.cancelButton}>
             아니요
+          </button>
+        </div>
+      </Modal>
+
+      <Modal
+        isOpen={isShareModalOpen}
+        onRequestClose={closeShareModal}
+        style={customStyles}
+      >
+        <h1>템플릿 공유</h1>
+        <input
+          className={styles.pageinputform}
+          type="text"
+          placeholder="카테고리 입력.."
+          value={category}
+          onChange={(e) => setCategory(e.target.value)}
+        />
+        <input
+          className={styles.pageinputform}
+          type="text"
+          placeholder="설명 입력.."
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+        />
+        <div className={styles.modalButtons}>
+          <button
+            onClick={handleShareTemplate}
+            className={styles.confirmButton}
+          >
+            확인
+          </button>
+          <button onClick={closeShareModal} className={styles.cancelButton}>
+            취소
           </button>
         </div>
       </Modal>
@@ -341,14 +419,12 @@ export default function Dash() {
                           className={styles.cardProfileImg}
                           alt="profile"
                           layout="fill"
-                          src={profileImage} // 수정된 부분: 사용자의 프로필 이미지 사용
+                          src={profileImage}
                         />
                       </div>
                     </div>
                     <div className={styles.cardHeaderInfo}>
-                      <div className={styles.cardUser}>
-                        {displayName} {/* 수정된 부분: 사용자의 이름 사용 */}
-                      </div>
+                      <div className={styles.cardUser}>{displayName}</div>
                     </div>
                     <div
                       className={styles.cardMenu}
@@ -363,7 +439,7 @@ export default function Dash() {
                       {dropdownOpen === template.id && (
                         <DropdownMenu
                           isDeployed={template.deploy}
-                          onShare={() => console.log("Share")}
+                          onShare={() => openShareModal(template)}
                           onUse={() => console.log("Use")}
                           onDeploy={() => console.log("Deploy")}
                           onEdit={() => console.log("Edit")}
