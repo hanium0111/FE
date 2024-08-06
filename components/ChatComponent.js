@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef } from "react";
+import { useRouter } from "next/router";
 import styles from "./ChatComponent.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPen, faGreaterThan } from "@fortawesome/free-solid-svg-icons";
@@ -18,8 +19,10 @@ export default function ChatComponent() {
   const [displayedText, setDisplayedText] = useState("");
   const [isTyping, setIsTyping] = useState(true);
   const [userName, setUserName] = useState(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const chatBoxRef = useRef(null);
+  const router = useRouter();
 
   useEffect(() => {
     const fetchUserProfile = async () => {
@@ -31,9 +34,13 @@ export default function ChatComponent() {
 
         if (response.ok) {
           setUserName(data.displayName);
+          setIsLoggedIn(true);
+        } else {
+          setIsLoggedIn(false);
         }
       } catch (error) {
         console.error("Error fetching user profile:", error);
+        setIsLoggedIn(false);
       }
     };
 
@@ -123,6 +130,12 @@ export default function ChatComponent() {
   };
 
   const handleGenerateClick = async () => {
+    if (!isLoggedIn) {
+      // 로그인 상태가 아니라면 로그인 페이지로 리다이렉트
+      router.push("/login");
+      return;
+    }
+
     const requestData = {
       websiteType,
       features,

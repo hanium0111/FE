@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
 import styles from "./Templates.module.css";
 import { FaHeart, FaSearch, FaShare } from "react-icons/fa";
 import Image from "next/image";
@@ -18,6 +19,8 @@ export default function Templates({ showMoreButton, showCategories }) {
   const [selectedTemplateId, setSelectedTemplateId] = useState(null);
   const [loading, setLoading] = useState(true);
   const [templateStructure, setTemplateStructure] = useState([]);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     const fetchTemplates = async () => {
@@ -42,6 +45,28 @@ export default function Templates({ showMoreButton, showCategories }) {
     };
 
     fetchTemplates();
+  }, []);
+
+  useEffect(() => {
+    const checkLoginStatus = async () => {
+      try {
+        const response = await fetch("https://1am11m.store/auth/profile", {
+          credentials: "include",
+        });
+        const data = await response.json();
+
+        if (response.ok) {
+          setIsLoggedIn(true);
+        } else {
+          setIsLoggedIn(false);
+        }
+      } catch (error) {
+        console.error("Error checking login status:", error);
+        setIsLoggedIn(false);
+      }
+    };
+
+    checkLoginStatus();
   }, []);
 
   const categories = [
@@ -82,6 +107,11 @@ export default function Templates({ showMoreButton, showCategories }) {
   });
 
   const openModal = (templateId) => {
+    if (!isLoggedIn) {
+      router.push("/login");
+      return;
+    }
+
     setSelectedTemplateId(templateId);
     setModalContent("페이지 이름을 입력해주세요!");
     setIsModalOpen(true);
