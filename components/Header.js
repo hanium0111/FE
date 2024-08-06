@@ -25,22 +25,25 @@ export default function Header() {
   const router = useRouter();
 
   useEffect(() => {
-    const checkSession = () => {
-      const cookies = document.cookie.split(";").map((cookie) => cookie.trim());
-      console.log(cookies);
-      const sessionCookie = cookies.find((cookie) =>
-        cookie.startsWith("connect.sid=")
-      );
-      console.log(sessionCookie);
+    const checkLoginStatus = async () => {
+      try {
+        const response = await fetch("https://1am11m.store/auth/profile", {
+          credentials: "include",
+        });
+        const data = await response.json();
 
-      if (sessionCookie) {
-        setIsLoggedIn(true);
-      } else {
+        if (response.ok) {
+          setIsLoggedIn(true);
+        } else {
+          setIsLoggedIn(false);
+        }
+      } catch (error) {
+        console.error("Error checking login status:", error);
         setIsLoggedIn(false);
       }
     };
 
-    checkSession();
+    checkLoginStatus();
   }, []);
 
   const togglePopup = () => {
