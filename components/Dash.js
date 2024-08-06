@@ -24,7 +24,7 @@ const DropdownMenu = ({
         </>
       ) : (
         <>
-          <button onClick={onDeploy}>프로젝트 배포</button>
+          <button onClick={onDeploy}>템플릿으로 공유</button>
           <button onClick={onEdit}>프로젝트 편집</button>
         </>
       )}
