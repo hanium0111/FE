@@ -171,6 +171,10 @@ export default function Templates({ showMoreButton, showCategories }) {
     },
   };
 
+  const getProfileImageUrl = (url) => {
+    return url && url !== "null" ? url : "/profile.png";
+  };
+
   return (
     <>
       <Modal
@@ -288,11 +292,7 @@ export default function Templates({ showMoreButton, showCategories }) {
                         className={styles.cardProfileImg}
                         alt="profile"
                         layout="fill"
-                        src={
-                          template.profileImageUrl !== null
-                            ? template.profileImageUrl
-                            : "/profile.png"
-                        }
+                        src={getProfileImageUrl(template.profileImageUrl)}
                       />
                     </div>
                   </div>
