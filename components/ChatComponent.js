@@ -2,8 +2,15 @@ import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/router";
 import styles from "./ChatComponent.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPen, faGreaterThan } from "@fortawesome/free-solid-svg-icons";
+import {
+  faPen,
+  faGreaterThan,
+  faSpinner,
+} from "@fortawesome/free-solid-svg-icons";
 import { TourGuideProvider, TourButton } from "./TourGuide";
+import { library } from "@fortawesome/fontawesome-svg-core";
+library.add(faPen, faGreaterThan, faSpinner);
+
 import Btn from "./Btn";
 
 export default function ChatComponent() {
@@ -20,6 +27,7 @@ export default function ChatComponent() {
   const [isTyping, setIsTyping] = useState(true);
   const [userName, setUserName] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const chatBoxRef = useRef(null);
   const router = useRouter();
@@ -131,10 +139,11 @@ export default function ChatComponent() {
 
   const handleGenerateClick = async () => {
     if (!isLoggedIn) {
-      // 로그인 상태가 아니라면 로그인 페이지로 리다이렉트
       router.push("/login");
       return;
     }
+
+    setIsLoading(true);
 
     const requestData = {
       websiteType,
@@ -158,13 +167,15 @@ export default function ChatComponent() {
       );
 
       if (response.ok) {
-        const result = await response.json();
-        console.log("Generated Website Path:", result);
+        setIsLoading(false);
+        router.push("/dashboard");
       } else {
         console.error("Failed to generate website:", response.statusText);
+        setIsLoading(false);
       }
     } catch (error) {
       console.error("Error during the fetch operation:", error);
+      setIsLoading(false);
     }
   };
 
@@ -319,16 +330,21 @@ export default function ChatComponent() {
         </div>
         {step > 5 && (
           <Btn
-            onClick={() => {
-              handleGenerateClick();
-            }}
-            text={">>> 웹사이트 생성 <<<"}
+            onClick={handleGenerateClick}
+            text={
+              isLoading ? (
+                <FontAwesomeIcon icon="spinner" spin />
+              ) : (
+                ">>> 웹사이트 생성 <<<"
+              )
+            }
             background={"#351fb0"}
             border={"#4629F2"}
             textColor={"#fff"}
             width={"100%"}
             height={"10rem"}
-          ></Btn>
+            disabled={isLoading}
+          />
         )}
       </div>
     </TourGuideProvider>

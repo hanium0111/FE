@@ -11,13 +11,16 @@ const Btn = ({
   textBorder = false,
   onClick,
   height = "3rem",
+  disabled = false,
 }) => {
   const buttonStyle = {
     backgroundColor: background !== "none" ? background : "transparent",
     border: border !== "none" ? `1px solid ${border}` : "none",
-    color: textColor,
+    color: disabled ? "#ccc" : textColor,
     width: width,
     height: height,
+    cursor: disabled ? "not-allowed" : "pointer",
+    opacity: disabled ? 0.6 : 1,
   };
 
   return (
@@ -26,7 +29,8 @@ const Btn = ({
         background === "none" ? styles.line : ""
       }`}
       style={buttonStyle}
-      onClick={onClick}
+      onClick={disabled ? undefined : onClick}
+      disabled={disabled}
     >
       {icon && <span className={styles.icon}>{icon}</span>}
       {text && (
