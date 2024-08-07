@@ -411,3 +411,14 @@ input:checked + .slider:before {
   margin: 1.4rem 0;
   border: 1px solid #888;
 }
+.spinnerContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+.spinner {
+  font-size: 2rem;
+  color: #4629f2;
+}

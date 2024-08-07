@@ -2,6 +2,9 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import styles from "./Dash.module.css";
 import { FaEllipsisV, FaHeart, FaSearch, FaPlus } from "react-icons/fa";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSpinner } from "@fortawesome/free-solid-svg-icons";
+
 import Image from "next/image";
 import Btn from "./Btn";
 import Modal from "react-modal";
@@ -63,6 +66,7 @@ export default function Dash() {
   const [dashStructure, setDashStructure] = useState([]);
   const [profileImage, setProfileImage] = useState("/profile.png");
   const [displayName, setDisplayName] = useState("");
+  const [imageLoading, setImageLoading] = useState({}); // 이미지 로딩 상태 관리
 
   useEffect(() => {
     const fetchProfileData = async () => {
@@ -552,11 +556,21 @@ export default function Dash() {
                   </div>
                   <div className={styles.cardImage}>
                     <div className={styles.imageWrapper}>
+                      {imageLoading && (
+                        <div className={styles.spinnerContainer}>
+                          <FontAwesomeIcon
+                            icon={faSpinner}
+                            spin
+                            className={styles.spinner}
+                          />
+                        </div>
+                      )}
                       <Image
                         src={`https://1am11m.store${template.imagePath}`}
                         alt="Template Screenshot"
                         layout="fill"
                         objectFit="cover"
+                        onLoadingComplete={() => setImageLoading(false)}
                       />
                     </div>
                   </div>
