@@ -6,6 +6,7 @@ import Image from "next/image";
 import Btn from "./Btn";
 import Modal from "react-modal";
 import { SkeletonDash } from "./Skeleton";
+import ReactTooltip from "react-tooltip";
 
 const DropdownMenu = ({
   isDeployed,
@@ -347,7 +348,7 @@ export default function Dash() {
           type="text"
           placeholder="이름 입력.."
           onChange={(e) => setPageName(e.target.value)}
-        />{" "}
+        />
         <div className={styles.modalButtons}>
           <button
             onClick={handleRenameTemplate}
@@ -508,8 +509,14 @@ export default function Dash() {
                             className={`${styles.cardShareStateCircle} ${
                               template.shared ? styles.shared : ""
                             }`}
+                            data-tip={
+                              template.shared
+                                ? "템플릿으로 공유중입니다."
+                                : "공유하고 있지 않습니다."
+                            }
                           ></div>
-                        </div>{" "}
+                          <ReactTooltip place="top" effect="solid" />
+                        </div>
                       </div>
                     </div>
                     <div
