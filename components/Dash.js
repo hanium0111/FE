@@ -264,8 +264,9 @@ export default function Dash() {
     }
   };
 
-  const handleStopSharingTemplate = async (template) => {
+  const handleStopSharingTemplate = async () => {
     try {
+      console.log(selectedTemplate.id);
       const res = await fetch(
         `https://1am11m.store/dashboards/dashboard/${selectedTemplate.id}/share-stop`,
         {
@@ -277,11 +278,11 @@ export default function Dash() {
       if (!res.ok) {
         throw new Error(`HTTP error! status: ${res.status}`);
       }
-      setTemplates((prevTemplates) =>
-        prevTemplates.map((t) =>
-          t.id === template.id ? { ...t, shared: false } : t
-        )
-      );
+      // setTemplates((prevTemplates) =>
+      //   prevTemplates.map((t) =>
+      //     t.id === template.id ? { ...t, shared: false } : t
+      //   )
+      // );
       console.log("Template sharing stopped successfully:", selectedTemplate);
     } catch (error) {
       console.error("Failed to stop sharing template:", error);
