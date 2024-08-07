@@ -16,7 +16,7 @@ const DropdownMenu = ({
   onUse,
   onRename,
   onStopSharing,
-  setSelectedTemplate, // 여기에 추가
+  template,
 }) => {
   return (
     <div className={styles.dropdownMenu}>
@@ -28,12 +28,7 @@ const DropdownMenu = ({
           </button>
         </>
       ) : isShared ? (
-        <button
-          onClick={() => {
-            setSelectedTemplate(selectedTemplate);
-            onStopSharing();
-          }}
-        >
+        <button onClick={() => onStopSharing(template.id)}>
           템플릿 공유 중지
         </button>
       ) : (
@@ -272,15 +267,10 @@ export default function Dash() {
     }
   };
 
-  const handleStopSharingTemplate = async () => {
-    if (!selectedTemplate) {
-      console.error("No template selected for stopping sharing.");
-      return;
-    }
-
+  const handleStopSharingTemplate = async (templateId) => {
     try {
       const res = await fetch(
-        `https://1am11m.store/dashboards/dashboard/${selectedTemplate.id}/share-stop`,
+        `https://1am11m.store/dashboards/dashboard/${templateId}/share-stop`,
         {
           method: "DELETE",
           credentials: "include",
@@ -291,13 +281,11 @@ export default function Dash() {
         throw new Error(`HTTP error! status: ${res.status}`);
       }
 
-      console.log("Template sharing stopped successfully:", selectedTemplate);
+      console.log("Template sharing stopped successfully:", templateId);
 
       setTemplates((prevTemplates) =>
         prevTemplates.map((template) =>
-          template.id === selectedTemplate.id
-            ? { ...template, shared: false }
-            : template
+          template.id === templateId ? { ...template, shared: false } : template
         )
       );
     } catch (error) {
@@ -544,11 +532,8 @@ export default function Dash() {
                           onEdit={() => console.log("Edit")}
                           onRename={() => openRenameModal(template)}
                           onDelete={() => openDeleteModal(template)}
-                          onStopSharing={() => {
-                            setSelectedTemplate(template);
-                            handleStopSharingTemplate();
-                          }}
-                          setSelectedTemplate={setSelectedTemplate}
+                          onStopSharing={handleStopSharingTemplate}
+                          template={template}
                         />
                       )}
                     </div>
