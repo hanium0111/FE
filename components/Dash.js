@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
+import { useRouter } from "next/router";
 import styles from "./Dash.module.css";
-import { FaEllipsisV, FaHeart, FaSearch } from "react-icons/fa";
+import { FaEllipsisV, FaHeart, FaSearch, FaPlus } from "react-icons/fa";
 import Image from "next/image";
 import Btn from "./Btn";
 import Modal from "react-modal";
@@ -10,7 +11,7 @@ const DropdownMenu = ({
   isDeployed,
   onEdit,
   onDelete,
-  onDeploy, // 템플릿으로 공유 버튼에 사용될 핸들러
+  onDeploy,
   onUse,
   onRename,
 }) => {
@@ -36,6 +37,7 @@ const DropdownMenu = ({
 };
 
 export default function Dash() {
+  const router = useRouter();
   const [templates, setTemplates] = useState([]);
   const [sortOrder, setSortOrder] = useState("최신순");
   const [searchQuery, setSearchQuery] = useState("");
@@ -425,7 +427,17 @@ export default function Dash() {
         ) : (
           <div className={styles.grid}>
             {sortedTemplates.length === 0 ? (
-              <p className={styles.emptyMessage}>대시보드가 비어있어요.</p>
+              <>
+                <Btn
+                  icon={<FaPlus className={styles.likeIcon} />}
+                  width={"14rem"}
+                  text={"지금 웹페이지 생성하기!"}
+                  background={"#000"}
+                  border={"#000"}
+                  textColor={"#fff"}
+                  onClick={() => router.push("/")}
+                />
+              </>
             ) : (
               sortedTemplates.map((template) => (
                 <div key={template.id} className={styles.card}>

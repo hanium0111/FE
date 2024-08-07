@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import Link from "next/link";
 import styles from "./Header.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
 import {
   faBars,
   faArrowRightToBracket,
