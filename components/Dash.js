@@ -509,13 +509,18 @@ export default function Dash() {
                             className={`${styles.cardShareStateCircle} ${
                               template.shared ? styles.shared : ""
                             }`}
-                            data-tip={
+                            data-tooltip-id={`tooltip-${template.id}`}
+                            data-tooltip-content={
                               template.shared
                                 ? "템플릿으로 공유중입니다."
                                 : "공유하고 있지 않습니다."
                             }
                           ></div>
-                          <Tooltip place="top" effect="solid" />
+                          <Tooltip
+                            id={`tooltip-${template.id}`}
+                            place="top"
+                            effect="solid"
+                          />
                         </div>
                       </div>
                     </div>
