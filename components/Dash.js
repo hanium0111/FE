@@ -46,6 +46,7 @@ export default function Dash() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalContent, setModalContent] = useState("");
   const [showDeployed, setShowDeployed] = useState(true);
+  const [showShared, setShowShared] = useState(true);
   const [dropdownOpen, setDropdownOpen] = useState(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isRenameModalOpen, setIsRenameModalOpen] = useState(false);
@@ -108,7 +109,8 @@ export default function Dash() {
     .filter((template) =>
       template.projectName.toLowerCase().includes(searchQuery.toLowerCase())
     )
-    .filter((template) => (showDeployed ? !template.deploy : true));
+    .filter((template) => (showDeployed ? !template.deploy : true))
+    .filter((template) => (showShared ? template.shared : true));
 
   const sortedTemplates = filteredTemplates.sort((a, b) => {
     if (sortOrder === "최신순") {
@@ -435,6 +437,19 @@ export default function Dash() {
                 <span className={styles.slider}></span>
               </label>
             </div>
+            <div className={styles.switchContainer}>
+              <label className={styles.switchLabel}>
+                {showShared ? "템플릿으로 공유중" : "모든 상태"}
+              </label>
+              <label className={styles.switch}>
+                <input
+                  type="checkbox"
+                  checked={showShared}
+                  onChange={() => setShowShared((prev) => !prev)}
+                />
+                <span className={styles.slider}></span>
+              </label>
+            </div>
           </div>
           <div className={styles.sectionRight}>
             <div className={styles.searchWrap}>
@@ -483,6 +498,15 @@ export default function Dash() {
                     </div>
                     <div className={styles.cardHeaderInfo}>
                       <div className={styles.cardUser}>{displayName}</div>
+                      <div className={styles.cardShareState}>
+                        <div className={styles.cardShareState}>
+                          <div
+                            className={`${styles.cardShareStateCircle} ${
+                              template.shared ? styles.shared : ""
+                            }`}
+                          ></div>
+                        </div>{" "}
+                      </div>
                     </div>
                     <div
                       className={styles.cardMenu}

@@ -60,10 +60,8 @@ export default function DashTest() {
   const [displayName, setDisplayName] = useState("사용자");
 
   useEffect(() => {
-    // 실제 프로필 데이터 로드 코드
     const fetchProfileData = async () => {
       try {
-        // 여기에 실제 API 호출 코드를 넣을 수 있음
         setProfileImage("/profile.png");
         setDisplayName("사용자");
       } catch (error) {
@@ -534,6 +532,13 @@ export default function DashTest() {
                     </div>
                     <div className={styles.cardHeaderInfo}>
                       <div className={styles.cardUser}>{displayName}</div>
+                      <div className={styles.cardShareState}>
+                        <div
+                          className={`${styles.cardShareStateCircle} ${
+                            template.shared ? styles.shared : ""
+                          }`}
+                        ></div>{" "}
+                      </div>
                     </div>
                     <div
                       className={styles.cardMenu}
