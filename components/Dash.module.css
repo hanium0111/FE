@@ -91,6 +91,8 @@
   display: flex;
   margin-left: 1rem;
   flex-direction: row;
+  display: flex;
+  justify-content: space-between;
 }
 
 .cardTitle {
@@ -105,11 +107,9 @@
 .cardUser {
   font-weight: bold;
   font-size: 1rem;
-  width: 90%;
 }
 
 .cardShareState {
-  width: 10%;
   display: flex;
   justify-content: center;
   align-items: center;

@@ -537,7 +537,7 @@ export default function DashTest() {
                           className={`${styles.cardShareStateCircle} ${
                             template.shared ? styles.shared : ""
                           }`}
-                        ></div>{" "}
+                        ></div>
                       </div>
                     </div>
                     <div
