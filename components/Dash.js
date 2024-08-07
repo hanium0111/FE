@@ -256,6 +256,7 @@ export default function Dash() {
 
       console.log("Template shared successfully:", sharedTemplate);
       closeShareModal();
+      router.push("/temp");
     } catch (error) {
       console.error("Failed to share template:", error);
       setModalContent("템플릿 공유에 실패했습니다.");
@@ -265,8 +266,6 @@ export default function Dash() {
 
   const handleStopSharingTemplate = async (template) => {
     try {
-      setSelectedTemplate(template);
-
       const res = await fetch(
         `https://1am11m.store/dashboards/dashboard/${selectedTemplate.id}/share-stop`,
         {
