@@ -27,7 +27,14 @@ const DropdownMenu = ({
           </button>
         </>
       ) : isShared ? (
-        <button onClick={onStopSharing}>템플릿 공유 중지</button>
+        <button
+          onClick={() => {
+            setSelectedTemplate(selectedTemplate);
+            onStopSharing();
+          }}
+        >
+          템플릿 공유 중지
+        </button>
       ) : (
         <button onClick={onDeploy}>템플릿으로 공유</button>
       )}
@@ -37,7 +44,6 @@ const DropdownMenu = ({
     </div>
   );
 };
-
 export default function Dash() {
   const router = useRouter();
   const [templates, setTemplates] = useState([]);
@@ -284,6 +290,14 @@ export default function Dash() {
       }
 
       console.log("Template sharing stopped successfully:", selectedTemplate);
+
+      setTemplates((prevTemplates) =>
+        prevTemplates.map((template) =>
+          template.id === selectedTemplate.id
+            ? { ...template, shared: false }
+            : template
+        )
+      );
     } catch (error) {
       console.error("Failed to stop sharing template:", error);
       alert("템플릿 공유 중지에 실패했습니다.");

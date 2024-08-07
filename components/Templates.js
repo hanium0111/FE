@@ -289,8 +289,8 @@ export default function Templates({ showMoreButton, showCategories }) {
                         alt="profile"
                         layout="fill"
                         src={
-                          template.profileImage
-                            ? template.profileImage
+                          template.profileImageUrl
+                            ? template.profileImageUrl
                             : "/profile.png"
                         }
                       />
