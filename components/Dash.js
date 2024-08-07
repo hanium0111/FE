@@ -16,6 +16,7 @@ const DropdownMenu = ({
   onUse,
   onRename,
   onStopSharing,
+  setSelectedTemplate, // 여기에 추가
 }) => {
   return (
     <div className={styles.dropdownMenu}>
@@ -44,6 +45,7 @@ const DropdownMenu = ({
     </div>
   );
 };
+
 export default function Dash() {
   const router = useRouter();
   const [templates, setTemplates] = useState([]);
@@ -546,6 +548,7 @@ export default function Dash() {
                             setSelectedTemplate(template);
                             handleStopSharingTemplate();
                           }}
+                          setSelectedTemplate={setSelectedTemplate}
                         />
                       )}
                     </div>
