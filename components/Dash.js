@@ -45,8 +45,8 @@ export default function Dash() {
   const [searchQuery, setSearchQuery] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalContent, setModalContent] = useState("");
-  const [showDeployed, setShowDeployed] = useState(true);
-  const [showShared, setShowShared] = useState(true);
+  const [showDeployed, setShowDeployed] = useState(false);
+  const [showShared, setShowShared] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isRenameModalOpen, setIsRenameModalOpen] = useState(false);
@@ -425,7 +425,7 @@ export default function Dash() {
             />
             <div className={styles.switchContainer}>
               <label className={styles.switchLabel}>
-                {showDeployed ? "배포 대기" : "모든 상태"}
+                {showDeployed ? "배포 완료" : "배포: 모든 상태"}
               </label>
               <label className={styles.switch}>
                 <input
@@ -438,7 +438,7 @@ export default function Dash() {
             </div>
             <div className={styles.switchContainer}>
               <label className={styles.switchLabel}>
-                {showShared ? "템플릿으로 공유중" : "모든 상태"}
+                {showShared ? "템플릿으로 공유중" : "공유: 모든 상태"}
               </label>
               <label className={styles.switch}>
                 <input
