@@ -6,7 +6,7 @@ import Image from "next/image";
 import Btn from "./Btn";
 import Modal from "react-modal";
 import { SkeletonDash } from "./Skeleton";
-import ReactTooltip from "react-tooltip";
+import { Tooltip } from "react-tooltip";
 
 const DropdownMenu = ({
   isDeployed,
@@ -515,7 +515,7 @@ export default function Dash() {
                                 : "공유하고 있지 않습니다."
                             }
                           ></div>
-                          <ReactTooltip place="top" effect="solid" />
+                          <Tooltip place="top" effect="solid" />
                         </div>
                       </div>
                     </div>
