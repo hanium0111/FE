@@ -9,11 +9,13 @@ import { SkeletonDash } from "./Skeleton";
 
 const DropdownMenu = ({
   isDeployed,
+  isShared,
   onEdit,
   onDelete,
   onDeploy,
   onUse,
   onRename,
+  onStopSharing,
 }) => {
   return (
     <div className={styles.dropdownMenu}>
@@ -24,12 +26,12 @@ const DropdownMenu = ({
             배포 링크 공유
           </button>
         </>
+      ) : isShared ? (
+        <button onClick={onStopSharing}>템플릿 공유 중지</button>
       ) : (
-        <>
-          <button onClick={onDeploy}>템플릿으로 공유</button>
-          <button onClick={onEdit}>프로젝트 편집</button>
-        </>
+        <button onClick={onDeploy}>템플릿으로 공유</button>
       )}
+      <button onClick={onEdit}>프로젝트 편집</button>
       <button onClick={onDelete}>프로젝트 삭제</button>
       <button onClick={onRename}>이름 변경</button>
     </div>
@@ -259,6 +261,35 @@ export default function Dash() {
     }
   };
 
+  const handleStopSharingTemplate = async () => {
+    try {
+      const res = await fetch(
+        `https://1am11m.store/dashboards/dashboard/${selectedTemplate.id}/share-stop`,
+        {
+          method: "DELETE",
+          credentials: "include",
+        }
+      );
+
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }
+
+      setTemplates((prevTemplates) =>
+        prevTemplates.map((template) =>
+          template.id === selectedTemplate.id
+            ? { ...template, shared: false }
+            : template
+        )
+      );
+
+      console.log("Template sharing stopped successfully:", selectedTemplate);
+    } catch (error) {
+      console.error("Failed to stop sharing template:", error);
+      alert("템플릿 공유 중지에 실패했습니다.");
+    }
+  };
+
   const toggleDropdown = (id) => {
     setDropdownOpen(dropdownOpen === id ? null : id);
   };
@@ -468,12 +499,16 @@ export default function Dash() {
                       {dropdownOpen === template.id && (
                         <DropdownMenu
                           isDeployed={template.deploy}
+                          isShared={template.shared}
                           onShare={() => console.log("배포 링크 공유")}
                           onUse={() => console.log("Use")}
                           onDeploy={() => openShareModal(template)}
                           onEdit={() => console.log("Edit")}
                           onRename={() => openRenameModal(template)}
                           onDelete={() => openDeleteModal(template)}
+                          onStopSharing={() =>
+                            handleStopSharingTemplate(template)
+                          }
                         />
                       )}
                     </div>
