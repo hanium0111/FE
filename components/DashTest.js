@@ -38,7 +38,7 @@ const DropdownMenu = ({
   );
 };
 
-export default function Dash() {
+export default function DashTest() {
   const router = useRouter();
   const [templates, setTemplates] = useState([]);
   const [sortOrder, setSortOrder] = useState("최신순");
@@ -57,20 +57,15 @@ export default function Dash() {
   const [loading, setLoading] = useState(true);
   const [dashStructure, setDashStructure] = useState([]);
   const [profileImage, setProfileImage] = useState("/profile.png");
-  const [displayName, setDisplayName] = useState("");
+  const [displayName, setDisplayName] = useState("사용자");
 
   useEffect(() => {
+    // 실제 프로필 데이터 로드 코드
     const fetchProfileData = async () => {
       try {
-        const response = await fetch("https://1am11m.store/auth/profile", {
-          credentials: "include",
-        });
-        const data = await response.json();
-
-        if (response.ok) {
-          setProfileImage(data.profileImageUrl || "/profile.png");
-          setDisplayName(data.displayName || "사용자");
-        }
+        // 여기에 실제 API 호출 코드를 넣을 수 있음
+        setProfileImage("/profile.png");
+        setDisplayName("사용자");
       } catch (error) {
         console.error("Error fetching profile data:", error);
       }
@@ -80,28 +75,82 @@ export default function Dash() {
   }, []);
 
   useEffect(() => {
-    const fetchDash = async () => {
-      try {
-        const res = await fetch(
-          "https://1am11m.store/dashboards/dashboard/mydashboard",
-          {
-            method: "GET",
-            credentials: "include",
-          }
-        );
-        if (!res.ok) {
-          throw new Error(`HTTP error! status: ${res.status}`);
-        }
-        const data = await res.json();
-        setTemplates(data);
-        setDashStructure(new Array(data.length).fill(null));
-        setLoading(false);
-      } catch (error) {
-        console.error("Failed to fetch fetchDash:", error);
-        setLoading(false);
-      }
-    };
-    fetchDash();
+    // 임의의 데이터 로드
+    const mockData = [
+      {
+        id: 81,
+        projectName: "ㅁㅁ",
+        projectPath:
+          "/copied_userTemplates/ㅁㅁ_oys128950@gmail.com_1722933381497",
+        imagePath:
+          "/page_screenshots/ㅁㅁ_oys128950@gmail.com_1722933381497.png",
+        shared: false,
+        email: "oys128950@gmail.com",
+        likes: 0,
+        publish: false,
+        websiteType: "기업 웹사이트",
+        features: "",
+        mood: "",
+        content: "",
+        createdAt: "2024-08-06T08:36:21.000Z",
+        updatedAt: "2024-08-06T08:36:21.000Z",
+      },
+      {
+        id: 82,
+        projectName: "ad",
+        projectPath:
+          "/copied_userTemplates/ad_oys128950@gmail.com_1722933433373",
+        imagePath: "/page_screenshots/ad_oys128950@gmail.com_1722933433373.png",
+        shared: false,
+        email: "oys128950@gmail.com",
+        likes: 0,
+        publish: false,
+        websiteType: "기업 웹사이트",
+        features: "",
+        mood: "",
+        content: "",
+        createdAt: "2024-08-06T08:37:13.000Z",
+        updatedAt: "2024-08-06T08:37:13.000Z",
+      },
+      {
+        id: 83,
+        projectName: "bb",
+        projectPath:
+          "/copied_userTemplates/aa_oys128950@gmail.com_1722933852764",
+        imagePath: "/page_screenshots/aa_oys128950@gmail.com_1722933852764.png",
+        shared: false,
+        email: "oys128950@gmail.com",
+        likes: 0,
+        publish: false,
+        websiteType: "비즈니스",
+        features: "",
+        mood: "",
+        content: "",
+        createdAt: "2024-08-06T08:44:12.000Z",
+        updatedAt: "2024-08-06T08:56:23.000Z",
+      },
+      {
+        id: 84,
+        projectName: "xx",
+        projectPath:
+          "/copied_userTemplates/xx_oys128950@gmail.com_1722933865615",
+        imagePath: "/page_screenshots/xx_oys128950@gmail.com_1722933865615.png",
+        shared: true,
+        email: "oys128950@gmail.com",
+        likes: 0,
+        publish: false,
+        websiteType: "기업 웹사이트",
+        features: "",
+        mood: "",
+        content: "",
+        createdAt: "2024-08-06T08:44:25.000Z",
+        updatedAt: "2024-08-07T06:21:49.000Z",
+      },
+    ];
+
+    setTemplates(mockData);
+    setDashStructure(new Array(mockData.length).fill(null));
+    setLoading(false);
   }, []);
 
   const filteredTemplates = templates
@@ -112,7 +161,7 @@ export default function Dash() {
 
   const sortedTemplates = filteredTemplates.sort((a, b) => {
     if (sortOrder === "최신순") {
-      return new Date(b.date) - new Date(a.date);
+      return new Date(b.updatedAt) - new Date(a.updatedAt);
     } else if (sortOrder === "인기순") {
       return b.likes - a.likes;
     }
@@ -261,10 +310,8 @@ export default function Dash() {
     }
   };
 
-  const handleStopSharingTemplate = async (template) => {
+  const handleStopSharingTemplate = async () => {
     try {
-      setSelectedTemplate(template);
-
       const res = await fetch(
         `https://1am11m.store/dashboards/dashboard/${selectedTemplate.id}/share-stop`,
         {
@@ -276,11 +323,15 @@ export default function Dash() {
       if (!res.ok) {
         throw new Error(`HTTP error! status: ${res.status}`);
       }
+
       setTemplates((prevTemplates) =>
-        prevTemplates.map((t) =>
-          t.id === template.id ? { ...t, shared: false } : t
+        prevTemplates.map((template) =>
+          template.id === selectedTemplate.id
+            ? { ...template, shared: false }
+            : template
         )
       );
+
       console.log("Template sharing stopped successfully:", selectedTemplate);
     } catch (error) {
       console.error("Failed to stop sharing template:", error);
