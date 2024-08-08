@@ -4,10 +4,9 @@ import Btn from "./Btn";
 
 export default function GenerateBox({ projectPath }) {
   const [content, setContent] = useState("");
-  const [cssContent, setCssContent] = useState([]);
-  const [jsContent, setJsContent] = useState([]);
+  const [cssContent, setCssContent] = useState("");
+  const [jsContent, setJsContent] = useState("");
   const [htmlLoaded, setHtmlLoaded] = useState(false);
-  const [imageContent, setImageContent] = useState([]);
   const iframeRef = useRef(null);
   const highlightedElementRef = useRef(null);
 
@@ -52,44 +51,52 @@ export default function GenerateBox({ projectPath }) {
   };
 
   useEffect(() => {
-    if (!projectPath) return;
     const fetchFiles = async () => {
+      if (!projectPath) return;
+
       const structure = await fetchStructure();
-      const cssFiles = structure
-        .filter((file) => file.name.endsWith(".css"))
-        .map((file) => file.path);
-      const jsFiles = structure
-        .filter((file) => file.name.endsWith(".js"))
-        .map((file) => file.path);
-      const imageFiles = structure
-        .filter(
-          (file) =>
-            !file.isDirectory &&
-            /\.(jpg|jpeg|png|gif|svg|webp|woff|woff2|ttf)$/.test(file.name)
-        )
-        .map((file) => file.path);
+      const cssFile = structure.find((file) => file.name.endsWith(".css"));
+      const jsFile = structure.find((file) => file.name.endsWith(".js"));
 
-      const cssContents = await Promise.all(cssFiles.map(fetchFile));
-      const jsContents = await Promise.all(jsFiles.map(fetchFile));
-      const imageContents = await Promise.all(imageFiles.map(fetchFile));
+      if (cssFile) {
+        const cssContent = await fetchFile(cssFile.path);
+        setCssContent(cssContent.content);
+      }
 
-      setCssContent(cssContents.map((file) => file.content));
-      setJsContent(jsContents.map((file) => file.content));
-      setImageContent(
-        imageContents.map((file) => ({
-          name: file.name,
-          content: file.isBinary ? `/temp/${file.name}` : file.content,
-        }))
-      );
+      if (jsFile) {
+        const jsContent = await fetchFile(jsFile.path);
+        setJsContent(jsContent.content);
+      }
 
       const htmlContent = await fetchFile(`${projectPath}/index.html`);
-
       setContent(htmlContent.content);
       setHtmlLoaded(true);
     };
 
     fetchFiles();
-  }, []);
+  }, [projectPath]);
+
+  const createMarkup = () => {
+    if (!htmlLoaded) return "";
+
+    const cssStyleTag = `<style>${cssContent}</style>`;
+    const jsScriptTag = `<script>${jsContent}</script>`;
+    const fullContent = `
+      <html>
+        <head>
+          ${cssStyleTag}
+        </head>
+        <body>
+          ${content}
+          ${jsScriptTag}
+        </body>
+      </html>
+    `;
+
+    console.log(fullContent);
+
+    return fullContent;
+  };
 
   useEffect(() => {
     const handleIframeLoad = () => {
@@ -118,45 +125,6 @@ export default function GenerateBox({ projectPath }) {
       };
     }
   }, [htmlLoaded]);
-
-  const createMarkup = () => {
-    if (!htmlLoaded) return "";
-
-    const cssLinks = cssContent
-      .map((css) => `<style>${css}</style>`)
-      .join("\n");
-    const jsScripts = jsContent
-      .map((js) => `<script>${js}</script>`)
-      .join("\n");
-    const imageReplacements = imageContent.reduce((acc, { name, content }) => {
-      acc[name] = content;
-      return acc;
-    }, {});
-
-    let finalContent = content;
-    Object.keys(imageReplacements).forEach((imageName) => {
-      finalContent = finalContent.replace(
-        new RegExp(imageName, "g"),
-        imageReplacements[imageName]
-      );
-    });
-
-    const fullContent = `
-      <html>
-        <head>
-          ${cssLinks}
-        </head>
-        <body>
-          ${finalContent}
-          ${jsScripts}
-        </body>
-      </html>
-    `;
-
-    console.log(fullContent);
-
-    return fullContent;
-  };
 
   return (
     <div className={styles.wrap}>
