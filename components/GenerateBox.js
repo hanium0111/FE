@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import styles from "./GenerateBox.module.css";
 import Btn from "./Btn";
 
-export default function GenerateBox() {
+export default function GenerateBox({ projectPath }) {
   const [content, setContent] = useState("");
   const [cssContent, setCssContent] = useState([]);
   const [jsContent, setJsContent] = useState([]);
@@ -45,13 +45,14 @@ export default function GenerateBox() {
 
   const fetchStructure = async () => {
     const res = await fetch(
-      `https://1am11m.store/user-templates/directory?dirPath=copied_userTemplates/test`
+      `https://1am11m.store/user-templates/directory?dirPath=${projectPath}`
     );
     const data = await res.json();
     return data;
   };
 
   useEffect(() => {
+    if (!projectPath) return;
     const fetchFiles = async () => {
       const structure = await fetchStructure();
       const cssFiles = structure
@@ -81,9 +82,8 @@ export default function GenerateBox() {
         }))
       );
 
-      const htmlContent = await fetchFile(
-        "copied_userTemplates/test/index.html"
-      );
+      const htmlContent = await fetchFile(`${projectPath}/index.html`);
+
       setContent(htmlContent.content);
       setHtmlLoaded(true);
     };

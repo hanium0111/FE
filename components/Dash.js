@@ -153,6 +153,10 @@ export default function Dash() {
 
   const handleEditTemplate = (template) => {
     console.log("프로젝트 경로:", template.projectPath);
+    router.push({
+      pathname: "/gen",
+      query: { projectPath: template.projectPath },
+    });
   };
 
   const handleDeleteTemplate = async () => {
