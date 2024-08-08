@@ -38,7 +38,7 @@ const DropdownMenu = ({
       ) : (
         <button onClick={onDeploy}>템플릿으로 공유</button>
       )}
-      <button onClick={onEdit}>프로젝트 편집</button>
+      <button onClick={() => onEdit(template)}>프로젝트 편집</button>
       <button onClick={onDelete}>프로젝트 삭제</button>
       <button onClick={onRename}>이름 변경</button>
     </div>
@@ -149,6 +149,10 @@ export default function Dash() {
 
   const closeDeleteModal = () => {
     setIsDeleteModalOpen(false);
+  };
+
+  const handleEditTemplate = (template) => {
+    console.log("프로젝트 경로:", template.projectPath);
   };
 
   const handleDeleteTemplate = async () => {
@@ -545,7 +549,7 @@ export default function Dash() {
                           onShare={() => console.log("배포 링크 공유")}
                           onUse={() => console.log("Use")}
                           onDeploy={() => openShareModal(template)}
-                          onEdit={() => console.log("Edit")}
+                          onEdit={handleEditTemplate}
                           onRename={() => openRenameModal(template)}
                           onDelete={() => openDeleteModal(template)}
                           onStopSharing={handleStopSharingTemplate}
