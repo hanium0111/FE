@@ -20,6 +20,8 @@ export default function Templates({ showMoreButton, showCategories }) {
   const [loading, setLoading] = useState(true);
   const [templateStructure, setTemplateStructure] = useState([]);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [categories, setCategories] = useState(["모든 카테고리"]);
+
   const router = useRouter();
 
   useEffect(() => {
@@ -36,6 +38,12 @@ export default function Templates({ showMoreButton, showCategories }) {
         }
         const data = await res.json();
         setTemplates(data);
+        const extractedCategories = [
+          "모든 카테고리",
+          ...new Set(data.map((template) => template.category)),
+        ];
+        setCategories(extractedCategories);
+
         setTemplateStructure(new Array(data.length).fill(null));
         setLoading(false);
       } catch (error) {
@@ -43,7 +51,6 @@ export default function Templates({ showMoreButton, showCategories }) {
         setLoading(false);
       }
     };
-
     fetchTemplates();
   }, []);
 
@@ -68,22 +75,6 @@ export default function Templates({ showMoreButton, showCategories }) {
 
     checkLoginStatus();
   }, []);
-
-  const categories = [
-    "모든 카테고리",
-    "웹 디자인",
-    "포트폴리오",
-    "이커머스",
-    "블로그",
-    "포럼",
-    "포토 갤러리",
-    "기업",
-    "제품 소개",
-    "이벤트",
-    "뉴스레터",
-    "커뮤니티",
-    "비즈니스",
-  ];
 
   const filteredTemplates = templates
     .filter(
