@@ -4,11 +4,10 @@ import Btn from "./Btn";
 
 export default function GenerateBox({ projectPath }) {
   const [content, setContent] = useState("");
-  const [cssContent, setCssContent] = useState("");
+  const [cssFilePath, setCssFilePath] = useState("");
   const [jsContent, setJsContent] = useState("");
   const [htmlLoaded, setHtmlLoaded] = useState(false);
   const iframeRef = useRef(null);
-  const highlightedElementRef = useRef(null);
 
   const cleanContent = (content) => {
     return content
@@ -30,16 +29,10 @@ export default function GenerateBox({ projectPath }) {
     if (res.ok) {
       let content = await res.text();
       content = cleanContent(content);
-      const isBinary = /\.(jpg|jpeg|png|gif|svg|webp|woff|woff2|ttf)$/.test(
-        filename
-      );
-      return {
-        content: isBinary ? content : content,
-        isBinary,
-        name: filename,
-      };
+      console.log("Fetched Content for:", filename, content);
+      return { content, name: filename };
     }
-    return { content: "", isBinary: false, name: filename };
+    return { content: "", name: filename };
   };
 
   const fetchStructure = async () => {
@@ -59,8 +52,7 @@ export default function GenerateBox({ projectPath }) {
       const jsFile = structure.find((file) => file.name.endsWith(".js"));
 
       if (cssFile) {
-        const cssContent = await fetchFile(cssFile.path);
-        setCssContent(cssContent.content);
+        setCssFilePath(cssFile.path);
       }
 
       if (jsFile) {
@@ -79,19 +71,19 @@ export default function GenerateBox({ projectPath }) {
   const createMarkup = () => {
     if (!htmlLoaded) return "";
 
-    const cssStyleTag = `<style>${cssContent}</style>`;
+    const cssLinkTag = `<link rel="stylesheet" type="text/css" href="https://1am11m.store${cssFilePath}">`;
     const jsScriptTag = `<script>${jsContent}</script>`;
     const fullContent = `
-      <html>
-        <head>
-          ${cssStyleTag}
-        </head>
-        <body>
-          ${content}
-          ${jsScriptTag}
-        </body>
-      </html>
-    `;
+            <html>
+                <head>
+                    ${cssLinkTag}
+                </head>
+                <body>
+                    ${content}
+                    ${jsScriptTag}
+                </body>
+            </html>
+        `;
 
     console.log(fullContent);
 
@@ -106,14 +98,6 @@ export default function GenerateBox({ projectPath }) {
 
       iframeDoc.body.addEventListener("click", (event) => {
         console.log(event.target);
-
-        if (highlightedElementRef.current) {
-          highlightedElementRef.current.style.border = "";
-        }
-
-        event.target.style.border = "2px solid #4629f2";
-
-        highlightedElementRef.current = event.target;
       });
     };
 
