@@ -292,6 +292,10 @@ export default function Dash() {
     }
   };
 
+  const closeDeleteModal = () => {
+    setIsDeleteModalOpen(false);
+  };
+
   const openShareModal = (template) => {
     setSelectedTemplate(template);
     setIsShareModalOpen(true);
