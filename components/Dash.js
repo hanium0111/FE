@@ -294,6 +294,11 @@ export default function Dash() {
     }
   };
 
+  const openDeleteModal = (template) => {
+    setSelectedTemplate(template);
+    setIsDeleteModalOpen(true);
+  };
+
   const closeDeleteModal = () => {
     setIsDeleteModalOpen(false);
   };
@@ -629,7 +634,7 @@ export default function Dash() {
                           onUndeploy={handleUndeployTemplate} // 배포 중지
                           onEdit={handleEditTemplate} // 편집하기
                           onRename={() => openRenameModal(template)} //이름 변경
-                          onDelete={() => openDeleteModal(template)} //삭제하기
+                          onDelete={handleDeleteTemplate} //삭제하기
                           onStopSharing={handleStopSharingTemplate} //공유 중지
                           template={template} //템플릿 데이터
                         />
