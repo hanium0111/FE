@@ -17,6 +17,7 @@ const DropdownMenu = ({
   onEdit,
   onDelete,
   onDeploy,
+  onUndeploy,
   onUse,
   onRename,
   onStopSharing,
@@ -27,6 +28,7 @@ const DropdownMenu = ({
       {isDeployed ? (
         <>
           <button onClick={onUse}>템플릿 사용</button>
+          <button onClick={onUndeploy}>배포 중지</button>
           <button onClick={() => console.log("배포 링크 공유")}>
             배포 링크 공유
           </button>
@@ -50,8 +52,9 @@ export default function Dash() {
   const [templates, setTemplates] = useState([]);
   const [sortOrder, setSortOrder] = useState("최신순");
   const [searchQuery, setSearchQuery] = useState("");
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isDeployModalOpen, setIsDeployModalOpen] = useState(false);
   const [modalContent, setModalContent] = useState("");
+  const [deployName, setDeployName] = useState("");
   const [showDeployed, setShowDeployed] = useState(false);
   const [showShared, setShowShared] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(null);
@@ -66,7 +69,7 @@ export default function Dash() {
   const [dashStructure, setDashStructure] = useState([]);
   const [profileImage, setProfileImage] = useState("/profile.png");
   const [displayName, setDisplayName] = useState("");
-  const [imageLoading, setImageLoading] = useState({}); // 이미지 로딩 상태 관리
+  const [imageLoading, setImageLoading] = useState({});
 
   useEffect(() => {
     const fetchProfileData = async () => {
@@ -133,22 +136,76 @@ export default function Dash() {
     return new Date(dateString).toISOString().split("T")[0];
   };
 
-  const openModal = (content) => {
-    setModalContent(content);
-    setIsModalOpen(true);
-  };
-
-  const closeModal = () => {
-    setIsModalOpen(false);
-  };
-
-  const openDeleteModal = (template) => {
+  const openDeployModal = (template) => {
     setSelectedTemplate(template);
-    setIsDeleteModalOpen(true);
+    setIsDeployModalOpen(true);
   };
 
-  const closeDeleteModal = () => {
-    setIsDeleteModalOpen(false);
+  const closeDeployModal = () => {
+    setIsDeployModalOpen(false);
+  };
+
+  const handleDeployTemplate = async () => {
+    if (!deployName.trim()) {
+      alert("배포할 이름을 입력하세요.");
+      return;
+    }
+
+    try {
+      const res = await fetch("https://1am11m.store/deploy/deploy", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ deployName, dashboardId: selectedTemplate.id }),
+        credentials: "include",
+      });
+
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }
+
+      const updatedTemplate = await res.json();
+      setTemplates((prevTemplates) =>
+        prevTemplates.map((t) =>
+          t.id === updatedTemplate.id ? { ...t, deploy: true } : t
+        )
+      );
+
+      alert("배포가 성공적으로 완료되었습니다.");
+      closeDeployModal();
+    } catch (error) {
+      console.error("Failed to deploy template:", error);
+      alert("배포에 실패했습니다.");
+    }
+  };
+
+  const handleUndeployTemplate = async () => {
+    try {
+      const res = await fetch("https://1am11m.store/deploy/undeploy", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ dashboardId: selectedTemplate.id }),
+        credentials: "include",
+      });
+
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }
+
+      setTemplates((prevTemplates) =>
+        prevTemplates.map((t) =>
+          t.id === selectedTemplate.id ? { ...t, deploy: false } : t
+        )
+      );
+
+      alert("배포가 중지되었습니다.");
+    } catch (error) {
+      console.error("Failed to undeploy template:", error);
+      alert("배포 중지에 실패했습니다.");
+    }
   };
 
   const handleEditTemplate = (template) => {
@@ -247,7 +304,7 @@ export default function Dash() {
   const handleShareTemplate = async () => {
     if (!category.trim() || !description.trim()) {
       setModalContent("카테고리와 설명을 입력해주세요.");
-      setIsModalOpen(true);
+      setIsDeployModalOpen(true);
       return;
     }
 
@@ -276,7 +333,7 @@ export default function Dash() {
     } catch (error) {
       console.error("Failed to share template:", error);
       setModalContent("템플릿 공유에 실패했습니다.");
-      setIsModalOpen(true);
+      setIsDeployModalOpen(true);
     }
   };
 
@@ -408,15 +465,27 @@ export default function Dash() {
       </Modal>
 
       <Modal
-        isOpen={isModalOpen}
-        onRequestClose={closeModal}
+        isOpen={isDeployModalOpen}
+        onRequestClose={closeDeployModal}
         style={customStyles}
       >
-        <h1>알림</h1>
-        <p>{modalContent}</p>
+        <h1>배포할 이름을 입력하세요</h1>
+        <input
+          className={styles.pageinputform}
+          type="text"
+          placeholder="배포 이름 입력.."
+          value={deployName}
+          onChange={(e) => setDeployName(e.target.value)}
+        />
         <div className={styles.modalButtons}>
-          <button onClick={closeModal} className={styles.confirmButton}>
-            닫기
+          <button
+            onClick={handleDeployTemplate}
+            className={styles.confirmButton}
+          >
+            확인
+          </button>
+          <button onClick={closeDeployModal} className={styles.cancelButton}>
+            취소
           </button>
         </div>
       </Modal>
@@ -552,7 +621,8 @@ export default function Dash() {
                           isShared={template.shared}
                           onShare={() => console.log("배포 링크 공유")}
                           onUse={() => console.log("Use")}
-                          onDeploy={() => openShareModal(template)}
+                          onDeploy={() => openDeployModal(template)}
+                          onUndeploy={handleUndeployTemplate}
                           onEdit={handleEditTemplate}
                           onRename={() => openRenameModal(template)}
                           onDelete={() => openDeleteModal(template)}
@@ -606,7 +676,7 @@ export default function Dash() {
                         border={"#E0E0E0"}
                         textColor={"#7D7D7D"}
                         width="7rem"
-                        onClick={() => openModal(template.description)}
+                        onClick={() => openDeployModal(template)}
                       />
                     ) : (
                       <Btn
@@ -615,7 +685,7 @@ export default function Dash() {
                         border={"#4629F2"}
                         textColor={"#fff"}
                         width="7rem"
-                        onClick={() => openModal(template.description)}
+                        onClick={() => openDeployModal(template)}
                       />
                     )}
                   </div>
