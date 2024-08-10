@@ -18,7 +18,7 @@ const DropdownMenu = ({
   onDelete, // 삭제
   onDeploy, // 배포하기
   onUndeploy, // 배포 중지
-  onShare, //배포하기
+  onShare, //공유하기
   onStopSharing, // 템플릿 공유 중지
   onRename, // 이름 변경
   template, // 선택한 템플릿 정보
@@ -69,6 +69,7 @@ export default function Dash() {
   const [profileImage, setProfileImage] = useState("/profile.png");
   const [displayName, setDisplayName] = useState("");
   const [imageLoading, setImageLoading] = useState({});
+  const [deployLoading, setDeployLoading] = useState(false);
 
   useEffect(() => {
     const fetchProfileData = async () => {
@@ -488,8 +489,9 @@ export default function Dash() {
           <button
             onClick={handleDeployTemplate}
             className={styles.confirmButton}
+            disabled={deployLoading}
           >
-            확인
+            {deployLoading ? <FontAwesomeIcon icon={faSpinner} spin /> : "확인"}
           </button>
           <button onClick={closeDeployModal} className={styles.cancelButton}>
             취소
@@ -624,7 +626,7 @@ export default function Dash() {
                       </button>
                       {dropdownOpen === template.id && (
                         <DropdownMenu
-                          isDeployed={template.deploy} //배포 상태
+                          isDeployed={template.publish} //배포 상태
                           isShared={template.shared} //공유 상태
                           onShare={() => openShareModal(template)} //공유하기
                           onDeploy={() => openDeployModal(template)} //배포하기
@@ -686,12 +688,19 @@ export default function Dash() {
                       />
                     ) : (
                       <Btn
-                        text={"배포하기"}
+                        text={
+                          deployLoading ? (
+                            <FontAwesomeIcon icon={faSpinner} spin />
+                          ) : (
+                            "배포하기"
+                          )
+                        }
                         background={"#4629F2"}
                         border={"#4629F2"}
                         textColor={"#fff"}
                         width="7rem"
                         onClick={() => openDeployModal(template)}
+                        disabled={deployLoading}
                       />
                     )}
                   </div>
