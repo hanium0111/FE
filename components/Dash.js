@@ -183,14 +183,14 @@ export default function Dash() {
     }
   };
 
-  const handleUndeployTemplate = async () => {
+  const handleUndeployTemplate = async (templateId) => {
     try {
       const res = await fetch("https://1am11m.store/deploy/undeploy", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ id: selectedTemplate.id }),
+        body: JSON.stringify({ id: templateId }),
         credentials: "include",
       });
 
