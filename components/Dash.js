@@ -38,7 +38,7 @@ const DropdownMenu = ({
           템플릿 공유 중지
         </button>
       ) : (
-        <button onClick={onDeploy}>템플릿으로 공유</button>
+        <button onClick={onShare}>템플릿으로 공유</button>
       )}
       <button onClick={() => onEdit(template)}>프로젝트 편집</button>
       <button onClick={onDelete}>프로젝트 삭제</button>
