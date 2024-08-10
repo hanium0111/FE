@@ -12,22 +12,22 @@ import { SkeletonDash } from "./Skeleton";
 import { Tooltip } from "react-tooltip";
 
 const DropdownMenu = ({
-  isDeployed,
-  isShared,
-  onEdit,
-  onDelete,
-  onDeploy,
-  onUndeploy,
-  onUse,
-  onRename,
-  onStopSharing,
-  template,
+  isDeployed, //배포 상태
+  isShared, // 템플릿 공유 상태
+  onEdit, // 편집 이동
+  onDelete, // 삭제
+  onDeploy, // 배포하기
+  onUndeploy, // 배포 중지
+  onShare, //배포하기
+  onStopSharing, // 템플릿 공유 중지
+  onRename, // 이름 변경
+  template, // 선택한 템플릿 정보
 }) => {
   return (
     <div className={styles.dropdownMenu}>
+      {/* 배포 상태에 따라 */}
       {isDeployed ? (
         <>
-          <button onClick={onUse}>템플릿 사용</button>
           <button onClick={onUndeploy}>배포 중지</button>
           <button onClick={() => console.log("배포 링크 공유")}>
             배포 링크 공유
@@ -53,7 +53,6 @@ export default function Dash() {
   const [sortOrder, setSortOrder] = useState("최신순");
   const [searchQuery, setSearchQuery] = useState("");
   const [isDeployModalOpen, setIsDeployModalOpen] = useState(false);
-  const [modalContent, setModalContent] = useState("");
   const [deployName, setDeployName] = useState("");
   const [showDeployed, setShowDeployed] = useState(false);
   const [showShared, setShowShared] = useState(false);
@@ -157,7 +156,10 @@ export default function Dash() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ deployName, dashboardId: selectedTemplate.id }),
+        body: JSON.stringify({
+          deployName: deployName,
+          id: selectedTemplate.id,
+        }),
         credentials: "include",
       });
 
@@ -187,7 +189,7 @@ export default function Dash() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ dashboardId: selectedTemplate.id }),
+        body: JSON.stringify({ id: selectedTemplate.id }),
         credentials: "include",
       });
 
@@ -307,8 +309,7 @@ export default function Dash() {
 
   const handleShareTemplate = async () => {
     if (!category.trim() || !description.trim()) {
-      setModalContent("카테고리와 설명을 입력해주세요.");
-      setIsDeployModalOpen(true);
+      alert("카테고리와 설명을 입력해주세요.");
       return;
     }
 
@@ -336,8 +337,8 @@ export default function Dash() {
       router.push("/temp");
     } catch (error) {
       console.error("Failed to share template:", error);
-      setModalContent("템플릿 공유에 실패했습니다.");
-      setIsDeployModalOpen(true);
+      alert("템플릿 공유에 실패했습니다.");
+      setIsShareModalOpen(true);
     }
   };
 
@@ -621,17 +622,16 @@ export default function Dash() {
                       </button>
                       {dropdownOpen === template.id && (
                         <DropdownMenu
-                          isDeployed={template.deploy}
-                          isShared={template.shared}
-                          onShare={() => console.log("배포 링크 공유")}
-                          onUse={() => console.log("Use")}
-                          onDeploy={() => openDeployModal(template)}
-                          onUndeploy={handleUndeployTemplate}
-                          onEdit={handleEditTemplate}
-                          onRename={() => openRenameModal(template)}
-                          onDelete={() => openDeleteModal(template)}
-                          onStopSharing={handleStopSharingTemplate}
-                          template={template}
+                          isDeployed={template.deploy} //배포 상태
+                          isShared={template.shared} //공유 상태
+                          onShare={() => openShareModal(template)} //공유하기
+                          onDeploy={() => openDeployModal(template)} //배포하기
+                          onUndeploy={handleUndeployTemplate} // 배포 중지
+                          onEdit={handleEditTemplate} // 편집하기
+                          onRename={() => openRenameModal(template)} //이름 변경
+                          onDelete={() => openDeleteModal(template)} //삭제하기
+                          onStopSharing={handleStopSharingTemplate} //공유 중지
+                          template={template} //템플릿 데이터
                         />
                       )}
                     </div>
