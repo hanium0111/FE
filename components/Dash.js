@@ -199,8 +199,8 @@ export default function Dash() {
       }
 
       setTemplates((prevTemplates) =>
-        prevTemplates.map((t) =>
-          t.id === selectedTemplate.id ? { ...t, deploy: false } : t
+        prevTemplates.map((template) =>
+          template.id === templateId ? { ...template, deploy: false } : template
         )
       );
 
