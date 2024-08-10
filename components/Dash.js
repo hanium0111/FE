@@ -227,15 +227,12 @@ export default function Dash() {
           credentials: "include",
         }
       );
-
       if (!res.ok) {
         throw new Error(`HTTP error! status: ${res.status}`);
       }
-
       setTemplates((prevTemplates) =>
         prevTemplates.filter((template) => template.id !== selectedTemplate.id)
       );
-
       console.log("Template deleted successfully:", selectedTemplate);
       closeDeleteModal();
     } catch (error) {
@@ -634,7 +631,7 @@ export default function Dash() {
                           onUndeploy={handleUndeployTemplate} // 배포 중지
                           onEdit={handleEditTemplate} // 편집하기
                           onRename={() => openRenameModal(template)} //이름 변경
-                          onDelete={handleDeleteTemplate} //삭제하기
+                          onDelete={() => openDeleteModal(template)} //삭제하기
                           onStopSharing={handleStopSharingTemplate} //공유 중지
                           template={template} //템플릿 데이터
                         />
