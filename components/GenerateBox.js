@@ -74,16 +74,16 @@ export default function GenerateBox({ projectPath }) {
     const cssLinkTag = `<link rel="stylesheet" type="text/css" href="https://1am11m.store${cssFilePath}">`;
     const jsScriptTag = `<script>${jsContent}</script>`;
     const fullContent = `
-            <html>
-                <head>
-                    ${cssLinkTag}
-                </head>
-                <body>
-                    ${content}
-                    ${jsScriptTag}
-                </body>
-            </html>
-        `;
+      <html>
+        <head>
+          ${cssLinkTag}
+        </head>
+        <body>
+          ${content}
+          ${jsScriptTag}
+        </body>
+      </html>
+    `;
 
     console.log(fullContent);
 
