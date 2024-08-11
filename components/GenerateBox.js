@@ -55,6 +55,7 @@ export default function GenerateBox({ projectPath }) {
     const fetchFiles = async () => {
       if (!projectPath) return;
 
+      // fetchStructure를 먼저 호출하여 파일 목록을 받아온 후에 실행
       await fetchStructure();
 
       // index.html 파일을 우선적으로 로드
@@ -101,7 +102,7 @@ export default function GenerateBox({ projectPath }) {
     };
 
     fetchFiles();
-  }, [projectPath, htmlFiles, cssFiles, jsFiles]);
+  }, [projectPath]);
 
   const createMarkup = () => {
     if (!htmlLoaded) return "";
