@@ -4,8 +4,9 @@ import Btn from "./Btn";
 
 export default function GenerateBox({ projectPath }) {
   const [content, setContent] = useState("");
-  const [cssFilePath, setCssFilePath] = useState("");
-  const [jsContent, setJsContent] = useState("");
+  const [htmlFiles, setHtmlFiles] = useState([]);
+  const [cssFiles, setCssFiles] = useState([]);
+  const [jsFiles, setJsFiles] = useState([]);
   const [htmlLoaded, setHtmlLoaded] = useState(false);
   const iframeRef = useRef(null);
 
@@ -40,75 +41,72 @@ export default function GenerateBox({ projectPath }) {
       `https://1am11m.store/user-templates/directory?dirPath=${projectPath}`
     );
     const data = await res.json();
-    return data;
+
+    const htmlFiles = data.filter((file) => file.name.endsWith(".html"));
+    const cssFiles = data.filter((file) => file.name.endsWith(".css"));
+    const jsFiles = data.filter((file) => file.name.endsWith(".js"));
+
+    setHtmlFiles(htmlFiles);
+    setCssFiles(cssFiles);
+    setJsFiles(jsFiles);
   };
 
   useEffect(() => {
     const fetchFiles = async () => {
       if (!projectPath) return;
 
-      const structure = await fetchStructure();
-      const cssFile = structure.find((file) => file.name.endsWith(".css"));
-      const jsFile = structure.find((file) => file.name.endsWith(".js"));
+      await fetchStructure();
 
-      if (cssFile) {
-        setCssFilePath(cssFile.path);
+      // index.html 파일을 우선적으로 로드
+      const indexFile = htmlFiles.find((file) => file.name === "index.html");
+      if (!indexFile) {
+        console.error("index.html 파일을 찾을 수 없습니다.");
+        return;
       }
 
-      if (jsFile) {
-        const jsContent = await fetchFile(jsFile.path);
-        setJsContent(jsContent.content);
-      }
+      const indexContent = await fetchFile(indexFile.path);
 
-      const htmlContent = await fetchFile(`${projectPath}/index.html`);
-      setContent(htmlContent.content);
+      // CSS와 JS 파일들 로드
+      const cssPromises = cssFiles.map((file) => fetchFile(file.path));
+      const jsPromises = jsFiles.map((file) => fetchFile(file.path));
+
+      const cssContents = await Promise.all(cssPromises);
+      const jsContents = await Promise.all(jsPromises);
+
+      // CSS와 JS를 index.html에 결합
+      const cssLinks = cssContents
+        .map(
+          (cssFile) =>
+            `<link rel="stylesheet" href="https://1am11m.store${cssFile.name}">`
+        )
+        .join("\n");
+      const jsScripts = jsContents
+        .map((jsFile) => `<script>${jsFile.content}</script>`)
+        .join("\n");
+
+      const fullContent = `
+        <html>
+          <head>
+            ${cssLinks}
+          </head>
+          <body>
+            ${indexContent.content}
+            ${jsScripts}
+          </body>
+        </html>
+      `;
+
+      setContent(fullContent);
       setHtmlLoaded(true);
     };
 
     fetchFiles();
-  }, [projectPath]);
+  }, [projectPath, htmlFiles, cssFiles, jsFiles]);
 
   const createMarkup = () => {
     if (!htmlLoaded) return "";
-
-    const cssLinkTag = `<link rel="stylesheet" type="text/css" href="https://1am11m.store${cssFilePath}">`;
-    const jsScriptTag = `<script>${jsContent}</script>`;
-    const fullContent = `
-      <html>
-        <head>
-          ${cssLinkTag}
-        </head>
-        <body>
-          ${content}
-          ${jsScriptTag}
-        </body>
-      </html>
-    `;
-
-    console.log(fullContent);
-
-    return fullContent;
+    return content;
   };
-
-  useEffect(() => {
-    const handleIframeLoad = () => {
-      const iframeDoc =
-        iframeRef.current.contentDocument ||
-        iframeRef.current.contentWindow.document;
-
-      iframeDoc.body.addEventListener("click", (event) => {
-        console.log(event.target);
-      });
-    };
-
-    if (htmlLoaded && iframeRef.current) {
-      const iframe = iframeRef.current;
-      iframe.addEventListener("load", handleIframeLoad);
-      return () => {
-        iframe.removeEventListener("load", handleIframeLoad);
-      };
-    }
-  }, [htmlLoaded]);
 
   return (
     <div className={styles.wrap}>
