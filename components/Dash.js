@@ -120,7 +120,7 @@ export default function Dash() {
     .filter((template) =>
       template.projectName.toLowerCase().includes(searchQuery.toLowerCase())
     )
-    .filter((template) => (showDeployed ? !template.publish : true))
+    .filter((template) => (showDeployed ? template.publish : true))
     .filter((template) => (showShared ? template.shared : true));
 
   const sortedTemplates = filteredTemplates.sort((a, b) => {
