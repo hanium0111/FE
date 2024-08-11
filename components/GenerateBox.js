@@ -81,7 +81,7 @@ export default function GenerateBox({ projectPath }) {
       const cssLinks = cssContents
         .map(
           (cssFile) =>
-            `<link rel="stylesheet" href=https://1am11m.store${cssFile.name}>` // 수정된 부분
+            `<link rel="stylesheet" href=https://1am11m.store${cssFile.name}>`
         )
         .join("\n");
 
