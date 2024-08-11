@@ -151,6 +151,8 @@ export default function Dash() {
       return;
     }
 
+    setDeployLoading(true);
+
     try {
       const res = await fetch("https://1am11m.store/deploy/deploy", {
         method: "POST",
@@ -180,6 +182,7 @@ export default function Dash() {
     } catch (error) {
       console.error("Failed to deploy template:", error);
       alert("배포에 실패했습니다.");
+      setDeployLoading(false);
     }
   };
 
@@ -677,7 +680,7 @@ export default function Dash() {
                       border={"#4629F2"}
                       textColor={"#4629F2"}
                     />
-                    {template.deploy ? (
+                    {template.shared ? (
                       <Btn
                         text={"배포 완료"}
                         background={"#E0E0E0"}
