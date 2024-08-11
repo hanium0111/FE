@@ -86,14 +86,21 @@ export default function GenerateBox({ projectPath }) {
         .join("\n");
 
       const jsScripts = jsContents
-        .map((jsFile) => `<script>${jsFile.content}</script>`)
+        .map(
+          (jsFile) => `<script src=https://1am11m.store${jsFile.name}></script>`
+        )
         .join("\n");
 
-      // HTML 컨텐츠에서 이미지 경로 수정
-      const fixedIndexContent = indexContent.content.replace(
-        /src=["'](.*?)["']/g,
-        (match, p1) => `src="https://1am11m.store${p1}"`
-      );
+      // HTML 컨텐츠에서 이미지와 다른 리소스 경로 수정
+      const fixedIndexContent = indexContent.content
+        .replace(
+          /src=["'](.*?)["']/g,
+          (match, p1) => `src="https://1am11m.store${p1}"`
+        )
+        .replace(
+          /href=["'](.*?)["']/g,
+          (match, p1) => `href="https://1am11m.store${p1}"`
+        );
 
       const fullContent = `
         <html>
