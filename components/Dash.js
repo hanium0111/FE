@@ -214,6 +214,34 @@ export default function Dash() {
     }
   };
 
+  const handleUpdateTemplate = async (templateId) => {
+    try {
+      const res = await fetch("https://1am11m.store/deploy/update", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ id: templateId }),
+        credentials: "include",
+      });
+
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }
+
+      setTemplates((prevTemplates) =>
+        prevTemplates.map((template) =>
+          template.id === templateId ? { ...template, deploy: false } : template
+        )
+      );
+
+      alert("배포가 업데이트 되었습니다.");
+    } catch (error) {
+      console.error("Failed to update deploy template:", error);
+      alert("배포 업데이트에 실패했습니다.");
+    }
+  };
+
   const handleEditTemplate = (template) => {
     console.log("프로젝트 경로:", template.projectPath);
     router.push({
@@ -680,14 +708,14 @@ export default function Dash() {
                       border={"#4629F2"}
                       textColor={"#4629F2"}
                     />
-                    {template.shared ? (
+                    {template.publish ? (
                       <Btn
-                        text={"배포 완료"}
-                        background={"#E0E0E0"}
-                        border={"#E0E0E0"}
-                        textColor={"#7D7D7D"}
+                        text={"업데이트"}
+                        background={"#666"}
+                        border={"#666"}
+                        textColor={"#fff"}
                         width="7rem"
-                        onClick={() => openDeployModal(template)}
+                        onClick={() => handleUpdateTemplate}
                       />
                     ) : (
                       <Btn
