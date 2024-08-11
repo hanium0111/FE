@@ -62,7 +62,6 @@ export default function GenerateBox({ projectPath }) {
     const fetchFiles = async () => {
       if (htmlFiles.length === 0) return;
 
-      // index.html 파일을 우선적으로 로드
       const indexFile = htmlFiles.find((file) => file.name === "index.html");
       if (!indexFile) {
         console.error("index.html 파일을 찾을 수 없습니다.");
@@ -82,12 +81,19 @@ export default function GenerateBox({ projectPath }) {
       const cssLinks = cssContents
         .map(
           (cssFile) =>
-            `<link rel="stylesheet" href="https://1am11m.store${cssFile.name}">`
+            `<link rel="stylesheet" href=https://1am11m.store${cssFile.name}>` // 수정된 부분
         )
         .join("\n");
+
       const jsScripts = jsContents
         .map((jsFile) => `<script>${jsFile.content}</script>`)
         .join("\n");
+
+      // HTML 컨텐츠에서 이미지 경로 수정
+      const fixedIndexContent = indexContent.content.replace(
+        /src=["'](.*?)["']/g,
+        (match, p1) => `src="https://1am11m.store${p1}"`
+      );
 
       const fullContent = `
         <html>
@@ -95,7 +101,7 @@ export default function GenerateBox({ projectPath }) {
             ${cssLinks}
           </head>
           <body>
-            ${indexContent.content}
+            ${fixedIndexContent}
             ${jsScripts}
           </body>
         </html>
@@ -106,7 +112,7 @@ export default function GenerateBox({ projectPath }) {
     };
 
     fetchFiles();
-  }, [htmlFiles, cssFiles, jsFiles]); // 파일 목록이 업데이트된 후 실행
+  }, [htmlFiles, cssFiles, jsFiles]);
 
   const createMarkup = () => {
     if (!htmlLoaded) return "";
