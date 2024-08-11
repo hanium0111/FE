@@ -52,11 +52,15 @@ export default function GenerateBox({ projectPath }) {
   };
 
   useEffect(() => {
-    const fetchFiles = async () => {
-      if (!projectPath) return;
+    if (!projectPath) return;
 
-      // fetchStructure를 먼저 호출하여 파일 목록을 받아온 후에 실행
-      await fetchStructure();
+    // fetchStructure를 먼저 호출하여 파일 목록을 받아옴
+    fetchStructure();
+  }, [projectPath]);
+
+  useEffect(() => {
+    const fetchFiles = async () => {
+      if (htmlFiles.length === 0) return;
 
       // index.html 파일을 우선적으로 로드
       const indexFile = htmlFiles.find((file) => file.name === "index.html");
@@ -102,7 +106,7 @@ export default function GenerateBox({ projectPath }) {
     };
 
     fetchFiles();
-  }, [projectPath]);
+  }, [htmlFiles, cssFiles, jsFiles]); // 파일 목록이 업데이트된 후 실행
 
   const createMarkup = () => {
     if (!htmlLoaded) return "";
