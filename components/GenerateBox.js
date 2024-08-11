@@ -95,11 +95,11 @@ export default function GenerateBox({ projectPath }) {
       const fixedIndexContent = indexContent.content
         .replace(
           /src=["'](.*?)["']/g,
-          (match, p1) => `src="https://1am11m.store${p1}"`
+          (match, p1) => `src="https://1am11m.store${p1.replace(/['"]/g, "")}"`
         )
         .replace(
           /href=["'](.*?)["']/g,
-          (match, p1) => `href="https://1am11m.store${p1}"`
+          (match, p1) => `href="https://1am11m.store${p1.replace(/['"]/g, "")}"`
         );
 
       const fullContent = `
