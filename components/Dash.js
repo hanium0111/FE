@@ -192,6 +192,8 @@ export default function Dash() {
     try {
       const payload = { id: templateId };
 
+      console.log("Payload:", payload);
+
       const res = await fetch("https://1am11m.store/deploy/undeploy", {
         method: "POST",
         headers: {
