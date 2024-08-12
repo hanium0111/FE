@@ -154,15 +154,17 @@ export default function Dash() {
     setDeployLoading(true);
 
     try {
+      const payload = {
+        deployName: deployName,
+        id: selectedTemplate.id,
+      };
+
       const res = await fetch("https://1am11m.store/deploy/deploy", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          deployName: deployName,
-          id: selectedTemplate.id,
-        }),
+        body: JSON.stringify(payload),
         credentials: "include",
       });
 
@@ -188,12 +190,14 @@ export default function Dash() {
 
   const handleUndeployTemplate = async (templateId) => {
     try {
+      const payload = { id: templateId };
+
       const res = await fetch("https://1am11m.store/deploy/undeploy", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ id: templateId }),
+        body: JSON.stringify(payload),
         credentials: "include",
       });
 
