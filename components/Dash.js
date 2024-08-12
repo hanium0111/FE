@@ -667,7 +667,7 @@ export default function Dash() {
                           isShared={template.shared} //공유 상태
                           onShare={() => openShareModal(template)} //공유하기
                           onDeploy={() => openDeployModal(template)} //배포하기
-                          onUndeploy={handleUndeployTemplate(template.id)} // 배포 중지
+                          onUndeploy={() => handleUndeployTemplate(template.id)} // 배포 중지
                           onEdit={handleEditTemplate} // 편집하기
                           onRename={() => openRenameModal(template)} //이름 변경
                           onDelete={() => openDeleteModal(template)} //삭제하기
