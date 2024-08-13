@@ -1,57 +1,74 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 
-const WebPageRenderer = () => {
-  const [fileData, setFileData] = useState([]);
+const GenerateBoxTest = ({ files }) => {
   const [htmlContent, setHtmlContent] = useState("");
   const [cssContent, setCssContent] = useState("");
   const [jsContent, setJsContent] = useState("");
 
   useEffect(() => {
-    fetch(
-      "https://1am11m.store/user-templates/directory?dirPath=/copied_userTemplates/test_oys128950@gmail.com_1723447296518"
-    )
-      .then((response) => response.json())
-      .then((data) => {
-        setFileData(data);
-        processFiles(data);
-      })
-      .catch((error) => console.error("Error fetching file data:", error));
-  }, []);
+    const fetchFiles = async () => {
+      const baseURL = "https://1am11m.store";
 
-  const processFiles = (files) => {
-    files.forEach((file) => {
-      fetch(`https://1am11m.store${file.path}`)
-        .then((response) => response.text())
-        .then((content) => {
-          if (file.name.endsWith(".html")) {
-            setHtmlContent((prev) => prev + content);
-          } else if (file.name.endsWith(".css")) {
-            setCssContent((prev) => prev + content);
-          } else if (file.name.endsWith(".js")) {
-            setJsContent((prev) => prev + content);
-          }
-        })
-        .catch((error) =>
-          console.error(`Error fetching file ${file.name}:`, error)
-        );
-    });
-  };
+      const htmlFile = files.find((file) => file.name === "index.html");
+      const cssFile = files.find((file) => file.name.endsWith(".css"));
+      const jsFile = files.find((file) => file.name.endsWith(".js"));
+
+      if (htmlFile) {
+        const htmlResponse = await fetch(baseURL + htmlFile.path);
+        const htmlData = await htmlResponse.text();
+        setHtmlContent(htmlData);
+      }
+
+      if (cssFile) {
+        const cssResponse = await fetch(baseURL + cssFile.path);
+        const cssData = await cssResponse.text();
+        setCssContent(cssData);
+      }
+
+      if (jsFile) {
+        const jsResponse = await fetch(baseURL + jsFile.path);
+        const jsData = await jsResponse.text();
+        setJsContent(jsData);
+      }
+    };
+
+    fetchFiles();
+  }, [files]);
 
   useEffect(() => {
     if (cssContent) {
-      const style = document.createElement("style");
-      style.textContent = cssContent;
-      document.head.appendChild(style);
-    }
+      const styleElement = document.createElement("style");
+      styleElement.innerHTML = cssContent;
+      document.head.appendChild(styleElement);
 
-    if (jsContent) {
-      const script = document.createElement("script");
-      script.textContent = jsContent;
-      document.body.appendChild(script);
+      return () => {
+        document.head.removeChild(styleElement);
+      };
     }
-  }, [cssContent, jsContent]);
+  }, [cssContent]);
+
+  useEffect(() => {
+    if (jsContent) {
+      const scriptElement = document.createElement("script");
+      scriptElement.innerHTML = jsContent;
+      document.body.appendChild(scriptElement);
+
+      return () => {
+        document.body.removeChild(scriptElement);
+      };
+    }
+  }, [jsContent]);
 
   return <div dangerouslySetInnerHTML={{ __html: htmlContent }} />;
 };
 
-export default WebPageRenderer;
+export const getServerSideProps = async () => {
+  const response = await fetch(
+    "https://1am11m.store/user-templates/directory?dirPath=/copied_userTemplates/test_oys128950@gmail.com_1723447296518"
+  );
+  const files = await response.json();
+
+  return { props: { files } };
+};
+
+export default GenerateBoxTest;
