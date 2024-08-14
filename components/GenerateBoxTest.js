@@ -45,20 +45,24 @@ const GenerateBoxTest = ({ projectPath }) => {
         const parser = new DOMParser();
         const doc = parser.parseFromString(content, "text/html");
 
+        // 현재 HTML 파일 경로에서 디렉터리 경로 추출
+        const basePath = file.path.substring(0, file.path.lastIndexOf("/"));
+        console.log("Base Path:", basePath);
+
         // CSS 파일 경로를 조정
         const linkTags = Array.from(
           doc.querySelectorAll('link[rel="stylesheet"]')
         );
         const cssFiles = linkTags.map((tag) => {
           const href = tag.getAttribute("href");
-          return `https://1am11m.store${href}`;
+          return `https://1am11m.store${basePath}/${href}`;
         });
 
         // 이미지 경로를 조정
         const imgTags = Array.from(doc.querySelectorAll("img"));
         imgTags.forEach((img) => {
           const src = img.getAttribute("src");
-          img.setAttribute("src", `https://1am11m.store${src}`);
+          img.setAttribute("src", `https://1am11m.store${basePath}/${src}`);
         });
 
         // HTML 내용을 다시 직렬화하여 렌더링
