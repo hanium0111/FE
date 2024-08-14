@@ -184,6 +184,7 @@ export default function Dash() {
     } catch (error) {
       console.error("Failed to deploy template:", error);
       alert("배포에 실패했습니다.");
+    } finally {
       setDeployLoading(false);
     }
   };
