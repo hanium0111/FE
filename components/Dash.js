@@ -173,9 +173,10 @@ export default function Dash() {
       }
 
       const updatedTemplate = await res.json();
+
       setTemplates((prevTemplates) =>
         prevTemplates.map((t) =>
-          t.id === updatedTemplate.id ? { ...t, deploy: true } : t
+          t.id === selectedTemplate.id ? { ...t, publish: true } : t
         )
       );
 
