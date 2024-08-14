@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import Head from "next/head";
+import styles from "@/components/GenerateBox.module.css";
 
 const GenerateBox = ({ projectPath }) => {
   const [indexFile, setIndexFile] = useState(null);
@@ -99,7 +100,42 @@ const GenerateBox = ({ projectPath }) => {
     return null;
   };
 
-  return <div>{renderFileContent()}</div>;
+  return (
+    <div className={styles.wrap}>
+      <div className={styles.genBoxWrap}>{renderFileContent()}</div>
+      <div className={styles.editorWrap}>
+        <form className={styles.form}>
+          <input
+            type="text"
+            className={styles.input}
+            placeholder="수정하고 싶은 부분을 입력하세요."
+          />
+          <button type="submit" className={styles.button}>
+            <svg
+              className={styles.icon}
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M14 5l7 7m0 0l-7 7m7-7H3"
+              ></path>
+            </svg>
+          </button>
+        </form>
+        <Btn
+          text={"수정 완료"}
+          background={"#666"}
+          border={"#666"}
+          textColor={"#FFF"}
+        />
+      </div>
+    </div>
+  );
 };
 
 export default GenerateBox;
