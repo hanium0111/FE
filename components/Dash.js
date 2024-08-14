@@ -815,6 +815,16 @@ export default function Dash() {
                           })
                         }
                       />
+                      <div className={styles.cardImageBtn}>
+                        <Btn
+                          text={"프로젝트 편집"}
+                          background={"#999"}
+                          border={"#999"}
+                          textColor={"#fff"}
+                          width={"7rem"}
+                          onClick={() => onEdit(template)}
+                        />
+                      </div>
                     </div>
                   </div>
                   <div className={styles.cardContent}>
