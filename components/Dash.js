@@ -23,13 +23,16 @@ const DropdownMenu = ({
   onRename, // 이름 변경
   template, // 선택한 템플릿 정보
 }) => {
+  const deploymentBaseURL = "https://hanium0111.github.io/CI-CD";
+  const deploymentLink = `${deploymentBaseURL}/${template.deployName}/`;
+
   return (
     <div className={styles.dropdownMenu}>
       {/* 배포 상태에 따라 */}
       {isDeployed ? (
         <>
           <button onClick={onUndeploy}>배포 중지</button>
-          <button onClick={() => console.log("배포 링크 공유")}>
+          <button onClick={() => window.open(deploymentLink, "_blank")}>
             배포 링크 공유
           </button>
         </>
@@ -176,7 +179,9 @@ export default function Dash() {
 
       setTemplates((prevTemplates) =>
         prevTemplates.map((t) =>
-          t.id === selectedTemplate.id ? { ...t, publish: true } : t
+          t.id === selectedTemplate.id
+            ? { ...t, publish: true, deployName: payload.deployName }
+            : t
         )
       );
 
