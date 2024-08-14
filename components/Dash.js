@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useReducer, useEffect } from "react";
 import { useRouter } from "next/router";
 import styles from "./Dash.module.css";
 import { FaEllipsisV, FaHeart, FaSearch, FaPlus } from "react-icons/fa";
@@ -10,6 +10,81 @@ import Btn from "./Btn";
 import Modal from "react-modal";
 import { SkeletonDash } from "./Skeleton";
 import { Tooltip } from "react-tooltip";
+
+// 초기 상태 정의
+const initialState = {
+  templates: [],
+  sortOrder: "최신순",
+  searchQuery: "",
+  isDeployModalOpen: false,
+  deployName: "",
+  showDeployed: false,
+  showShared: false,
+  dropdownOpen: null,
+  isDeleteModalOpen: false,
+  isRenameModalOpen: false,
+  isShareModalOpen: false,
+  selectedTemplate: null,
+  pageName: "",
+  category: "",
+  description: "",
+  loading: true,
+  dashStructure: [],
+  profileImage: "/profile.png",
+  displayName: "",
+  imageLoading: {},
+  deployLoading: false,
+};
+
+// 리듀서 함수 정의
+function reducer(state, action) {
+  switch (action.type) {
+    case "SET_TEMPLATES":
+      return { ...state, templates: action.payload };
+    case "SET_SORT_ORDER":
+      return { ...state, sortOrder: action.payload };
+    case "SET_SEARCH_QUERY":
+      return { ...state, searchQuery: action.payload };
+    case "TOGGLE_DEPLOY_MODAL":
+      return { ...state, isDeployModalOpen: !state.isDeployModalOpen };
+    case "SET_DEPLOY_NAME":
+      return { ...state, deployName: action.payload };
+    case "TOGGLE_SHOW_DEPLOYED":
+      return { ...state, showDeployed: !state.showDeployed };
+    case "TOGGLE_SHOW_SHARED":
+      return { ...state, showShared: !state.showShared };
+    case "SET_DROPDOWN_OPEN":
+      return { ...state, dropdownOpen: action.payload };
+    case "TOGGLE_DELETE_MODAL":
+      return { ...state, isDeleteModalOpen: !state.isDeleteModalOpen };
+    case "TOGGLE_RENAME_MODAL":
+      return { ...state, isRenameModalOpen: !state.isRenameModalOpen };
+    case "TOGGLE_SHARE_MODAL":
+      return { ...state, isShareModalOpen: !state.isShareModalOpen };
+    case "SET_SELECTED_TEMPLATE":
+      return { ...state, selectedTemplate: action.payload };
+    case "SET_PAGE_NAME":
+      return { ...state, pageName: action.payload };
+    case "SET_CATEGORY":
+      return { ...state, category: action.payload };
+    case "SET_DESCRIPTION":
+      return { ...state, description: action.payload };
+    case "SET_LOADING":
+      return { ...state, loading: action.payload };
+    case "SET_PROFILE_IMAGE":
+      return { ...state, profileImage: action.payload };
+    case "SET_DISPLAY_NAME":
+      return { ...state, displayName: action.payload };
+    case "SET_IMAGE_LOADING":
+      return { ...state, imageLoading: action.payload };
+    case "SET_DEPLOY_LOADING":
+      return { ...state, deployLoading: action.payload };
+    case "SET_DASH_STRUCTURE":
+      return { ...state, dashStructure: action.payload };
+    default:
+      return state;
+  }
+}
 
 const DropdownMenu = ({
   isDeployed, //배포 상태
@@ -52,27 +127,7 @@ const DropdownMenu = ({
 
 export default function Dash() {
   const router = useRouter();
-  const [templates, setTemplates] = useState([]);
-  const [sortOrder, setSortOrder] = useState("최신순");
-  const [searchQuery, setSearchQuery] = useState("");
-  const [isDeployModalOpen, setIsDeployModalOpen] = useState(false);
-  const [deployName, setDeployName] = useState("");
-  const [showDeployed, setShowDeployed] = useState(false);
-  const [showShared, setShowShared] = useState(false);
-  const [dropdownOpen, setDropdownOpen] = useState(null);
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [isRenameModalOpen, setIsRenameModalOpen] = useState(false);
-  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
-  const [selectedTemplate, setSelectedTemplate] = useState(null);
-  const [pageName, setPageName] = useState("");
-  const [category, setCategory] = useState("");
-  const [description, setDescription] = useState("");
-  const [loading, setLoading] = useState(true);
-  const [dashStructure, setDashStructure] = useState([]);
-  const [profileImage, setProfileImage] = useState("/profile.png");
-  const [displayName, setDisplayName] = useState("");
-  const [imageLoading, setImageLoading] = useState({});
-  const [deployLoading, setDeployLoading] = useState(false);
+  const [state, dispatch] = useReducer(reducer, initialState);
 
   useEffect(() => {
     const fetchProfileData = async () => {
@@ -83,8 +138,14 @@ export default function Dash() {
         const data = await response.json();
 
         if (response.ok) {
-          setProfileImage(data.profileImageUrl || "/profile.png");
-          setDisplayName(data.displayName || "사용자");
+          dispatch({
+            type: "SET_PROFILE_IMAGE",
+            payload: data.profileImageUrl || "/profile.png",
+          });
+          dispatch({
+            type: "SET_DISPLAY_NAME",
+            payload: data.displayName || "사용자",
+          });
         }
       } catch (error) {
         console.error("Error fetching profile data:", error);
@@ -108,28 +169,33 @@ export default function Dash() {
           throw new Error(`HTTP error! status: ${res.status}`);
         }
         const data = await res.json();
-        setTemplates(data);
-        setDashStructure(new Array(data.length).fill(null));
-        setLoading(false);
+        dispatch({ type: "SET_TEMPLATES", payload: data });
+        dispatch({
+          type: "SET_DASH_STRUCTURE",
+          payload: new Array(data.length).fill(null),
+        });
+        dispatch({ type: "SET_LOADING", payload: false });
       } catch (error) {
         console.error("Failed to fetch fetchDash:", error);
-        setLoading(false);
+        dispatch({ type: "SET_LOADING", payload: false });
       }
     };
     fetchDash();
   }, []);
 
-  const filteredTemplates = templates
+  const filteredTemplates = state.templates
     .filter((template) =>
-      template.projectName.toLowerCase().includes(searchQuery.toLowerCase())
+      template.projectName
+        .toLowerCase()
+        .includes(state.searchQuery.toLowerCase())
     )
-    .filter((template) => (showDeployed ? template.publish : true))
-    .filter((template) => (showShared ? template.shared : true));
+    .filter((template) => (state.showDeployed ? template.publish : true))
+    .filter((template) => (state.showShared ? template.shared : true));
 
   const sortedTemplates = filteredTemplates.sort((a, b) => {
-    if (sortOrder === "최신순") {
+    if (state.sortOrder === "최신순") {
       return new Date(b.date) - new Date(a.date);
-    } else if (sortOrder === "인기순") {
+    } else if (state.sortOrder === "인기순") {
       return b.likes - a.likes;
     }
     return 0;
@@ -140,26 +206,26 @@ export default function Dash() {
   };
 
   const openDeployModal = (template) => {
-    setSelectedTemplate(template);
-    setIsDeployModalOpen(true);
+    dispatch({ type: "SET_SELECTED_TEMPLATE", payload: template });
+    dispatch({ type: "TOGGLE_DEPLOY_MODAL" });
   };
 
   const closeDeployModal = () => {
-    setIsDeployModalOpen(false);
+    dispatch({ type: "TOGGLE_DEPLOY_MODAL" });
   };
 
   const handleDeployTemplate = async () => {
-    if (!deployName.trim()) {
+    if (!state.deployName.trim()) {
       alert("배포할 이름을 입력하세요.");
       return;
     }
 
-    setDeployLoading(true);
+    dispatch({ type: "SET_DEPLOY_LOADING", payload: true });
 
     try {
       const payload = {
-        deployName: deployName,
-        id: selectedTemplate.id,
+        deployName: state.deployName,
+        id: state.selectedTemplate.id,
       };
 
       const res = await fetch("https://1am11m.store/deploy/deploy", {
@@ -177,13 +243,14 @@ export default function Dash() {
 
       const updatedTemplate = await res.json();
 
-      setTemplates((prevTemplates) =>
-        prevTemplates.map((t) =>
-          t.id === selectedTemplate.id
+      dispatch({
+        type: "SET_TEMPLATES",
+        payload: state.templates.map((t) =>
+          t.id === state.selectedTemplate.id
             ? { ...t, publish: true, deployName: payload.deployName }
             : t
-        )
-      );
+        ),
+      });
 
       alert("배포가 성공적으로 완료되었습니다.");
       closeDeployModal();
@@ -191,7 +258,7 @@ export default function Dash() {
       console.error("Failed to deploy template:", error);
       alert("배포에 실패했습니다.");
     } finally {
-      setDeployLoading(false);
+      dispatch({ type: "SET_DEPLOY_LOADING", payload: false });
     }
   };
 
@@ -214,11 +281,14 @@ export default function Dash() {
         throw new Error(`HTTP error! status: ${res.status}`);
       }
 
-      setTemplates((prevTemplates) =>
-        prevTemplates.map((template) =>
-          template.id === templateId ? { ...template, deploy: false } : template
-        )
-      );
+      dispatch({
+        type: "SET_TEMPLATES",
+        payload: state.templates.map((template) =>
+          template.id === templateId
+            ? { ...template, publish: false }
+            : template
+        ),
+      });
 
       alert("배포가 중지되었습니다.");
     } catch (error) {
@@ -242,11 +312,14 @@ export default function Dash() {
         throw new Error(`HTTP error! status: ${res.status}`);
       }
 
-      setTemplates((prevTemplates) =>
-        prevTemplates.map((template) =>
-          template.id === templateId ? { ...template, deploy: false } : template
-        )
-      );
+      dispatch({
+        type: "SET_TEMPLATES",
+        payload: state.templates.map((template) =>
+          template.id === templateId
+            ? { ...template, publish: false }
+            : template
+        ),
+      });
 
       alert("배포가 업데이트 되었습니다.");
     } catch (error) {
@@ -266,7 +339,7 @@ export default function Dash() {
   const handleDeleteTemplate = async () => {
     try {
       const res = await fetch(
-        `https://1am11m.store/dashboards/dashboard/remove/${selectedTemplate.id}`,
+        `https://1am11m.store/dashboards/dashboard/remove/${state.selectedTemplate.id}`,
         {
           method: "DELETE",
           credentials: "include",
@@ -275,10 +348,13 @@ export default function Dash() {
       if (!res.ok) {
         throw new Error(`HTTP error! status: ${res.status}`);
       }
-      setTemplates((prevTemplates) =>
-        prevTemplates.filter((template) => template.id !== selectedTemplate.id)
-      );
-      console.log("Template deleted successfully:", selectedTemplate);
+      dispatch({
+        type: "SET_TEMPLATES",
+        payload: state.templates.filter(
+          (template) => template.id !== state.selectedTemplate.id
+        ),
+      });
+      console.log("Template deleted successfully:", state.selectedTemplate);
       closeDeleteModal();
     } catch (error) {
       console.error("Failed to delete template:", error);
@@ -287,29 +363,29 @@ export default function Dash() {
   };
 
   const openRenameModal = (template) => {
-    setSelectedTemplate(template);
-    setIsRenameModalOpen(true);
+    dispatch({ type: "SET_SELECTED_TEMPLATE", payload: template });
+    dispatch({ type: "TOGGLE_RENAME_MODAL" });
   };
 
   const closeRenameModal = () => {
-    setIsRenameModalOpen(false);
+    dispatch({ type: "TOGGLE_RENAME_MODAL" });
   };
 
   const handleRenameTemplate = async () => {
-    if (!pageName.trim()) {
+    if (!state.pageName.trim()) {
       alert("새로운 이름을 입력하세요.");
       return;
     }
 
     try {
       const res = await fetch(
-        `https://1am11m.store/dashboards/${selectedTemplate.id}/name`,
+        `https://1am11m.store/dashboards/${state.selectedTemplate.id}/name`,
         {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ name: pageName }),
+          body: JSON.stringify({ name: state.pageName }),
           credentials: "include",
         }
       );
@@ -320,13 +396,14 @@ export default function Dash() {
 
       const updatedTemplate = await res.json();
 
-      setTemplates((prevTemplates) =>
-        prevTemplates.map((template) =>
+      dispatch({
+        type: "SET_TEMPLATES",
+        payload: state.templates.map((template) =>
           template.id === updatedTemplate.id
             ? { ...template, projectName: updatedTemplate.projectName }
             : template
-        )
-      );
+        ),
+      });
 
       console.log("Template renamed successfully:", updatedTemplate);
       closeRenameModal();
@@ -337,38 +414,41 @@ export default function Dash() {
   };
 
   const openDeleteModal = (template) => {
-    setSelectedTemplate(template);
-    setIsDeleteModalOpen(true);
+    dispatch({ type: "SET_SELECTED_TEMPLATE", payload: template });
+    dispatch({ type: "TOGGLE_DELETE_MODAL" });
   };
 
   const closeDeleteModal = () => {
-    setIsDeleteModalOpen(false);
+    dispatch({ type: "TOGGLE_DELETE_MODAL" });
   };
 
   const openShareModal = (template) => {
-    setSelectedTemplate(template);
-    setIsShareModalOpen(true);
+    dispatch({ type: "SET_SELECTED_TEMPLATE", payload: template });
+    dispatch({ type: "TOGGLE_SHARE_MODAL" });
   };
 
   const closeShareModal = () => {
-    setIsShareModalOpen(false);
+    dispatch({ type: "TOGGLE_SHARE_MODAL" });
   };
 
   const handleShareTemplate = async () => {
-    if (!category.trim() || !description.trim()) {
+    if (!state.category.trim() || !state.description.trim()) {
       alert("카테고리와 설명을 입력해주세요.");
       return;
     }
 
     try {
       const res = await fetch(
-        `https://1am11m.store/dashboards/dashboard/${selectedTemplate.id}/share`,
+        `https://1am11m.store/dashboards/dashboard/${state.selectedTemplate.id}/share`,
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ category, description }),
+          body: JSON.stringify({
+            category: state.category,
+            description: state.description,
+          }),
           credentials: "include",
         }
       );
@@ -385,7 +465,7 @@ export default function Dash() {
     } catch (error) {
       console.error("Failed to share template:", error);
       alert("템플릿 공유에 실패했습니다.");
-      setIsShareModalOpen(true);
+      dispatch({ type: "TOGGLE_SHARE_MODAL" });
     }
   };
 
@@ -405,11 +485,12 @@ export default function Dash() {
 
       console.log("Template sharing stopped successfully:", templateId);
 
-      setTemplates((prevTemplates) =>
-        prevTemplates.map((template) =>
+      dispatch({
+        type: "SET_TEMPLATES",
+        payload: state.templates.map((template) =>
           template.id === templateId ? { ...template, shared: false } : template
-        )
-      );
+        ),
+      });
     } catch (error) {
       console.error("Failed to stop sharing template:", error);
       alert("템플릿 공유 중지에 실패했습니다.");
@@ -417,7 +498,10 @@ export default function Dash() {
   };
 
   const toggleDropdown = (id) => {
-    setDropdownOpen(dropdownOpen === id ? null : id);
+    dispatch({
+      type: "SET_DROPDOWN_OPEN",
+      payload: state.dropdownOpen === id ? null : id,
+    });
   };
 
   const customStyles = {
@@ -439,7 +523,7 @@ export default function Dash() {
   return (
     <>
       <Modal
-        isOpen={isDeleteModalOpen}
+        isOpen={state.isDeleteModalOpen}
         onRequestClose={closeDeleteModal}
         style={customStyles}
       >
@@ -459,7 +543,7 @@ export default function Dash() {
       </Modal>
 
       <Modal
-        isOpen={isRenameModalOpen}
+        isOpen={state.isRenameModalOpen}
         onRequestClose={closeRenameModal}
         style={customStyles}
       >
@@ -468,7 +552,9 @@ export default function Dash() {
           className={styles.pageinputform}
           type="text"
           placeholder="이름 입력.."
-          onChange={(e) => setPageName(e.target.value)}
+          onChange={(e) =>
+            dispatch({ type: "SET_PAGE_NAME", payload: e.target.value })
+          }
         />
         <div className={styles.modalButtons}>
           <button
@@ -484,7 +570,7 @@ export default function Dash() {
       </Modal>
 
       <Modal
-        isOpen={isShareModalOpen}
+        isOpen={state.isShareModalOpen}
         onRequestClose={closeShareModal}
         style={customStyles}
       >
@@ -493,15 +579,19 @@ export default function Dash() {
           className={styles.pageinputform}
           type="text"
           placeholder="카테고리 입력.."
-          value={category}
-          onChange={(e) => setCategory(e.target.value)}
+          value={state.category}
+          onChange={(e) =>
+            dispatch({ type: "SET_CATEGORY", payload: e.target.value })
+          }
         />
         <input
           className={styles.pageinputform}
           type="text"
           placeholder="설명 입력.."
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
+          value={state.description}
+          onChange={(e) =>
+            dispatch({ type: "SET_DESCRIPTION", payload: e.target.value })
+          }
         />
         <div className={styles.modalButtons}>
           <button
@@ -517,7 +607,7 @@ export default function Dash() {
       </Modal>
 
       <Modal
-        isOpen={isDeployModalOpen}
+        isOpen={state.isDeployModalOpen}
         onRequestClose={closeDeployModal}
         style={customStyles}
       >
@@ -526,16 +616,22 @@ export default function Dash() {
           className={styles.pageinputform}
           type="text"
           placeholder="배포 이름 입력.."
-          value={deployName}
-          onChange={(e) => setDeployName(e.target.value)}
+          value={state.deployName}
+          onChange={(e) =>
+            dispatch({ type: "SET_DEPLOY_NAME", payload: e.target.value })
+          }
         />
         <div className={styles.modalButtons}>
           <button
             onClick={handleDeployTemplate}
             className={styles.confirmButton}
-            disabled={deployLoading}
+            disabled={state.deployLoading}
           >
-            {deployLoading ? <FontAwesomeIcon icon={faSpinner} spin /> : "확인"}
+            {state.deployLoading ? (
+              <FontAwesomeIcon icon={faSpinner} spin />
+            ) : (
+              "확인"
+            )}
           </button>
           <button onClick={closeDeployModal} className={styles.cancelButton}>
             취소
@@ -551,40 +647,44 @@ export default function Dash() {
           <div className={styles.sectionLeft}>
             <Btn
               text={"최신순"}
-              background={sortOrder === "최신순" ? "#4629F2" : "#fff"}
+              background={state.sortOrder === "최신순" ? "#4629F2" : "#fff"}
               border={"#4629F2"}
-              textColor={sortOrder === "최신순" ? "#fff" : "#4629F2"}
-              onClick={() => setSortOrder("최신순")}
+              textColor={state.sortOrder === "최신순" ? "#fff" : "#4629F2"}
+              onClick={() =>
+                dispatch({ type: "SET_SORT_ORDER", payload: "최신순" })
+              }
             />
             <Btn
               text={"인기순"}
-              background={sortOrder === "인기순" ? "#4629F2" : "#fff"}
+              background={state.sortOrder === "인기순" ? "#4629F2" : "#fff"}
               border={"#4629F2"}
-              textColor={sortOrder === "인기순" ? "#fff" : "#4629F2"}
-              onClick={() => setSortOrder("인기순")}
+              textColor={state.sortOrder === "인기순" ? "#fff" : "#4629F2"}
+              onClick={() =>
+                dispatch({ type: "SET_SORT_ORDER", payload: "인기순" })
+              }
             />
             <div className={styles.switchContainer}>
               <label className={styles.switchLabel}>
-                {showDeployed ? "배포 완료" : "배포: 모든 상태"}
+                {state.showDeployed ? "배포 완료" : "배포: 모든 상태"}
               </label>
               <label className={styles.switch}>
                 <input
                   type="checkbox"
-                  checked={showDeployed}
-                  onChange={() => setShowDeployed((prev) => !prev)}
+                  checked={state.showDeployed}
+                  onChange={() => dispatch({ type: "TOGGLE_SHOW_DEPLOYED" })}
                 />
                 <span className={styles.slider}></span>
               </label>
             </div>
             <div className={styles.switchContainer}>
               <label className={styles.switchLabel}>
-                {showShared ? "템플릿으로 공유중" : "공유: 모든 상태"}
+                {state.showShared ? "템플릿으로 공유중" : "공유: 모든 상태"}
               </label>
               <label className={styles.switch}>
                 <input
                   type="checkbox"
-                  checked={showShared}
-                  onChange={() => setShowShared((prev) => !prev)}
+                  checked={state.showShared}
+                  onChange={() => dispatch({ type: "TOGGLE_SHOW_SHARED" })}
                 />
                 <span className={styles.slider}></span>
               </label>
@@ -598,15 +698,20 @@ export default function Dash() {
                   type="text"
                   className={styles.searchInput}
                   placeholder="검색어를 입력하세요 ..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
+                  value={state.searchQuery}
+                  onChange={(e) =>
+                    dispatch({
+                      type: "SET_SEARCH_QUERY",
+                      payload: e.target.value,
+                    })
+                  }
                 />
               </div>
             </div>
           </div>
         </div>
-        {loading ? (
-          <SkeletonDash dashStructure={dashStructure} />
+        {state.loading ? (
+          <SkeletonDash dashStructure={state.dashStructure} />
         ) : (
           <div className={styles.grid}>
             {sortedTemplates.length === 0 ? (
@@ -631,12 +736,12 @@ export default function Dash() {
                           className={styles.cardProfileImg}
                           alt="profile"
                           layout="fill"
-                          src={profileImage}
+                          src={state.profileImage}
                         />
                       </div>
                     </div>
                     <div className={styles.cardHeaderInfo}>
-                      <div className={styles.cardUser}>{displayName}</div>
+                      <div className={styles.cardUser}>{state.displayName}</div>
                       <div className={styles.cardShareState}>
                         <div className={styles.cardShareState}>
                           <div
@@ -668,7 +773,7 @@ export default function Dash() {
                       >
                         <FaEllipsisV />
                       </button>
-                      {dropdownOpen === template.id && (
+                      {state.dropdownOpen === template.id && (
                         <DropdownMenu
                           isDeployed={template.publish} //배포 상태
                           isShared={template.shared} //공유 상태
@@ -686,7 +791,7 @@ export default function Dash() {
                   </div>
                   <div className={styles.cardImage}>
                     <div className={styles.imageWrapper}>
-                      {imageLoading && (
+                      {state.imageLoading[template.id] && (
                         <div className={styles.spinnerContainer}>
                           <FontAwesomeIcon
                             icon={faSpinner}
@@ -700,7 +805,15 @@ export default function Dash() {
                         alt="Template Screenshot"
                         layout="fill"
                         objectFit="cover"
-                        onLoadingComplete={() => setImageLoading(false)}
+                        onLoadingComplete={() =>
+                          dispatch({
+                            type: "SET_IMAGE_LOADING",
+                            payload: {
+                              ...state.imageLoading,
+                              [template.id]: false,
+                            },
+                          })
+                        }
                       />
                     </div>
                   </div>
@@ -737,13 +850,13 @@ export default function Dash() {
                           border={"#666"}
                           textColor={"#fff"}
                           width="4rem"
-                          onClick={() => handleUpdateTemplate}
+                          onClick={() => handleUpdateTemplate(template.id)}
                         />
                       </div>
                     ) : (
                       <Btn
                         text={
-                          deployLoading ? (
+                          state.deployLoading ? (
                             <FontAwesomeIcon icon={faSpinner} spin />
                           ) : (
                             "배포하기"
@@ -754,7 +867,7 @@ export default function Dash() {
                         textColor={"#fff"}
                         width="7rem"
                         onClick={() => openDeployModal(template)}
-                        disabled={deployLoading}
+                        disabled={state.deployLoading}
                       />
                     )}
                   </div>
