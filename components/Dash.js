@@ -823,11 +823,11 @@ export default function Dash() {
                         <Btn
                           icon={<FontAwesomeIcon icon={faShareFromSquare} />}
                           text={"프로젝트 편집"}
-                          background={"#4629F2"}
-                          border={"#4629F2"}
+                          background={"#222"}
+                          border={"#222"}
                           textColor={"#fff"}
                           width={"7rem"}
-                          onClick={() => onEdit(template)}
+                          onClick={() => handleEditTemplate(template)}
                         />
                       </div>
                     </div>
