@@ -56,22 +56,25 @@ const GenerateBox = ({ projectPath }) => {
         0,
         indexFile.path.lastIndexOf("/")
       );
-      console.log("Base Path:", basePath);
 
       // CSS 파일 경로를 조정
       const linkTags = Array.from(
         doc.querySelectorAll('link[rel="stylesheet"]')
       );
-      const cssFiles = linkTags.map((tag) => {
+      linkTags.forEach((tag) => {
         const href = tag.getAttribute("href");
-        return `https://1am11m.store${basePath}/${href}`;
+        if (href && !href.startsWith("http")) {
+          tag.setAttribute("href", `https://1am11m.store${basePath}/${href}`);
+        }
       });
 
       // 이미지 경로를 조정
       const imgTags = Array.from(doc.querySelectorAll("img"));
       imgTags.forEach((img) => {
         const src = img.getAttribute("src");
-        img.setAttribute("src", `https://1am11m.store${basePath}/${src}`);
+        if (src && !src.startsWith("http")) {
+          img.setAttribute("src", `https://1am11m.store${basePath}/${src}`);
+        }
       });
 
       // HTML 내용을 다시 직렬화하여 렌더링
@@ -80,8 +83,12 @@ const GenerateBox = ({ projectPath }) => {
       return (
         <div>
           <Head>
-            {cssFiles.map((href, index) => (
-              <link key={index} rel="stylesheet" href={href} />
+            {linkTags.map((tag, index) => (
+              <link
+                key={index}
+                rel="stylesheet"
+                href={tag.getAttribute("href")}
+              />
             ))}
           </Head>
           <div dangerouslySetInnerHTML={{ __html: updatedHTML }} />
