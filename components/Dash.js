@@ -1,15 +1,9 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import styles from "./Dash.module.css";
-import {
-  FaEllipsisV,
-  FaHeart,
-  FaSearch,
-  FaPlus,
-  faRotate,
-} from "react-icons/fa";
+import { FaEllipsisV, FaHeart, FaSearch, FaPlus } from "react-icons/fa";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSpinner } from "@fortawesome/free-solid-svg-icons";
+import { faSpinner, faRotate } from "@fortawesome/free-solid-svg-icons";
 
 import Image from "next/image";
 import Btn from "./Btn";
@@ -722,7 +716,7 @@ export default function Dash() {
                       textColor={"#4629F2"}
                     />
                     {template.publish ? (
-                      <>
+                      <div className={styles.updateDeployBox}>
                         <Btn
                           text={"배포중지"}
                           background={"#666"}
@@ -733,13 +727,13 @@ export default function Dash() {
                         />
                         <Btn
                           text={<FontAwesomeIcon icon={faRotate} />}
-                          background={"#fff"}
-                          border={"#fff"}
-                          textColor={"#000"}
-                          width="2rem"
+                          background={"#666"}
+                          border={"#666"}
+                          textColor={"#fff"}
+                          width="4rem"
                           onClick={() => handleUpdateTemplate}
                         />
-                      </>
+                      </div>
                     ) : (
                       <Btn
                         text={

@@ -422,3 +422,9 @@ input:checked + .slider:before {
   font-size: 2rem;
   color: #4629f2;
 }
+
+.updateDeployBox {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+}
