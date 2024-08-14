@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import Head from "next/head";
 import styles from "@/components/GenerateBox.module.css";
 import Btn from "./Btn";
@@ -6,6 +6,7 @@ import Btn from "./Btn";
 const GenerateBox = ({ projectPath }) => {
   const [indexFile, setIndexFile] = useState(null);
   const [fileContent, setFileContent] = useState(null);
+  const contentRef = useRef(null);
 
   useEffect(() => {
     const fetchFileData = async () => {
@@ -46,6 +47,48 @@ const GenerateBox = ({ projectPath }) => {
     }
   }, [indexFile]);
 
+  useEffect(() => {
+    if (contentRef.current) {
+      contentRef.current.removeEventListener("click", handleElementClick);
+      contentRef.current.addEventListener("click", handleElementClick);
+    }
+
+    return () => {
+      if (contentRef.current) {
+        contentRef.current.removeEventListener("click", handleElementClick);
+      }
+    };
+  }, [fileContent]);
+
+  const handleElementClick = (event) => {
+    event.stopPropagation();
+    event.preventDefault();
+
+    const clickedElement = event.target;
+    clearHighlight();
+    clickedElement.style.outline = "2px solid blue";
+
+    console.log("Clicked Element:", clickedElement.tagName);
+
+    clickedElement.addEventListener(
+      "click",
+      (e) => {
+        e.stopPropagation();
+        e.preventDefault();
+      },
+      { once: true }
+    );
+  };
+
+  const clearHighlight = () => {
+    if (contentRef.current) {
+      const elements = contentRef.current.querySelectorAll("*");
+      elements.forEach((element) => {
+        element.style.outline = "none";
+      });
+    }
+  };
+
   const renderFileContent = () => {
     if (!fileContent) return null;
 
@@ -53,13 +96,11 @@ const GenerateBox = ({ projectPath }) => {
       const parser = new DOMParser();
       const doc = parser.parseFromString(fileContent, "text/html");
 
-      // 현재 HTML 파일 경로에서 디렉터리 경로 추출
       const basePath = indexFile.path.substring(
         0,
         indexFile.path.lastIndexOf("/")
       );
 
-      // CSS 파일 경로를 조정
       const linkTags = Array.from(
         doc.querySelectorAll('link[rel="stylesheet"]')
       );
@@ -70,7 +111,6 @@ const GenerateBox = ({ projectPath }) => {
         }
       });
 
-      // 이미지 경로를 조정
       const imgTags = Array.from(doc.querySelectorAll("img"));
       imgTags.forEach((img) => {
         const src = img.getAttribute("src");
@@ -79,7 +119,6 @@ const GenerateBox = ({ projectPath }) => {
         }
       });
 
-      // HTML 내용을 다시 직렬화하여 렌더링
       const updatedHTML = doc.documentElement.outerHTML;
 
       return (
@@ -94,6 +133,7 @@ const GenerateBox = ({ projectPath }) => {
             ))}
           </Head>
           <div
+            ref={contentRef}
             className={styles.genBox}
             dangerouslySetInnerHTML={{ __html: updatedHTML }}
           />
