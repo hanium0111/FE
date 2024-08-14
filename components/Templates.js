@@ -2,6 +2,12 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import styles from "./Templates.module.css";
 import { FaHeart, FaSearch, FaShare } from "react-icons/fa";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faSpinner,
+  faRotate,
+  faShareFromSquare,
+} from "@fortawesome/free-solid-svg-icons";
 import Image from "next/image";
 import Btn from "./Btn";
 import Link from "next/link";
@@ -306,6 +312,17 @@ export default function Templates({ showMoreButton, showCategories }) {
                       layout="fill"
                       objectFit="cover"
                     />
+                    <div className={styles.cardImageBtn}>
+                      <Btn
+                        icon={<FontAwesomeIcon icon={faShareFromSquare} />}
+                        text={"프로젝트 보기"}
+                        background={"#4629F2"}
+                        border={"#4629F2"}
+                        textColor={"#fff"}
+                        width={"7rem"}
+                        onClick={() => console.log("coming soon")}
+                      />
+                    </div>
                   </div>
                 </div>
                 <div className={styles.cardContent}>
