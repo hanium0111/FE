@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import Head from "next/head";
 import styles from "@/components/GenerateBox.module.css";
+import Btn from "./Btn";
 
 const GenerateBox = ({ projectPath }) => {
   const [indexFile, setIndexFile] = useState(null);
