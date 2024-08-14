@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import Head from "next/head";
 
-const GenerateBoxTest = (filename) => {
+const GenerateBoxTest = ({ projectPath }) => {
   const [files, setFiles] = useState([]);
   const [fileContents, setFileContents] = useState({});
 
