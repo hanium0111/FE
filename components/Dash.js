@@ -3,7 +3,11 @@ import { useRouter } from "next/router";
 import styles from "./Dash.module.css";
 import { FaEllipsisV, FaHeart, FaSearch, FaPlus } from "react-icons/fa";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSpinner, faRotate } from "@fortawesome/free-solid-svg-icons";
+import {
+  faSpinner,
+  faRotate,
+  faShareFromSquare,
+} from "@fortawesome/free-solid-svg-icons";
 
 import Image from "next/image";
 import Btn from "./Btn";
@@ -817,9 +821,10 @@ export default function Dash() {
                       />
                       <div className={styles.cardImageBtn}>
                         <Btn
+                          icon={<FontAwesomeIcon icon={faShareFromSquare} />}
                           text={"프로젝트 편집"}
-                          background={"#999"}
-                          border={"#999"}
+                          background={"#000"}
+                          border={"#000"}
                           textColor={"#fff"}
                           width={"7rem"}
                           onClick={() => onEdit(template)}
