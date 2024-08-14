@@ -1,13 +1,11 @@
 import { useEffect, useState } from "react";
 import Head from "next/head";
-import dynamic from "next/dynamic";
 
 const GenerateBoxTest = ({ projectPath }) => {
   const [files, setFiles] = useState([]);
   const [fileContents, setFileContents] = useState({});
 
   useEffect(() => {
-    // JSON 데이터를 가져오는 함수
     const fetchFileData = async () => {
       const res = await fetch(
         `https://1am11m.store/user-templates/directory?dirPath=${projectPath}`
@@ -21,7 +19,6 @@ const GenerateBoxTest = ({ projectPath }) => {
 
   useEffect(() => {
     if (files.length > 0) {
-      // 재귀적으로 파일 내용을 가져오는 함수
       const fetchFileContents = async (file) => {
         if (file.isDirectory && file.children) {
           await Promise.all(file.children.map(fetchFileContents));
@@ -44,36 +41,42 @@ const GenerateBoxTest = ({ projectPath }) => {
     if (!content) return null;
 
     if (file.name.endsWith(".html")) {
-      // 클라이언트 사이드에서만 HTML을 파싱하고 렌더링
       if (typeof window !== "undefined") {
         const parser = new DOMParser();
         const doc = parser.parseFromString(content, "text/html");
 
-        // HTML 파일에서 모든 CSS 파일을 찾음
+        // CSS 파일 경로를 조정
         const linkTags = Array.from(
           doc.querySelectorAll('link[rel="stylesheet"]')
         );
-        const cssFiles = linkTags.map((tag) => tag.getAttribute("href"));
+        const cssFiles = linkTags.map((tag) => {
+          const href = tag.getAttribute("href");
+          return `https://1am11m.store${href}`;
+        });
+
+        // 이미지 경로를 조정
+        const imgTags = Array.from(doc.querySelectorAll("img"));
+        imgTags.forEach((img) => {
+          const src = img.getAttribute("src");
+          img.setAttribute("src", `https://1am11m.store${src}`);
+        });
+
+        // HTML 내용을 다시 직렬화하여 렌더링
+        const updatedHTML = doc.documentElement.outerHTML;
 
         return (
           <div>
             <Head>
-              {/* 동적으로 모든 CSS 파일을 로드 */}
               {cssFiles.map((href, index) => (
-                <link
-                  key={index}
-                  rel="stylesheet"
-                  href={`https://1am11m.store${href}`}
-                />
+                <link key={index} rel="stylesheet" href={href} />
               ))}
             </Head>
-            <div dangerouslySetInnerHTML={{ __html: content }} />
+            <div dangerouslySetInnerHTML={{ __html: updatedHTML }} />
           </div>
         );
       }
     }
 
-    // 기타 파일 형식에 대한 처리
     return null;
   };
 
@@ -86,7 +89,4 @@ const GenerateBoxTest = ({ projectPath }) => {
   );
 };
 
-// 이 컴포넌트를 동적으로 로드하여 서버 사이드 렌더링에서 제외
-export default dynamic(() => Promise.resolve(GenerateBoxTest), {
-  ssr: false,
-});
+export default GenerateBoxTest;
