@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import Head from "next/head";
+import dynamic from "next/dynamic";
 
 const GenerateBoxTest = ({ projectPath }) => {
   const [files, setFiles] = useState([]);
@@ -16,7 +17,7 @@ const GenerateBoxTest = ({ projectPath }) => {
     };
 
     fetchFileData();
-  }, []);
+  }, [projectPath]);
 
   useEffect(() => {
     if (files.length > 0) {
@@ -43,30 +44,33 @@ const GenerateBoxTest = ({ projectPath }) => {
     if (!content) return null;
 
     if (file.name.endsWith(".html")) {
-      const parser = new DOMParser();
-      const doc = parser.parseFromString(content, "text/html");
+      // 클라이언트 사이드에서만 HTML을 파싱하고 렌더링
+      if (typeof window !== "undefined") {
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(content, "text/html");
 
-      // HTML 파일에서 모든 CSS 파일을 찾음
-      const linkTags = Array.from(
-        doc.querySelectorAll('link[rel="stylesheet"]')
-      );
-      const cssFiles = linkTags.map((tag) => tag.getAttribute("href"));
+        // HTML 파일에서 모든 CSS 파일을 찾음
+        const linkTags = Array.from(
+          doc.querySelectorAll('link[rel="stylesheet"]')
+        );
+        const cssFiles = linkTags.map((tag) => tag.getAttribute("href"));
 
-      return (
-        <div>
-          <Head>
-            {/* 동적으로 모든 CSS 파일을 로드 */}
-            {cssFiles.map((href, index) => (
-              <link
-                key={index}
-                rel="stylesheet"
-                href={`https://1am11m.store${href}`}
-              />
-            ))}
-          </Head>
-          <div dangerouslySetInnerHTML={{ __html: content }} />
-        </div>
-      );
+        return (
+          <div>
+            <Head>
+              {/* 동적으로 모든 CSS 파일을 로드 */}
+              {cssFiles.map((href, index) => (
+                <link
+                  key={index}
+                  rel="stylesheet"
+                  href={`https://1am11m.store${href}`}
+                />
+              ))}
+            </Head>
+            <div dangerouslySetInnerHTML={{ __html: content }} />
+          </div>
+        );
+      }
     }
 
     // 기타 파일 형식에 대한 처리
@@ -82,4 +86,7 @@ const GenerateBoxTest = ({ projectPath }) => {
   );
 };
 
-export default GenerateBoxTest;
+// 이 컴포넌트를 동적으로 로드하여 서버 사이드 렌더링에서 제외
+export default dynamic(() => Promise.resolve(GenerateBoxTest), {
+  ssr: false,
+});
