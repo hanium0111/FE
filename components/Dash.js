@@ -102,8 +102,7 @@ const DropdownMenu = ({
   onRename, // 이름 변경
   template, // 선택한 템플릿 정보
 }) => {
-  const deploymentBaseURL = "https://hanium0111.github.io/CI-CD";
-  const deploymentLink = `${deploymentBaseURL}/${template.deployName}/`;
+  const deploymentLink = `${template.deployPath}`;
 
   return (
     <div className={styles.dropdownMenu}>
