@@ -131,12 +131,6 @@ const GenerateBox = ({ projectPath }) => {
             </svg>
           </button>
         </form>
-        <Btn
-          text={"수정 완료"}
-          background={"#666"}
-          border={"#666"}
-          textColor={"#FFF"}
-        />
       </div>
     </div>
   );
