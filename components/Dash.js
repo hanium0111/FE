@@ -315,15 +315,6 @@ export default function Dash() {
         throw new Error(`HTTP error! status: ${res.status}`);
       }
 
-      dispatch({
-        type: "SET_TEMPLATES",
-        payload: state.templates.map((template) =>
-          template.id === templateId
-            ? { ...template, publish: false }
-            : template
-        ),
-      });
-
       alert("배포가 업데이트 되었습니다.");
     } catch (error) {
       console.error("Failed to update deploy template:", error);
