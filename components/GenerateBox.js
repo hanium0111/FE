@@ -93,7 +93,10 @@ const GenerateBox = ({ projectPath }) => {
               />
             ))}
           </Head>
-          <div dangerouslySetInnerHTML={{ __html: updatedHTML }} />
+          <div
+            className={styles.genBox}
+            dangerouslySetInnerHTML={{ __html: updatedHTML }}
+          />
         </div>
       );
     }
