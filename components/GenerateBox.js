@@ -68,7 +68,7 @@ const GenerateBox = ({ projectPath }) => {
     clearHighlight();
     clickedElement.style.outline = "2px solid blue";
 
-    console.log("Clicked Element:", clickedElement.tagName);
+    console.log("Clicked Element:", clickedElement);
 
     clickedElement.addEventListener(
       "click",
@@ -122,7 +122,7 @@ const GenerateBox = ({ projectPath }) => {
       const updatedHTML = doc.documentElement.outerHTML;
 
       return (
-        <div>
+        <div className={styles.genBoxWrap}>
           <Head>
             {linkTags.map((tag, index) => (
               <link
@@ -146,7 +146,7 @@ const GenerateBox = ({ projectPath }) => {
 
   return (
     <div className={styles.wrap}>
-      <div className={styles.genBoxWrap}>{renderFileContent()}</div>
+      {renderFileContent()}
       <div className={styles.editorWrap}>
         <form className={styles.form}>
           <input
