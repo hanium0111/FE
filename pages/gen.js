@@ -1,6 +1,6 @@
 import Header from "../components/Header";
 import styles from "../styles/Wrap.module.css";
-import GenerateBoxTest from "@/components/GenerateBoxTest";
+import GenerateBox from "@/components/GenerateBox";
 import { useRouter } from "next/router";
 
 export default function Gen() {
@@ -10,7 +10,7 @@ export default function Gen() {
   return (
     <div className={styles.wrap}>
       <Header />
-      <GenerateBoxTest projectPath={projectPath} />
+      <GenerateBox projectPath={projectPath} />
     </div>
   );
 }
