@@ -155,7 +155,6 @@ const GenerateBox = ({ projectPath }) => {
         <form className={styles.form}>
           <textarea
             className={styles.input}
-            rows="10"
             placeholder="수정하고 싶은 부분을 입력하세요."
             value={clickedElement ? clickedElement.outerHTML : ""}
             readOnly
