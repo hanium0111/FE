@@ -7,6 +7,8 @@ const GenerateBox = ({ projectPath }) => {
   const [indexFile, setIndexFile] = useState(null);
   const [fileContent, setFileContent] = useState(null);
   const [clickedElement, setClickedElement] = useState(null);
+  const [indexFileState, setIndexFileState] = useState(null);
+  const [inputValue, setInputValue] = useState("");
   const contentRef = useRef(null);
 
   useEffect(() => {
@@ -30,6 +32,7 @@ const GenerateBox = ({ projectPath }) => {
 
       const indexHtmlFile = findIndexFile(json);
       setIndexFile(indexHtmlFile);
+      setIndexFileState(indexHtmlFile);
     };
 
     fetchFileData();
@@ -140,11 +143,54 @@ const GenerateBox = ({ projectPath }) => {
     return null;
   };
 
+  const handleEditSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const promptContent = `
+      # DOM Element
+      ${clickedElement ? clickedElement.outerHTML : "선택한 요소가 없습니다."}
+
+      # Prompt
+      ${inputValue}
+      `;
+
+      const payload = { path: indexFileState, prompt: promptContent };
+
+      console.log("Payload:", payload);
+
+      const res = await fetch(
+        "https://1am11m.store/user-templates/modify-file",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+          credentials: "include",
+        }
+      );
+
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }
+
+      alert("수정 사항이 전송되었습니다.");
+    } catch (error) {
+      console.error("Failed to Submit:", error);
+      alert("수정 사항 전송에 실패했습니다.");
+    }
+  };
+
+  const handleInputChange = (e) => {
+    setInputValue(e.target.value);
+  };
+
   const getPlaceholderText = () => {
     if (clickedElement) {
-      return `선택한 요소: ${clickedElement.outerHTML}`;
+      return `${clickedElement.outerHTML}에 대해서 수정..`;
     } else {
-      return "수정하고 싶은 부분을 입력하세요.";
+      return "수정하고 싶은 내용을 입력하세요.";
     }
   };
 
@@ -152,12 +198,12 @@ const GenerateBox = ({ projectPath }) => {
     <div className={styles.wrap}>
       {renderFileContent()}
       <div className={styles.editorWrap}>
-        <form className={styles.form}>
+        <form className={styles.form} onSubmit={handleEditSubmit}>
           <textarea
             className={styles.input}
-            placeholder="수정하고 싶은 부분을 입력하세요."
-            value={clickedElement ? clickedElement.outerHTML : ""}
-            readOnly
+            placeholder="수정하고 싶은 내용을 입력하세요."
+            value={inputValue}
+            onChange={handleInputChange}
           />
           <button type="submit" className={styles.button}>
             <svg
