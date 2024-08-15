@@ -155,7 +155,7 @@ const GenerateBox = ({ projectPath }) => {
       ${inputValue}
       `;
 
-      const payload = { path: indexFileState, prompt: promptContent };
+      const payload = { path: indexFileState.path, prompt: promptContent };
 
       console.log("Payload:", payload);
 
