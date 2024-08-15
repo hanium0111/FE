@@ -6,6 +6,7 @@ import Btn from "./Btn";
 const GenerateBox = ({ projectPath }) => {
   const [indexFile, setIndexFile] = useState(null);
   const [fileContent, setFileContent] = useState(null);
+  const [clickedElement, setClickedElement] = useState(null); // 클릭된 요소를 추적하기 위한 state
   const contentRef = useRef(null);
 
   useEffect(() => {
@@ -15,7 +16,6 @@ const GenerateBox = ({ projectPath }) => {
       );
       const json = await res.json();
 
-      // index.html 파일 찾기
       const findIndexFile = (files) => {
         for (const file of files) {
           if (file.isDirectory && file.children) {
@@ -58,26 +58,22 @@ const GenerateBox = ({ projectPath }) => {
         contentRef.current.removeEventListener("click", handleElementClick);
       }
     };
-  }, [fileContent]);
+  }, [fileContent, clickedElement]);
 
   const handleElementClick = (event) => {
     event.stopPropagation();
     event.preventDefault();
 
-    const clickedElement = event.target;
-    clearHighlight();
-    clickedElement.style.outline = "2px solid blue";
+    const targetElement = event.target;
 
-    console.log("Clicked Element:", clickedElement);
-
-    clickedElement.addEventListener(
-      "click",
-      (e) => {
-        e.stopPropagation();
-        e.preventDefault();
-      },
-      { once: true }
-    );
+    if (clickedElement === targetElement) {
+      clearHighlight();
+      setClickedElement(null);
+    } else {
+      clearHighlight();
+      targetElement.style.outline = "2px solid blue";
+      setClickedElement(targetElement);
+    }
   };
 
   const clearHighlight = () => {
@@ -149,11 +145,19 @@ const GenerateBox = ({ projectPath }) => {
       {renderFileContent()}
       <div className={styles.editorWrap}>
         <form className={styles.form}>
+          {clickedElement} ? (
+          <input
+            type="text"
+            className={styles.input}
+            placeholder={`선택한 요소: ${clickedElement}`}
+          />
+          ) : (
           <input
             type="text"
             className={styles.input}
             placeholder="수정하고 싶은 부분을 입력하세요."
           />
+          )
           <button type="submit" className={styles.button}>
             <svg
               className={styles.icon}
