@@ -6,7 +6,7 @@ import Btn from "./Btn";
 const GenerateBox = ({ projectPath }) => {
   const [indexFile, setIndexFile] = useState(null);
   const [fileContent, setFileContent] = useState(null);
-  const [clickedElement, setClickedElement] = useState(null); // 클릭된 요소를 추적하기 위한 state
+  const [clickedElement, setClickedElement] = useState(null);
   const contentRef = useRef(null);
 
   useEffect(() => {
@@ -140,24 +140,26 @@ const GenerateBox = ({ projectPath }) => {
     return null;
   };
 
+  const getPlaceholderText = () => {
+    if (clickedElement) {
+      return `선택한 요소: ${clickedElement.outerHTML}`;
+    } else {
+      return "수정하고 싶은 부분을 입력하세요.";
+    }
+  };
+
   return (
     <div className={styles.wrap}>
       {renderFileContent()}
       <div className={styles.editorWrap}>
         <form className={styles.form}>
-          {clickedElement} ? (
-          <input
-            type="text"
+          <textarea
             className={styles.input}
-            placeholder={`선택한 요소: ${clickedElement}`}
-          />
-          ) : (
-          <input
-            type="text"
-            className={styles.input}
+            rows="10"
             placeholder="수정하고 싶은 부분을 입력하세요."
+            value={clickedElement ? clickedElement.outerHTML : ""}
+            readOnly
           />
-          )
           <button type="submit" className={styles.button}>
             <svg
               className={styles.icon}
