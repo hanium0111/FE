@@ -74,7 +74,7 @@ const GenerateBox = ({ projectPath }) => {
       setClickedElement(null);
     } else {
       clearHighlight();
-      targetElement.style.outline = "2px solid blue";
+      targetElement.classList.add(styles.DOMhighlighted);
       setClickedElement(targetElement);
     }
   };
@@ -83,7 +83,7 @@ const GenerateBox = ({ projectPath }) => {
     if (contentRef.current) {
       const elements = contentRef.current.querySelectorAll("*");
       elements.forEach((element) => {
-        element.style.outline = "none";
+        element.classList.remove(styles.DOMhighlighted);
       });
     }
   };
@@ -147,9 +147,19 @@ const GenerateBox = ({ projectPath }) => {
     e.preventDefault();
 
     try {
+      let elementHtml = clickedElement
+        ? clickedElement.outerHTML
+        : "선택한 요소가 없습니다.";
+
+      if (clickedElement) {
+        clickedElement.classList.remove(styles.DOMhighlighted);
+        elementHtml = clickedElement.outerHTML;
+        clickedElement.classList.add(styles.DOMhighlighted);
+      }
+
       const promptContent = `
       # DOM Element
-      ${clickedElement ? clickedElement.outerHTML : "선택한 요소가 없습니다."}
+      ${elementHtml}
 
       # Prompt
       ${inputValue}

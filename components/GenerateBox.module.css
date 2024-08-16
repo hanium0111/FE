@@ -70,3 +70,7 @@
   width: 24px;
   height: 24px;
 }
+
+.DOMhighlighted {
+  border: 2px solid blue;
+}
