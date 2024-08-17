@@ -125,6 +125,25 @@ const GenerateBox = ({ projectPath }) => {
         indexFile.path.lastIndexOf("/")
       );
 
+      const updatePaths = (element) => {
+        if (element.tagName === "IMG") {
+          const src = element.getAttribute("src");
+          if (src && !src.startsWith("http")) {
+            element.setAttribute(
+              "src",
+              `https://1am11m.store${basePath}/${src}`
+            );
+          }
+        } else if (element.children) {
+          for (let i = 0; i < element.children.length; i++) {
+            updatePaths(element.children[i]);
+          }
+        }
+      };
+
+      const imgTags = Array.from(doc.querySelectorAll("img"));
+      imgTags.forEach((img) => updatePaths(img));
+
       const linkTags = Array.from(
         doc.querySelectorAll('link[rel="stylesheet"]')
       );
@@ -132,14 +151,6 @@ const GenerateBox = ({ projectPath }) => {
         const href = tag.getAttribute("href");
         if (href && !href.startsWith("http")) {
           tag.setAttribute("href", `https://1am11m.store${basePath}/${href}`);
-        }
-      });
-
-      const imgTags = Array.from(doc.querySelectorAll("img"));
-      imgTags.forEach((img) => {
-        const src = img.getAttribute("src");
-        if (src && !src.startsWith("http")) {
-          img.setAttribute("src", `https://1am11m.store${basePath}/${src}`);
         }
       });
 
