@@ -195,6 +195,49 @@ export default function Dash() {
     fetchDash();
   }, []);
 
+  useEffect(() => {
+    const checkDifferences = async () => {
+      const updatedNoDifferences = {};
+
+      for (const template of state.templates) {
+        try {
+          const res = await fetch(
+            "https://1am11m.store/deploy/check-differences",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ id: template.id }),
+              credentials: "include",
+            }
+          );
+
+          if (!res.ok) {
+            const errorMessage = await res.text();
+            if (errorMessage.includes("No differences found")) {
+              updatedNoDifferences[template.id] = true;
+            }
+          }
+        } catch (error) {
+          console.error(
+            `Failed to check differences for template ${template.id}:`,
+            error
+          );
+        }
+      }
+
+      dispatch({
+        type: "SET_NO_DIFFERENCES",
+        payload: updatedNoDifferences,
+      });
+    };
+
+    if (state.templates.length > 0) {
+      checkDifferences();
+    }
+  }, [state.templates]);
+
   const filteredTemplates = state.templates
     .filter((template) =>
       template.projectName
