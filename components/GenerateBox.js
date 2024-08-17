@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef, useCallback } from "react";
 import Head from "next/head";
+import { useRouter } from "next/router";
 import styles from "@/components/GenerateBox.module.css";
 import Btn from "./Btn";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -12,6 +13,8 @@ const GenerateBox = ({ projectPath }) => {
   const [indexFileState, setIndexFileState] = useState(null);
   const [inputValue, setInputValue] = useState("");
   const contentRef = useRef(null);
+
+  const router = useRouter();
 
   const fetchFileContent = async (filePath) => {
     const res = await fetch(`https://1am11m.store${filePath}`);
@@ -228,6 +231,10 @@ const GenerateBox = ({ projectPath }) => {
     }
   };
 
+  const handleCheckClick = () => {
+    router.push("/dashboard");
+  };
+
   return (
     <div className={styles.wrap}>
       {renderFileContent()}
@@ -255,6 +262,7 @@ const GenerateBox = ({ projectPath }) => {
           border={"none"}
           height={"3rem"}
           width={"10%"}
+          onClick={handleCheckClick}
         />
       </div>
     </div>
