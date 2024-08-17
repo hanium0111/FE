@@ -167,14 +167,16 @@ export default function ChatComponent() {
       );
 
       if (response.ok) {
-        setIsLoading(false);
+        router.push("/dashboard");
+      } else if (response.status === 504) {
+        console.warn("Gateway timeout occurred. Routing to dashboard.");
         router.push("/dashboard");
       } else {
         console.error("Failed to generate website:", response.statusText);
-        setIsLoading(false);
       }
     } catch (error) {
       console.error("Error during the fetch operation:", error);
+    } finally {
       setIsLoading(false);
     }
   };
