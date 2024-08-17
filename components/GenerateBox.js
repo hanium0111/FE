@@ -11,36 +11,44 @@ const GenerateBox = ({ projectPath }) => {
   const contentRef = useRef(null);
 
   const fetchFileContent = async (filePath) => {
-    const res = await fetch(`https://1am11m.store${filePath}`);
-    const content = await res.text();
-    setFileContent(content);
+    try {
+      const res = await fetch(`https://1am11m.store${filePath}`);
+      const content = await res.text();
+      setFileContent(content);
+    } catch (error) {
+      console.error("Error fetching file content:", error);
+    }
   };
 
   useEffect(() => {
     const fetchFileData = async () => {
-      const res = await fetch(
-        `https://1am11m.store/user-templates/directory?dirPath=${projectPath}`
-      );
-      const json = await res.json();
+      try {
+        const res = await fetch(
+          `https://1am11m.store/user-templates/directory?dirPath=${projectPath}`
+        );
+        const json = await res.json();
 
-      const findIndexFile = (files) => {
-        for (const file of files) {
-          if (file.isDirectory && file.children) {
-            const foundFile = findIndexFile(file.children);
-            if (foundFile) return foundFile;
-          } else if (file.name === "index.html") {
-            return file;
+        const findIndexFile = (files) => {
+          for (const file of files) {
+            if (file.isDirectory && file.children) {
+              const foundFile = findIndexFile(file.children);
+              if (foundFile) return foundFile;
+            } else if (file.name === "index.html") {
+              return file;
+            }
           }
+          return null;
+        };
+
+        const indexHtmlFile = findIndexFile(json);
+        setIndexFile(indexHtmlFile);
+        setIndexFileState(indexHtmlFile);
+
+        if (indexHtmlFile) {
+          await fetchFileContent(indexHtmlFile.path);
         }
-        return null;
-      };
-
-      const indexHtmlFile = findIndexFile(json);
-      setIndexFile(indexHtmlFile);
-      setIndexFileState(indexHtmlFile);
-
-      if (indexHtmlFile) {
-        await fetchFileContent(indexHtmlFile.path);
+      } catch (error) {
+        console.error("Error fetching file data:", error);
       }
     };
 
@@ -99,41 +107,52 @@ const GenerateBox = ({ projectPath }) => {
       const parser = new DOMParser();
       const doc = parser.parseFromString(fileContent, "text/html");
 
+      if (!indexFile || !indexFile.path) {
+        console.error("indexFile or its path is undefined");
+        return null;
+      }
+
       const basePath = indexFile.path.substring(
         0,
         indexFile.path.lastIndexOf("/")
       );
 
-      const linkTags = Array.from(
-        doc.querySelectorAll('link[rel="stylesheet"]')
-      );
-      linkTags.forEach((tag) => {
-        const href = tag.getAttribute("href");
-        if (href && !href.startsWith("http")) {
-          tag.setAttribute("href", `https://1am11m.store${basePath}/${href}`);
-        }
-      });
+      try {
+        const linkTags = Array.from(
+          doc.querySelectorAll('link[rel="stylesheet"]')
+        );
+        linkTags.forEach((tag) => {
+          const href = tag.getAttribute("href");
+          if (href && !href.startsWith("http")) {
+            tag.setAttribute("href", `https://1am11m.store${basePath}/${href}`);
+          }
+        });
 
-      const imgTags = Array.from(doc.querySelectorAll("img"));
-      imgTags.forEach((img) => {
-        const src = img.getAttribute("src");
-        if (src && !src.startsWith("http")) {
-          img.setAttribute("src", `https://1am11m.store${basePath}/${src}`);
-        }
-      });
+        const imgTags = Array.from(doc.querySelectorAll("img"));
+        imgTags.forEach((img) => {
+          const src = img.getAttribute("src");
+          if (src && !src.startsWith("http")) {
+            img.setAttribute("src", `https://1am11m.store${basePath}/${src}`);
+          }
+        });
+      } catch (error) {
+        console.error("Error processing link or img tags:", error);
+        return null;
+      }
 
       const updatedHTML = doc.documentElement.outerHTML;
 
       return (
         <div className={styles.genBoxWrap}>
           <Head>
-            {linkTags.map((tag, index) => (
-              <link
-                key={index}
-                rel="stylesheet"
-                href={tag.getAttribute("href")}
-              />
-            ))}
+            {linkTags &&
+              linkTags.map((tag, index) => (
+                <link
+                  key={index}
+                  rel="stylesheet"
+                  href={tag.getAttribute("href")}
+                />
+              ))}
           </Head>
           <div
             ref={contentRef}
