@@ -134,15 +134,28 @@ const GenerateBox = ({ projectPath }) => {
               `https://1am11m.store${basePath}/${src}`
             );
           }
-        } else if (element.children) {
+        } else if (element.children && element.children.length > 0) {
           for (let i = 0; i < element.children.length; i++) {
             updatePaths(element.children[i]);
           }
         }
       };
 
-      const imgTags = Array.from(doc.querySelectorAll("img"));
-      imgTags.forEach((img) => updatePaths(img));
+      // Function to recursively update paths in a nested structure
+      const updateNestedPaths = (node) => {
+        const imgTags = Array.from(node.querySelectorAll("img"));
+        imgTags.forEach((img) => updatePaths(img));
+
+        const nestedChildren = node.querySelectorAll("*");
+        nestedChildren.forEach((child) => {
+          if (child.children && child.children.length > 0) {
+            updatePaths(child);
+          }
+        });
+      };
+
+      // Update paths for the entire document
+      updateNestedPaths(doc);
 
       const linkTags = Array.from(
         doc.querySelectorAll('link[rel="stylesheet"]')
