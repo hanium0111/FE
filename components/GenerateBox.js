@@ -48,7 +48,7 @@ const GenerateBox = ({ projectPath }) => {
     fetchFileData();
   }, [projectPath]);
 
-  const clearHighlight = () => {
+  const clearHighlight = useCallback(() => {
     if (contentRef.current) {
       const elements = contentRef.current.querySelectorAll(
         `.${styles.DOMhighlighted}`
@@ -57,7 +57,7 @@ const GenerateBox = ({ projectPath }) => {
         element.classList.remove(styles.DOMhighlighted);
       });
     }
-  };
+  }, []);
 
   const handleElementClick = useCallback(
     (event) => {
@@ -81,22 +81,6 @@ const GenerateBox = ({ projectPath }) => {
   useEffect(() => {
     const currentContentRef = contentRef.current;
 
-    const handleElementClick = (event) => {
-      event.stopPropagation();
-      event.preventDefault();
-
-      const targetElement = event.target;
-
-      if (clickedElement === targetElement) {
-        clearHighlight();
-        setClickedElement(null);
-      } else {
-        clearHighlight();
-        targetElement.classList.add(styles.DOMhighlighted);
-        setClickedElement(targetElement);
-      }
-    };
-
     if (currentContentRef) {
       currentContentRef.addEventListener("click", handleElementClick);
     }
@@ -106,7 +90,7 @@ const GenerateBox = ({ projectPath }) => {
         currentContentRef.removeEventListener("click", handleElementClick);
       }
     };
-  }, [clickedElement, clearHighlight]);
+  }, [handleElementClick]);
 
   const renderFileContent = () => {
     if (!fileContent) return null;
