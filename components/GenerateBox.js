@@ -1,7 +1,6 @@
 import { useEffect, useState, useRef, useCallback } from "react";
 import Head from "next/head";
 import styles from "@/components/GenerateBox.module.css";
-import Btn from "./Btn";
 
 const GenerateBox = ({ projectPath }) => {
   const [indexFile, setIndexFile] = useState(null);
@@ -62,7 +61,6 @@ const GenerateBox = ({ projectPath }) => {
   const handleElementClick = useCallback(
     (event) => {
       event.stopPropagation();
-      event.preventDefault();
 
       const targetElement = event.target;
 
