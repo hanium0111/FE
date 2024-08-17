@@ -180,7 +180,14 @@ export default function Templates({ showMoreButton, showCategories }) {
         className={styles.modalContent}
         overlayClassName={styles.modalOverlay}
       >
-        <form>
+        <form
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              e.preventDefault();
+              handleConfirm();
+            }
+          }}
+        >
           <h2>페이지 이름을 입력해주세요!</h2>
           <div>
             <input
