@@ -40,7 +40,6 @@ const GenerateBox = ({ projectPath }) => {
       setIndexFile(indexHtmlFile);
       setIndexFileState(indexHtmlFile);
 
-      // Fetch the content of the index.html file after finding it
       if (indexHtmlFile) {
         await fetchFileContent(indexHtmlFile.path);
       }
@@ -48,6 +47,15 @@ const GenerateBox = ({ projectPath }) => {
 
     fetchFileData();
   }, [projectPath]);
+
+  const clearHighlight = useCallback(() => {
+    if (contentRef.current) {
+      const elements = contentRef.current.querySelectorAll("*");
+      elements.forEach((element) => {
+        element.classList.remove(styles.DOMhighlighted);
+      });
+    }
+  }, []);
 
   const handleElementClick = useCallback(
     (event) => {
@@ -65,17 +73,8 @@ const GenerateBox = ({ projectPath }) => {
         setClickedElement(targetElement);
       }
     },
-    [clickedElement]
+    [clickedElement, clearHighlight]
   );
-
-  const clearHighlight = useCallback(() => {
-    if (contentRef.current) {
-      const elements = contentRef.current.querySelectorAll("*");
-      elements.forEach((element) => {
-        element.classList.remove(styles.DOMhighlighted);
-      });
-    }
-  }, []);
 
   useEffect(() => {
     const currentContentRef = contentRef.current;
