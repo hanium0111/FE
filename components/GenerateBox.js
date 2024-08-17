@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import Head from "next/head";
 import styles from "@/components/GenerateBox.module.css";
 import Btn from "./Btn";
@@ -40,6 +40,7 @@ const GenerateBox = ({ projectPath }) => {
       setIndexFile(indexHtmlFile);
       setIndexFileState(indexHtmlFile);
 
+      // Fetch the content of the index.html file after finding it
       if (indexHtmlFile) {
         await fetchFileContent(indexHtmlFile.path);
       }
@@ -48,43 +49,48 @@ const GenerateBox = ({ projectPath }) => {
     fetchFileData();
   }, [projectPath]);
 
-  useEffect(() => {
-    if (contentRef.current) {
-      contentRef.current.removeEventListener("click", handleElementClick);
-      contentRef.current.addEventListener("click", handleElementClick);
-    }
+  const handleElementClick = useCallback(
+    (event) => {
+      event.stopPropagation();
+      event.preventDefault();
 
-    return () => {
-      if (contentRef.current) {
-        contentRef.current.removeEventListener("click", handleElementClick);
+      const targetElement = event.target;
+
+      if (clickedElement === targetElement) {
+        clearHighlight();
+        setClickedElement(null);
+      } else {
+        clearHighlight();
+        targetElement.classList.add(styles.DOMhighlighted);
+        setClickedElement(targetElement);
       }
-    };
-  }, [fileContent, clickedElement]);
+    },
+    [clickedElement]
+  );
 
-  const handleElementClick = (event) => {
-    event.stopPropagation();
-    event.preventDefault();
-
-    const targetElement = event.target;
-
-    if (clickedElement === targetElement) {
-      clearHighlight();
-      setClickedElement(null);
-    } else {
-      clearHighlight();
-      targetElement.classList.add(styles.DOMhighlighted);
-      setClickedElement(targetElement);
-    }
-  };
-
-  const clearHighlight = () => {
+  const clearHighlight = useCallback(() => {
     if (contentRef.current) {
       const elements = contentRef.current.querySelectorAll("*");
       elements.forEach((element) => {
         element.classList.remove(styles.DOMhighlighted);
       });
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    const currentContentRef = contentRef.current;
+
+    if (currentContentRef) {
+      currentContentRef.removeEventListener("click", handleElementClick);
+      currentContentRef.addEventListener("click", handleElementClick);
+    }
+
+    return () => {
+      if (currentContentRef) {
+        currentContentRef.removeEventListener("click", handleElementClick);
+      }
+    };
+  }, [handleElementClick]);
 
   const renderFileContent = () => {
     if (!fileContent) return null;
