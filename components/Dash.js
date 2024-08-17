@@ -196,34 +196,13 @@ export default function Dash() {
   }, []);
 
   useEffect(() => {
-    const checkDifferences = async () => {
+    const checkAllTemplatesForDifferences = async () => {
       const updatedNoDifferences = {};
 
       for (const template of state.templates) {
-        try {
-          const res = await fetch(
-            "https://1am11m.store/deploy/check-differences",
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({ id: template.id }),
-              credentials: "include",
-            }
-          );
-
-          if (!res.ok) {
-            const errorMessage = await res.text();
-            if (errorMessage.includes("No differences found")) {
-              updatedNoDifferences[template.id] = true;
-            }
-          }
-        } catch (error) {
-          console.error(
-            `Failed to check differences for template ${template.id}:`,
-            error
-          );
+        const noDiff = await checkDifferencesForTemplate(template.id);
+        if (noDiff) {
+          updatedNoDifferences[template.id] = true;
         }
       }
 
@@ -234,9 +213,37 @@ export default function Dash() {
     };
 
     if (state.templates.length > 0) {
-      checkDifferences();
+      checkAllTemplatesForDifferences();
     }
   }, [state.templates]);
+
+  const checkDifferencesForTemplate = async (templateId) => {
+    try {
+      const res = await fetch("https://1am11m.store/deploy/update", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ id: templateId }),
+        credentials: "include",
+      });
+
+      if (!res.ok) {
+        const errorMessage = await res.text();
+        if (errorMessage.includes("No differences found")) {
+          return true;
+        }
+      }
+
+      return false;
+    } catch (error) {
+      console.error(
+        `Error checking differences for template ${templateId}:`,
+        error
+      );
+      return false;
+    }
+  };
 
   const filteredTemplates = state.templates
     .filter((template) =>
