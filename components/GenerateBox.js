@@ -16,42 +16,63 @@ const GenerateBox = ({ projectPath }) => {
 
   const router = useRouter();
 
+  const fetchDirectoryContents = async (dirPath) => {
+    const res = await fetch(
+      `https://1am11m.store/user-templates/directory?dirPath=${dirPath}`
+    );
+    const json = await res.json();
+    return json;
+  };
+
+  const processDirectory = async (directory) => {
+    if (directory.isDirectory && directory.children) {
+      for (const child of directory.children) {
+        await processDirectory(child);
+      }
+    } else if (directory.isDirectory) {
+      const children = await fetchDirectoryContents(directory.path);
+      directory.children = children;
+      for (const child of children) {
+        await processDirectory(child);
+      }
+    }
+  };
+
+  const fetchFileData = async () => {
+    const initialData = await fetchDirectoryContents(projectPath);
+
+    await processDirectory({ isDirectory: true, children: initialData });
+
+    const findIndexFile = (files) => {
+      for (const file of files) {
+        if (file.isDirectory && file.children) {
+          const foundFile = findIndexFile(file.children);
+          if (foundFile) return foundFile;
+        } else if (file.name === "index.html") {
+          return file;
+        }
+      }
+      return null;
+    };
+
+    const indexHtmlFile = findIndexFile(initialData);
+    setIndexFile(indexHtmlFile);
+    setIndexFileState(indexHtmlFile);
+
+    if (indexHtmlFile) {
+      await fetchFileContent(indexHtmlFile.path);
+    }
+  };
+
+  useEffect(() => {
+    fetchFileData();
+  }, [projectPath]);
+
   const fetchFileContent = async (filePath) => {
     const res = await fetch(`https://1am11m.store${filePath}`);
     const content = await res.text();
     setFileContent(content);
   };
-
-  useEffect(() => {
-    const fetchFileData = async () => {
-      const res = await fetch(
-        `https://1am11m.store/user-templates/directory?dirPath=${projectPath}`
-      );
-      const json = await res.json();
-
-      const findIndexFile = (files) => {
-        for (const file of files) {
-          if (file.isDirectory && file.children) {
-            const foundFile = findIndexFile(file.children);
-            if (foundFile) return foundFile;
-          } else if (file.name === "index.html") {
-            return file;
-          }
-        }
-        return null;
-      };
-
-      const indexHtmlFile = findIndexFile(json);
-      setIndexFile(indexHtmlFile);
-      setIndexFileState(indexHtmlFile);
-
-      if (indexHtmlFile) {
-        await fetchFileContent(indexHtmlFile.path);
-      }
-    };
-
-    fetchFileData();
-  }, [projectPath]);
 
   const clearHighlight = () => {
     if (contentRef.current) {
@@ -86,22 +107,6 @@ const GenerateBox = ({ projectPath }) => {
   useEffect(() => {
     const currentContentRef = contentRef.current;
 
-    const handleElementClick = (event) => {
-      event.stopPropagation();
-      event.preventDefault();
-
-      const targetElement = event.target;
-
-      if (clickedElement === targetElement) {
-        clearHighlight();
-        setClickedElement(null);
-      } else {
-        clearHighlight();
-        targetElement.classList.add(styles.DOMhighlighted);
-        setClickedElement(targetElement);
-      }
-    };
-
     if (currentContentRef) {
       currentContentRef.addEventListener("click", handleElementClick);
     }
@@ -111,7 +116,7 @@ const GenerateBox = ({ projectPath }) => {
         currentContentRef.removeEventListener("click", handleElementClick);
       }
     };
-  }, [clickedElement, clearHighlight]);
+  }, [handleElementClick]);
 
   const renderFileContent = () => {
     if (!fileContent) return null;
@@ -141,7 +146,6 @@ const GenerateBox = ({ projectPath }) => {
         }
       };
 
-      // Function to recursively update paths in a nested structure
       const updateNestedPaths = (node) => {
         const imgTags = Array.from(node.querySelectorAll("img"));
         imgTags.forEach((img) => updatePaths(img));
@@ -154,7 +158,6 @@ const GenerateBox = ({ projectPath }) => {
         });
       };
 
-      // Update paths for the entire document
       updateNestedPaths(doc);
 
       const linkTags = Array.from(
