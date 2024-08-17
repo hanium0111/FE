@@ -66,13 +66,16 @@ const GenerateBox = ({ projectPath }) => {
 
       const targetElement = event.target;
 
-      if (clickedElement === targetElement) {
-        clearHighlight();
-        setClickedElement(null);
-      } else {
-        clearHighlight();
-        targetElement.classList.add(styles.DOMhighlighted);
-        setClickedElement(targetElement);
+      // Ensuring the clicked element is not the wrapper or any unexpected element
+      if (contentRef.current.contains(targetElement)) {
+        if (clickedElement === targetElement) {
+          clearHighlight();
+          setClickedElement(null);
+        } else {
+          clearHighlight();
+          targetElement.classList.add(styles.DOMhighlighted);
+          setClickedElement(targetElement);
+        }
       }
     },
     [clickedElement, clearHighlight]
