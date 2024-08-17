@@ -131,12 +131,20 @@ const GenerateBox = ({ projectPath }) => {
       );
 
       const updatePaths = (element) => {
-        if (element.tagName === "IMG") {
+        if (element.tagName === "IMG" || element.tagName === "SCRIPT") {
           const src = element.getAttribute("src");
           if (src && !src.startsWith("http")) {
             element.setAttribute(
               "src",
               `https://1am11m.store${basePath}/${src}`
+            );
+          }
+        } else if (element.tagName === "LINK") {
+          const href = element.getAttribute("href");
+          if (href && !href.startsWith("http")) {
+            element.setAttribute(
+              "href",
+              `https://1am11m.store${basePath}/${href}`
             );
           }
         } else if (element.children && element.children.length > 0) {
