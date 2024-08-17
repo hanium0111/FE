@@ -2,6 +2,8 @@ import { useEffect, useState, useRef, useCallback } from "react";
 import Head from "next/head";
 import styles from "@/components/GenerateBox.module.css";
 import Btn from "./Btn";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 
 const GenerateBox = ({ projectPath }) => {
   const [indexFile, setIndexFile] = useState(null);
@@ -231,28 +233,20 @@ const GenerateBox = ({ projectPath }) => {
       {renderFileContent()}
       <div className={styles.editorWrap}>
         <form className={styles.form} onSubmit={handleEditSubmit}>
-          <textarea
+          <input
             className={styles.input}
             placeholder={getPlaceholderText()}
             value={inputValue}
             onChange={handleInputChange}
           />
-          <button type="submit" className={styles.button}>
-            <svg
-              className={styles.icon}
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M14 5l7 7m0 0l-7 7m7-7H3"
-              ></path>
-            </svg>
-          </button>
+          <Btn
+            text={<FontAwesomeIcon icon={faPen} />}
+            background={"#4629f2"}
+            textColor={"fff"}
+            border={"none"}
+            height={"100%"}
+            width={"5rem"}
+          />
         </form>
       </div>
     </div>
