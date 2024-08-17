@@ -11,6 +11,12 @@ const GenerateBox = ({ projectPath }) => {
   const [inputValue, setInputValue] = useState("");
   const contentRef = useRef(null);
 
+  const fetchFileContent = async (filePath) => {
+    const res = await fetch(`https://1am11m.store${filePath}`);
+    const content = await res.text();
+    setFileContent(content);
+  };
+
   useEffect(() => {
     const fetchFileData = async () => {
       const res = await fetch(
@@ -33,22 +39,14 @@ const GenerateBox = ({ projectPath }) => {
       const indexHtmlFile = findIndexFile(json);
       setIndexFile(indexHtmlFile);
       setIndexFileState(indexHtmlFile);
+
+      if (indexHtmlFile) {
+        await fetchFileContent(indexHtmlFile.path);
+      }
     };
 
     fetchFileData();
   }, [projectPath]);
-
-  useEffect(() => {
-    if (indexFile) {
-      const fetchFileContent = async () => {
-        const res = await fetch(`https://1am11m.store${indexFile.path}`);
-        const content = await res.text();
-        setFileContent(content);
-      };
-
-      fetchFileContent();
-    }
-  }, [indexFile]);
 
   useEffect(() => {
     if (contentRef.current) {
@@ -186,6 +184,8 @@ const GenerateBox = ({ projectPath }) => {
       }
 
       alert("수정 사항이 전송되었습니다.");
+
+      await fetchFileContent(indexFileState.path);
     } catch (error) {
       console.error("Failed to Submit:", error);
       alert("수정 사항 전송에 실패했습니다.");
@@ -211,7 +211,7 @@ const GenerateBox = ({ projectPath }) => {
         <form className={styles.form} onSubmit={handleEditSubmit}>
           <textarea
             className={styles.input}
-            placeholder="수정하고 싶은 내용을 입력하세요."
+            placeholder={getPlaceholderText()}
             value={inputValue}
             onChange={handleInputChange}
           />
