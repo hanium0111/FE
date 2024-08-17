@@ -38,6 +38,7 @@ const initialState = {
   displayName: "",
   imageLoading: {},
   deployLoading: false,
+  noDifferences: {},
 };
 
 // 리듀서 함수 정의
@@ -85,6 +86,14 @@ function reducer(state, action) {
       return { ...state, deployLoading: action.payload };
     case "SET_DASH_STRUCTURE":
       return { ...state, dashStructure: action.payload };
+    case "SET_NO_DIFFERENCES":
+      return {
+        ...state,
+        noDifferences: {
+          ...state.noDifferences,
+          ...action.payload,
+        },
+      };
     default:
       return state;
   }
@@ -312,13 +321,28 @@ export default function Dash() {
       });
 
       if (!res.ok) {
+        const errorMessage = await res.text();
+
+        if (errorMessage.includes("No differences found")) {
+          dispatch({
+            type: "SET_NO_DIFFERENCES",
+            payload: { [templateId]: true },
+          });
+          alert("배포할 수정 내용이 없습니다.");
+          return;
+        }
+
         throw new Error(`HTTP error! status: ${res.status}`);
       }
 
       alert("배포가 업데이트 되었습니다.");
     } catch (error) {
       console.error("Failed to update deploy template:", error);
-      alert("배포 업데이트에 실패했습니다.");
+      if (error.message.includes("No differences found")) {
+        alert("배포할 수정 내용이 없습니다.");
+      } else {
+        alert("배포 업데이트에 실패했습니다.");
+      }
     }
   };
 
@@ -779,6 +803,7 @@ export default function Dash() {
                           onDelete={() => openDeleteModal(template)} //삭제하기
                           onStopSharing={handleStopSharingTemplate} //공유 중지
                           template={template} //템플릿 데이터
+                          noDifferences={state.noDifferences} // Pass this state
                         />
                       )}
                     </div>
@@ -849,14 +874,28 @@ export default function Dash() {
                           width="7rem"
                           onClick={() => handleUndeployTemplate(template.id)}
                         />
-                        <Btn
-                          text={<FontAwesomeIcon icon={faRotate} />}
-                          background={"#666"}
-                          border={"#666"}
-                          textColor={"#fff"}
-                          width="4rem"
-                          onClick={() => handleUpdateTemplate(template.id)}
-                        />
+                        {state.noDifferences[template.id] ? (
+                          <Btn
+                            disabled={true}
+                            text={<FontAwesomeIcon icon={faRotate} />}
+                            background={"#999"}
+                            border={"#999"}
+                            textColor={"#fff"}
+                            width="4rem"
+                            onClick={() =>
+                              console.log("변경할 내용이 없습니다.")
+                            }
+                          />
+                        ) : (
+                          <Btn
+                            text={<FontAwesomeIcon icon={faRotate} />}
+                            background={"#666"}
+                            border={"#666"}
+                            textColor={"#fff"}
+                            width="4rem"
+                            onClick={() => handleUpdateTemplate(template.id)}
+                          />
+                        )}
                       </div>
                     ) : (
                       <Btn
