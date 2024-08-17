@@ -395,6 +395,10 @@ export default function Dash() {
 
   const handleDeleteTemplate = async () => {
     try {
+      if (state.selectedTemplate.publish) {
+        await handleUndeployTemplate(state.selectedTemplate.id);
+      }
+
       const res = await fetch(
         `https://1am11m.store/dashboards/dashboard/remove/${state.selectedTemplate.id}`,
         {
@@ -402,15 +406,18 @@ export default function Dash() {
           credentials: "include",
         }
       );
+
       if (!res.ok) {
         throw new Error(`HTTP error! status: ${res.status}`);
       }
+
       dispatch({
         type: "SET_TEMPLATES",
         payload: state.templates.filter(
           (template) => template.id !== state.selectedTemplate.id
         ),
       });
+
       console.log("Template deleted successfully:", state.selectedTemplate);
       closeDeleteModal();
     } catch (error) {
