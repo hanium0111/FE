@@ -66,7 +66,6 @@ const GenerateBox = ({ projectPath }) => {
 
       const targetElement = event.target;
 
-      // Ensuring the clicked element is not the wrapper or any unexpected element
       if (contentRef.current.contains(targetElement)) {
         if (clickedElement === targetElement) {
           clearHighlight();
