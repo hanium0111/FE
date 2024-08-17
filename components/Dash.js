@@ -181,7 +181,14 @@ export default function Dash() {
           throw new Error(`HTTP error! status: ${res.status}`);
         }
         const data = await res.json();
+
+        const noDifferences = {};
+        data.forEach((template) => {
+          noDifferences[template.id] = !template.modified;
+        });
+
         dispatch({ type: "SET_TEMPLATES", payload: data });
+        dispatch({ type: "SET_NO_DIFFERENCES", payload: noDifferences });
         dispatch({
           type: "SET_DASH_STRUCTURE",
           payload: new Array(data.length).fill(null),
@@ -194,28 +201,6 @@ export default function Dash() {
     };
     fetchDash();
   }, []);
-
-  // useEffect(() => {
-  //   const checkAllTemplatesForDifferences = async () => {
-  //     const updatedNoDifferences = {};
-
-  //     for (const template of state.templates) {
-  //       const noDiff = await checkDifferencesForTemplate(template.id);
-  //       if (noDiff) {
-  //         updatedNoDifferences[template.id] = true;
-  //       }
-  //     }
-
-  //     dispatch({
-  //       type: "SET_NO_DIFFERENCES",
-  //       payload: updatedNoDifferences,
-  //     });
-  //   };
-
-  //   if (state.templates.length > 0) {
-  //     checkAllTemplatesForDifferences();
-  //   }
-  // }, [state.templates]);
 
   const checkDifferencesForTemplate = async (templateId) => {
     try {
@@ -385,6 +370,10 @@ export default function Dash() {
         throw new Error(`HTTP error! status: ${res.status}`);
       }
 
+      dispatch({
+        type: "SET_NO_DIFFERENCES",
+        payload: { [templateId]: true },
+      });
       alert("배포가 업데이트 되었습니다.");
     } catch (error) {
       console.error("Failed to update deploy template:", error);
