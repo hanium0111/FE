@@ -240,7 +240,7 @@ const GenerateBox = ({ projectPath }) => {
             onChange={handleInputChange}
           />
           <Btn
-            text={<FontAwesomeIcon icon={faPen} />}
+            text={<FontAwesomeIcon icon={faArrowRight} />}
             background={"#4629f2"}
             textColor={"fff"}
             border={"none"}
