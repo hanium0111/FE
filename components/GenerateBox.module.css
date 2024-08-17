@@ -20,6 +20,8 @@
   bottom: 0;
   padding: 1rem 2rem;
   background: white;
+  display: flex;
+  flex-direction: row;
 }
 
 .form {
@@ -29,7 +31,7 @@
   border: 1px solid #4629f2;
   border-radius: 16px;
   background-color: #fff;
-  width: 100%;
+  width: 90%;
   box-sizing: border-box;
   margin-right: 1rem;
 }
@@ -55,20 +57,6 @@
 .input:disabled {
   background: none;
   display: none;
-}
-
-.button {
-  background-color: #4629f2;
-  color: #fff;
-  border: none;
-  padding: 0.5rem 1.6rem;
-  cursor: pointer;
-  border-radius: 14px;
-}
-
-.icon {
-  width: 24px;
-  height: 24px;
 }
 
 .DOMhighlighted {

@@ -3,7 +3,7 @@ import Head from "next/head";
 import styles from "@/components/GenerateBox.module.css";
 import Btn from "./Btn";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
+import { faArrowRight, faCheck } from "@fortawesome/free-solid-svg-icons";
 
 const GenerateBox = ({ projectPath }) => {
   const [indexFile, setIndexFile] = useState(null);
@@ -242,12 +242,20 @@ const GenerateBox = ({ projectPath }) => {
           <Btn
             text={<FontAwesomeIcon icon={faArrowRight} />}
             background={"#4629f2"}
-            textColor={"fff"}
+            textColor={"#FFF"}
             border={"none"}
-            height={"100%"}
+            height={"3rem"}
             width={"5rem"}
           />
         </form>
+        <Btn
+          text={<FontAwesomeIcon icon={faCheck} />}
+          background={"#222"}
+          textColor={"#FFF"}
+          border={"none"}
+          height={"3rem"}
+          width={"10%"}
+        />
       </div>
     </div>
   );
