@@ -195,27 +195,27 @@ export default function Dash() {
     fetchDash();
   }, []);
 
-  useEffect(() => {
-    const checkAllTemplatesForDifferences = async () => {
-      const updatedNoDifferences = {};
+  // useEffect(() => {
+  //   const checkAllTemplatesForDifferences = async () => {
+  //     const updatedNoDifferences = {};
 
-      for (const template of state.templates) {
-        const noDiff = await checkDifferencesForTemplate(template.id);
-        if (noDiff) {
-          updatedNoDifferences[template.id] = true;
-        }
-      }
+  //     for (const template of state.templates) {
+  //       const noDiff = await checkDifferencesForTemplate(template.id);
+  //       if (noDiff) {
+  //         updatedNoDifferences[template.id] = true;
+  //       }
+  //     }
 
-      dispatch({
-        type: "SET_NO_DIFFERENCES",
-        payload: updatedNoDifferences,
-      });
-    };
+  //     dispatch({
+  //       type: "SET_NO_DIFFERENCES",
+  //       payload: updatedNoDifferences,
+  //     });
+  //   };
 
-    if (state.templates.length > 0) {
-      checkAllTemplatesForDifferences();
-    }
-  }, [state.templates]);
+  //   if (state.templates.length > 0) {
+  //     checkAllTemplatesForDifferences();
+  //   }
+  // }, [state.templates]);
 
   const checkDifferencesForTemplate = async (templateId) => {
     try {
