@@ -322,12 +322,12 @@ export default function Templates({ showMoreButton, showCategories }) {
                     <div className={styles.cardImageBtn}>
                       <Btn
                         icon={<FontAwesomeIcon icon={faShareFromSquare} />}
-                        text={"프로젝트 보기"}
-                        background={"#222"}
-                        border={"#222"}
+                        text={"템플릿 사용"}
+                        background={"#333"}
+                        border={"#333"}
                         textColor={"#fff"}
                         width={"7rem"}
-                        onClick={() => console.log("coming soon")}
+                        onClick={() => openModal(template.id)}
                       />
                     </div>
                   </div>

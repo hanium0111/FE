@@ -888,8 +888,8 @@ export default function Dash() {
                         <Btn
                           icon={<FontAwesomeIcon icon={faShareFromSquare} />}
                           text={"프로젝트 편집"}
-                          background={"#222"}
-                          border={"#222"}
+                          background={"#333"}
+                          border={"#333"}
                           textColor={"#fff"}
                           width={"7rem"}
                           onClick={() => handleEditTemplate(template)}
@@ -918,8 +918,8 @@ export default function Dash() {
                       <div className={styles.updateDeployBox}>
                         <Btn
                           text={"배포중지"}
-                          background={"#666"}
-                          border={"#666"}
+                          background={"#c22"}
+                          border={"#c22"}
                           textColor={"#fff"}
                           width="7rem"
                           onClick={() => handleUndeployTemplate(template.id)}
