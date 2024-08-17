@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef, useCallback } from "react";
 import Head from "next/head";
 import styles from "@/components/GenerateBox.module.css";
+import Btn from "./Btn";
 
 const GenerateBox = ({ projectPath }) => {
   const [indexFile, setIndexFile] = useState(null);
@@ -11,51 +12,43 @@ const GenerateBox = ({ projectPath }) => {
   const contentRef = useRef(null);
 
   const fetchFileContent = async (filePath) => {
-    try {
-      const res = await fetch(`https://1am11m.store${filePath}`);
-      const content = await res.text();
-      setFileContent(content);
-    } catch (error) {
-      console.error("Error fetching file content:", error);
-    }
+    const res = await fetch(`https://1am11m.store${filePath}`);
+    const content = await res.text();
+    setFileContent(content);
   };
 
   useEffect(() => {
     const fetchFileData = async () => {
-      try {
-        const res = await fetch(
-          `https://1am11m.store/user-templates/directory?dirPath=${projectPath}`
-        );
-        const json = await res.json();
+      const res = await fetch(
+        `https://1am11m.store/user-templates/directory?dirPath=${projectPath}`
+      );
+      const json = await res.json();
 
-        const findIndexFile = (files) => {
-          for (const file of files) {
-            if (file.isDirectory && file.children) {
-              const foundFile = findIndexFile(file.children);
-              if (foundFile) return foundFile;
-            } else if (file.name === "index.html") {
-              return file;
-            }
+      const findIndexFile = (files) => {
+        for (const file of files) {
+          if (file.isDirectory && file.children) {
+            const foundFile = findIndexFile(file.children);
+            if (foundFile) return foundFile;
+          } else if (file.name === "index.html") {
+            return file;
           }
-          return null;
-        };
-
-        const indexHtmlFile = findIndexFile(json);
-        setIndexFile(indexHtmlFile);
-        setIndexFileState(indexHtmlFile);
-
-        if (indexHtmlFile) {
-          await fetchFileContent(indexHtmlFile.path);
         }
-      } catch (error) {
-        console.error("Error fetching file data:", error);
+        return null;
+      };
+
+      const indexHtmlFile = findIndexFile(json);
+      setIndexFile(indexHtmlFile);
+      setIndexFileState(indexHtmlFile);
+
+      if (indexHtmlFile) {
+        await fetchFileContent(indexHtmlFile.path);
       }
     };
 
     fetchFileData();
   }, [projectPath]);
 
-  const clearHighlight = useCallback(() => {
+  const clearHighlight = () => {
     if (contentRef.current) {
       const elements = contentRef.current.querySelectorAll(
         `.${styles.DOMhighlighted}`
@@ -64,23 +57,22 @@ const GenerateBox = ({ projectPath }) => {
         element.classList.remove(styles.DOMhighlighted);
       });
     }
-  }, []);
+  };
 
   const handleElementClick = useCallback(
     (event) => {
       event.stopPropagation();
+      event.preventDefault();
 
       const targetElement = event.target;
 
-      if (contentRef.current.contains(targetElement)) {
-        if (clickedElement === targetElement) {
-          clearHighlight();
-          setClickedElement(null);
-        } else {
-          clearHighlight();
-          targetElement.classList.add(styles.DOMhighlighted);
-          setClickedElement(targetElement);
-        }
+      if (clickedElement === targetElement) {
+        clearHighlight();
+        setClickedElement(null);
+      } else {
+        clearHighlight();
+        targetElement.classList.add(styles.DOMhighlighted);
+        setClickedElement(targetElement);
       }
     },
     [clickedElement, clearHighlight]
@@ -88,6 +80,22 @@ const GenerateBox = ({ projectPath }) => {
 
   useEffect(() => {
     const currentContentRef = contentRef.current;
+
+    const handleElementClick = (event) => {
+      event.stopPropagation();
+      event.preventDefault();
+
+      const targetElement = event.target;
+
+      if (clickedElement === targetElement) {
+        clearHighlight();
+        setClickedElement(null);
+      } else {
+        clearHighlight();
+        targetElement.classList.add(styles.DOMhighlighted);
+        setClickedElement(targetElement);
+      }
+    };
 
     if (currentContentRef) {
       currentContentRef.addEventListener("click", handleElementClick);
@@ -98,7 +106,7 @@ const GenerateBox = ({ projectPath }) => {
         currentContentRef.removeEventListener("click", handleElementClick);
       }
     };
-  }, [handleElementClick]);
+  }, [clickedElement, clearHighlight]);
 
   const renderFileContent = () => {
     if (!fileContent) return null;
@@ -107,52 +115,41 @@ const GenerateBox = ({ projectPath }) => {
       const parser = new DOMParser();
       const doc = parser.parseFromString(fileContent, "text/html");
 
-      if (!indexFile || !indexFile.path) {
-        console.error("indexFile or its path is undefined");
-        return null;
-      }
-
       const basePath = indexFile.path.substring(
         0,
         indexFile.path.lastIndexOf("/")
       );
 
-      try {
-        const linkTags = Array.from(
-          doc.querySelectorAll('link[rel="stylesheet"]')
-        );
-        linkTags.forEach((tag) => {
-          const href = tag.getAttribute("href");
-          if (href && !href.startsWith("http")) {
-            tag.setAttribute("href", `https://1am11m.store${basePath}/${href}`);
-          }
-        });
+      const linkTags = Array.from(
+        doc.querySelectorAll('link[rel="stylesheet"]')
+      );
+      linkTags.forEach((tag) => {
+        const href = tag.getAttribute("href");
+        if (href && !href.startsWith("http")) {
+          tag.setAttribute("href", `https://1am11m.store${basePath}/${href}`);
+        }
+      });
 
-        const imgTags = Array.from(doc.querySelectorAll("img"));
-        imgTags.forEach((img) => {
-          const src = img.getAttribute("src");
-          if (src && !src.startsWith("http")) {
-            img.setAttribute("src", `https://1am11m.store${basePath}/${src}`);
-          }
-        });
-      } catch (error) {
-        console.error("Error processing link or img tags:", error);
-        return null;
-      }
+      const imgTags = Array.from(doc.querySelectorAll("img"));
+      imgTags.forEach((img) => {
+        const src = img.getAttribute("src");
+        if (src && !src.startsWith("http")) {
+          img.setAttribute("src", `https://1am11m.store${basePath}/${src}`);
+        }
+      });
 
       const updatedHTML = doc.documentElement.outerHTML;
 
       return (
         <div className={styles.genBoxWrap}>
           <Head>
-            {linkTags &&
-              linkTags.map((tag, index) => (
-                <link
-                  key={index}
-                  rel="stylesheet"
-                  href={tag.getAttribute("href")}
-                />
-              ))}
+            {linkTags.map((tag, index) => (
+              <link
+                key={index}
+                rel="stylesheet"
+                href={tag.getAttribute("href")}
+              />
+            ))}
           </Head>
           <div
             ref={contentRef}
