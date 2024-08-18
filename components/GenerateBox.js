@@ -130,9 +130,22 @@ const GenerateBox = ({ projectPath }) => {
     }
   };
 
+  const executeScripts = () => {
+    if (contentRef.current) {
+      const scriptTags = contentRef.current.querySelectorAll("script");
+      scriptTags.forEach((script) => {
+        const newScript = document.createElement("script");
+        newScript.textContent = script.textContent;
+        document.body.appendChild(newScript);
+        document.body.removeChild(newScript);
+      });
+    }
+  };
+
   useEffect(() => {
     if (fileContent) {
       applyDataSetbg();
+      executeScripts();
     }
   }, [fileContent]);
 
