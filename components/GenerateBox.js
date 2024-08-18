@@ -118,6 +118,18 @@ const GenerateBox = ({ projectPath }) => {
     };
   }, [handleElementClick]);
 
+  const applyDataSetbg = () => {
+    if (contentRef.current) {
+      const elements = contentRef.current.querySelectorAll("[data-setbg]");
+      elements.forEach((element) => {
+        const bg = element.getAttribute("data-setbg");
+        if (bg) {
+          element.style.backgroundImage = `url(${bg})`;
+        }
+      });
+    }
+  };
+
   const renderFileContent = () => {
     if (!fileContent) return null;
 
@@ -203,6 +215,10 @@ const GenerateBox = ({ projectPath }) => {
       });
 
       const updatedHTML = doc.documentElement.outerHTML;
+
+      useEffect(() => {
+        applyDataSetbg();
+      }, [updatedHTML]);
 
       return (
         <div className={styles.genBoxWrap}>
