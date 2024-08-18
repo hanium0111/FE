@@ -38,7 +38,7 @@ const GenerateBox = ({ projectPath }) => {
     }
   };
 
-  const fetchFileData = async () => {
+  const fetchFileData = useCallback(async () => {
     const initialData = await fetchDirectoryContents(projectPath);
 
     await processDirectory({ isDirectory: true, children: initialData });
@@ -62,11 +62,11 @@ const GenerateBox = ({ projectPath }) => {
     if (indexHtmlFile) {
       await fetchFileContent(indexHtmlFile.path);
     }
-  };
+  }, [projectPath]);
 
   useEffect(() => {
     fetchFileData();
-  }, [projectPath]);
+  }, [fetchFileData]);
 
   const fetchFileContent = async (filePath) => {
     const res = await fetch(`https://1am11m.store${filePath}`);
@@ -74,21 +74,21 @@ const GenerateBox = ({ projectPath }) => {
     setFileContent(content);
   };
 
-  const clearHighlight = () => {
-    if (contentRef.current) {
-      const elements = contentRef.current.querySelectorAll(
-        `.${styles.DOMhighlighted}`
-      );
-      elements.forEach((element) => {
-        element.classList.remove(styles.DOMhighlighted);
-      });
-    }
-  };
-
   const handleElementClick = useCallback(
     (event) => {
       event.stopPropagation();
       event.preventDefault();
+
+      const clearHighlight = () => {
+        if (contentRef.current) {
+          const elements = contentRef.current.querySelectorAll(
+            `.${styles.DOMhighlighted}`
+          );
+          elements.forEach((element) => {
+            element.classList.remove(styles.DOMhighlighted);
+          });
+        }
+      };
 
       const targetElement = event.target;
 
@@ -101,7 +101,7 @@ const GenerateBox = ({ projectPath }) => {
         setClickedElement(targetElement);
       }
     },
-    [clickedElement, clearHighlight]
+    [clickedElement]
   );
 
   useEffect(() => {
