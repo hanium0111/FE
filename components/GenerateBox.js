@@ -130,6 +130,12 @@ const GenerateBox = ({ projectPath }) => {
     }
   };
 
+  useEffect(() => {
+    if (fileContent) {
+      applyDataSetbg();
+    }
+  }, [fileContent]);
+
   const renderFileContent = () => {
     if (!fileContent) return null;
 
@@ -143,11 +149,6 @@ const GenerateBox = ({ projectPath }) => {
       );
 
       const updatePaths = (element) => {
-        const basePath = indexFile.path.substring(
-          0,
-          indexFile.path.lastIndexOf("/")
-        );
-
         if (element.tagName === "IMG" || element.tagName === "SCRIPT") {
           const src = element.getAttribute("src");
           if (src && !src.startsWith("http")) {
@@ -228,10 +229,6 @@ const GenerateBox = ({ projectPath }) => {
       });
 
       const updatedHTML = doc.documentElement.outerHTML;
-
-      useEffect(() => {
-        applyDataSetbg();
-      }, [updatedHTML]);
 
       return (
         <div className={styles.genBoxWrap}>
