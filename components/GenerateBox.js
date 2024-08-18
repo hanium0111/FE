@@ -150,7 +150,7 @@ const GenerateBox = ({ projectPath }) => {
   }, [fileContent]);
 
   const renderFileContent = () => {
-    if (!fileContent) return null;
+    if (!fileContent || !indexFile) return null;
 
     if (typeof window !== "undefined") {
       const parser = new DOMParser();
