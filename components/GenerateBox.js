@@ -24,7 +24,7 @@ const GenerateBox = ({ projectPath }) => {
     return json;
   };
 
-  const processDirectory = async (directory) => {
+  const processDirectory = useCallback(async (directory) => {
     if (directory.isDirectory && directory.children) {
       for (const child of directory.children) {
         await processDirectory(child);
@@ -36,7 +36,7 @@ const GenerateBox = ({ projectPath }) => {
         await processDirectory(child);
       }
     }
-  };
+  }, []);
 
   const fetchFileData = useCallback(async () => {
     const initialData = await fetchDirectoryContents(projectPath);
@@ -62,7 +62,7 @@ const GenerateBox = ({ projectPath }) => {
     if (indexHtmlFile) {
       await fetchFileContent(indexHtmlFile.path);
     }
-  }, [projectPath]);
+  }, [projectPath, processDirectory]);
 
   useEffect(() => {
     fetchFileData();
