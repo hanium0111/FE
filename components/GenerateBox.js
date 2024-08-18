@@ -143,6 +143,11 @@ const GenerateBox = ({ projectPath }) => {
       );
 
       const updatePaths = (element) => {
+        const basePath = indexFile.path.substring(
+          0,
+          indexFile.path.lastIndexOf("/")
+        );
+
         if (element.tagName === "IMG" || element.tagName === "SCRIPT") {
           const src = element.getAttribute("src");
           if (src && !src.startsWith("http")) {
@@ -161,6 +166,22 @@ const GenerateBox = ({ projectPath }) => {
           }
         }
 
+        const dataSetBg = element.getAttribute("data-setbg");
+        if (dataSetBg && !dataSetBg.startsWith("http")) {
+          const fullPath = `https://1am11m.store${basePath}/${dataSetBg}`;
+          element.setAttribute(
+            "style",
+            `background-image: url('${fullPath}');`
+          );
+          element.removeAttribute("data-setbg");
+        } else if (dataSetBg && dataSetBg.startsWith("http")) {
+          element.setAttribute(
+            "style",
+            `background-image: url('${dataSetBg}');`
+          );
+          element.removeAttribute("data-setbg");
+        }
+
         const style = element.getAttribute("style");
         if (style) {
           const updatedStyle = style.replace(
@@ -173,14 +194,6 @@ const GenerateBox = ({ projectPath }) => {
             }
           );
           element.setAttribute("style", updatedStyle);
-        }
-
-        const dataSetBg = element.getAttribute("data-setbg");
-        if (dataSetBg && !dataSetBg.startsWith("http")) {
-          element.setAttribute(
-            "data-setbg",
-            `https://1am11m.store${basePath}/${dataSetBg}`
-          );
         }
 
         if (element.children && element.children.length > 0) {
