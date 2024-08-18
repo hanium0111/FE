@@ -147,7 +147,31 @@ const GenerateBox = ({ projectPath }) => {
               `https://1am11m.store${basePath}/${href}`
             );
           }
-        } else if (element.children && element.children.length > 0) {
+        }
+
+        const style = element.getAttribute("style");
+        if (style) {
+          const updatedStyle = style.replace(
+            /url\(["']?([^"')]+)["']?\)/g,
+            (match, url) => {
+              if (!url.startsWith("http")) {
+                return `url(https://1am11m.store${basePath}/${url})`;
+              }
+              return match;
+            }
+          );
+          element.setAttribute("style", updatedStyle);
+        }
+
+        const dataSetBg = element.getAttribute("data-setbg");
+        if (dataSetBg && !dataSetBg.startsWith("http")) {
+          element.setAttribute(
+            "data-setbg",
+            `https://1am11m.store${basePath}/${dataSetBg}`
+          );
+        }
+
+        if (element.children && element.children.length > 0) {
           for (let i = 0; i < element.children.length; i++) {
             updatePaths(element.children[i]);
           }
