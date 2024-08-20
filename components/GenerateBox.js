@@ -74,7 +74,7 @@ const GenerateBox = ({ projectPath }) => {
     setFileContent(content);
   };
 
-  const clearHighlight = () => {
+  const clearHighlight = useCallback(() => {
     if (contentRef.current) {
       const elements = contentRef.current.querySelectorAll(
         `.${styles.DOMhighlighted}`
@@ -83,13 +83,13 @@ const GenerateBox = ({ projectPath }) => {
         element.classList.remove(styles.DOMhighlighted);
       });
     }
-  };
+  }, []);
 
   const handleElementClick = useCallback(
     (event) => {
       console.log("clicked", event);
-      // event.stopPropagation();
-      // event.preventDefault();
+      event.stopPropagation();
+      event.preventDefault();
 
       const targetElement = event.target;
 
@@ -109,7 +109,10 @@ const GenerateBox = ({ projectPath }) => {
     const currentContentRef = contentRef.current;
 
     if (currentContentRef) {
+      console.log("Adding event listener to contentRef");
       currentContentRef.addEventListener("click", handleElementClick);
+    } else {
+      console.log("contentRef is not defined");
     }
 
     return () => {
