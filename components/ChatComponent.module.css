@@ -76,7 +76,7 @@
 }
 
 .userMessage {
-  background-color: #351fb0;
+  background-color: #2107af;
   color: #fff;
 }
 
@@ -184,7 +184,7 @@
   width: 0;
   height: 0;
   border: 2rem solid transparent;
-  border-left-color: #351fb0;
+  border-left-color: #2107af;
   border-right: 0;
   border-bottom: 0;
   transform: rotate(-45deg);
