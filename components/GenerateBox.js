@@ -38,9 +38,8 @@ const GenerateBox = ({ projectPath }) => {
     }
   };
 
-  const fetchFileData = async () => {
+  const fetchFileData = useCallback(async () => {
     const initialData = await fetchDirectoryContents(projectPath);
-
     await processDirectory({ isDirectory: true, children: initialData });
 
     const findIndexFile = (files) => {
@@ -62,11 +61,11 @@ const GenerateBox = ({ projectPath }) => {
     if (indexHtmlFile) {
       await fetchFileContent(indexHtmlFile.path);
     }
-  };
+  }, [projectPath]);
 
   useEffect(() => {
     fetchFileData();
-  }, [projectPath]);
+  }, [fetchFileData]);
 
   const fetchFileContent = async (filePath) => {
     const res = await fetch(`https://1am11m.store${filePath}`);
