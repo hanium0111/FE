@@ -24,7 +24,7 @@ const GenerateBox = ({ projectPath }) => {
     return json;
   };
 
-  const processDirectory = useCallback(async (directory) => {
+  const processDirectory = async (directory) => {
     if (directory.isDirectory && directory.children) {
       for (const child of directory.children) {
         await processDirectory(child);
@@ -36,9 +36,9 @@ const GenerateBox = ({ projectPath }) => {
         await processDirectory(child);
       }
     }
-  }, []);
+  };
 
-  const fetchFileData = useCallback(async () => {
+  const fetchFileData = async () => {
     const initialData = await fetchDirectoryContents(projectPath);
 
     await processDirectory({ isDirectory: true, children: initialData });
@@ -62,11 +62,11 @@ const GenerateBox = ({ projectPath }) => {
     if (indexHtmlFile) {
       await fetchFileContent(indexHtmlFile.path);
     }
-  }, [projectPath, processDirectory]);
+  };
 
   useEffect(() => {
     fetchFileData();
-  }, [fetchFileData]);
+  }, [projectPath]);
 
   const fetchFileContent = async (filePath) => {
     const res = await fetch(`https://1am11m.store${filePath}`);
@@ -74,21 +74,21 @@ const GenerateBox = ({ projectPath }) => {
     setFileContent(content);
   };
 
+  const clearHighlight = () => {
+    if (contentRef.current) {
+      const elements = contentRef.current.querySelectorAll(
+        `.${styles.DOMhighlighted}`
+      );
+      elements.forEach((element) => {
+        element.classList.remove(styles.DOMhighlighted);
+      });
+    }
+  };
+
   const handleElementClick = useCallback(
     (event) => {
       event.stopPropagation();
       event.preventDefault();
-
-      const clearHighlight = () => {
-        if (contentRef.current) {
-          const elements = contentRef.current.querySelectorAll(
-            `.${styles.DOMhighlighted}`
-          );
-          elements.forEach((element) => {
-            element.classList.remove(styles.DOMhighlighted);
-          });
-        }
-      };
 
       const targetElement = event.target;
 
@@ -101,7 +101,7 @@ const GenerateBox = ({ projectPath }) => {
         setClickedElement(targetElement);
       }
     },
-    [clickedElement]
+    [clickedElement, clearHighlight]
   );
 
   useEffect(() => {
@@ -130,27 +130,14 @@ const GenerateBox = ({ projectPath }) => {
     }
   };
 
-  const executeScripts = () => {
-    if (contentRef.current) {
-      const scriptTags = contentRef.current.querySelectorAll("script");
-      scriptTags.forEach((script) => {
-        const newScript = document.createElement("script");
-        newScript.textContent = script.textContent;
-        document.body.appendChild(newScript);
-        document.body.removeChild(newScript);
-      });
-    }
-  };
-
   useEffect(() => {
     if (fileContent) {
       applyDataSetbg();
-      executeScripts();
     }
   }, [fileContent]);
 
   const renderFileContent = () => {
-    if (!fileContent || !indexFile) return null;
+    if (!fileContent) return null;
 
     if (typeof window !== "undefined") {
       const parser = new DOMParser();
