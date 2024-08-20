@@ -62,5 +62,7 @@
 }
 
 .DOMhighlighted {
-  border: 2px solid blue;
+  border: 2px solid blue !important;
+  z-index: 1000;
+  position: relative;
 }
