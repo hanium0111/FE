@@ -200,9 +200,7 @@ const GenerateBox = ({ projectPath }) => {
         }
 
         if (element.children && element.children.length > 0) {
-          for (let i = 0; i < element.children.length; i++) {
-            updatePaths(element.children[i]);
-          }
+          Array.from(element.children).forEach((child) => updatePaths(child));
         }
       };
 
