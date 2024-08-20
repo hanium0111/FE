@@ -86,11 +86,12 @@ const GenerateBox = ({ projectPath }) => {
 
   const handleElementClick = useCallback(
     (event) => {
-      console.log("clicked", event);
       event.stopPropagation();
       event.preventDefault();
 
       const targetElement = event.target;
+
+      console.log("Clicked element:", targetElement);
 
       if (clickedElement === targetElement) {
         clearHighlight();
@@ -109,7 +110,7 @@ const GenerateBox = ({ projectPath }) => {
       console.log("Adding event listener to contentRef");
       contentRef.current.addEventListener("click", handleElementClick);
     } else {
-      console.log("contentRef is not defined");
+      console.log("contentRef is not defined or fileContent is not loaded");
     }
 
     return () => {
