@@ -74,7 +74,7 @@ export default function ChatComponent() {
         clearInterval(typingInterval);
         setIsTyping(false);
       }
-    }, 150);
+    }, 80);
 
     return () => clearInterval(typingInterval);
   }, [userName]);
