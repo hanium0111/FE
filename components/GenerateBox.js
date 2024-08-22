@@ -106,19 +106,20 @@ const GenerateBox = ({ projectPath }) => {
   );
 
   useEffect(() => {
-    if (fileContent && contentRef.current) {
-      console.log("Adding event listener to contentRef");
-      contentRef.current.addEventListener("click", handleElementClick);
-    } else {
-      console.log("contentRef is not defined or fileContent is not loaded");
+    const currentContentRef = contentRef.current;
+
+    if (currentContentRef) {
+      currentContentRef.addEventListener("click", handleElementClick);
+      console.log("Event listener added to contentRef");
     }
 
     return () => {
-      if (contentRef.current) {
-        contentRef.current.removeEventListener("click", handleElementClick);
+      if (currentContentRef) {
+        currentContentRef.removeEventListener("click", handleElementClick);
+        console.log("Event listener removed from contentRef");
       }
     };
-  }, [fileContent, handleElementClick]);
+  }, [handleElementClick]);
 
   const applyDataSetbg = () => {
     if (contentRef.current) {
