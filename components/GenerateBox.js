@@ -38,8 +38,9 @@ const GenerateBox = ({ projectPath }) => {
     }
   };
 
-  const fetchFileData = useCallback(async () => {
+  const fetchFileData = async () => {
     const initialData = await fetchDirectoryContents(projectPath);
+
     await processDirectory({ isDirectory: true, children: initialData });
 
     const findIndexFile = (files) => {
@@ -61,11 +62,11 @@ const GenerateBox = ({ projectPath }) => {
     if (indexHtmlFile) {
       await fetchFileContent(indexHtmlFile.path);
     }
-  }, [projectPath]);
+  };
 
   useEffect(() => {
     fetchFileData();
-  }, [fetchFileData]);
+  }, [projectPath]);
 
   const fetchFileContent = async (filePath) => {
     const res = await fetch(`https://1am11m.store${filePath}`);
@@ -73,7 +74,7 @@ const GenerateBox = ({ projectPath }) => {
     setFileContent(content);
   };
 
-  const clearHighlight = useCallback(() => {
+  const clearHighlight = () => {
     if (contentRef.current) {
       const elements = contentRef.current.querySelectorAll(
         `.${styles.DOMhighlighted}`
@@ -82,7 +83,7 @@ const GenerateBox = ({ projectPath }) => {
         element.classList.remove(styles.DOMhighlighted);
       });
     }
-  }, []);
+  };
 
   const handleElementClick = useCallback(
     (event) => {
@@ -90,8 +91,6 @@ const GenerateBox = ({ projectPath }) => {
       event.preventDefault();
 
       const targetElement = event.target;
-
-      console.log("Clicked element:", targetElement);
 
       if (clickedElement === targetElement) {
         clearHighlight();
@@ -110,13 +109,11 @@ const GenerateBox = ({ projectPath }) => {
 
     if (currentContentRef) {
       currentContentRef.addEventListener("click", handleElementClick);
-      console.log("Event listener added to contentRef");
     }
 
     return () => {
       if (currentContentRef) {
         currentContentRef.removeEventListener("click", handleElementClick);
-        console.log("Event listener removed from contentRef");
       }
     };
   }, [handleElementClick]);
@@ -201,7 +198,9 @@ const GenerateBox = ({ projectPath }) => {
         }
 
         if (element.children && element.children.length > 0) {
-          Array.from(element.children).forEach((child) => updatePaths(child));
+          for (let i = 0; i < element.children.length; i++) {
+            updatePaths(element.children[i]);
+          }
         }
       };
 
