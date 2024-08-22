@@ -64,10 +64,7 @@ export default function ChatComponent() {
     const typingInterval = setInterval(() => {
       if (index < fullText.length) {
         setDisplayedText((prev) => {
-          if (prev.slice(-1) !== fullText.charAt(index)) {
-            return prev + fullText.charAt(index);
-          }
-          return prev;
+          return fullText.substring(0, index + 1);
         });
         index++;
       } else {
