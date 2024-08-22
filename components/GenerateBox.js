@@ -86,6 +86,9 @@ const GenerateBox = ({ projectPath }) => {
 
   const handleElementClick = useCallback(
     (event) => {
+      event.stopPropagation();
+      event.preventDefault();
+
       const targetElement = event.target;
 
       console.log("Clicked element:", targetElement);
