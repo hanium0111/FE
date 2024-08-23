@@ -79,7 +79,7 @@ export default function ChatComponent() {
   useEffect(() => {
     if (step === 1 && messages.length === 0) {
       setMessages([
-        { sender: "assistant", text: "어떤 홈페이지를 만들고 싶나요?" },
+        { sender: "assistant", text: "홈페이지의 목적이 무엇인가요?" },
       ]);
     }
   }, [step, messages.length]);
@@ -185,10 +185,10 @@ export default function ChatComponent() {
         nextQuestion = "어떤 기능을 넣고 싶나요?";
         break;
       case 2:
-        nextQuestion = "어떤 분위기를 넣고 싶나요?";
+        nextQuestion = "어떤 디자인 컨셉으로 만들까요?";
         break;
       case 3:
-        nextQuestion = "어떤 내용을 넣고 싶나요?";
+        nextQuestion = "어떤 내용을 구성할까요?";
         break;
       case 4:
         nextQuestion = "페이지 이름을 알려주세요!";

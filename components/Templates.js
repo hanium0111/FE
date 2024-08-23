@@ -305,11 +305,6 @@ export default function Templates({ showMoreButton, showCategories }) {
                       {template.displayName}
                     </div>
                   </div>
-                  <div className={styles.cardMenu}>
-                    <button className={styles.cardMenuButton}>
-                      <FaShare />
-                    </button>
-                  </div>
                 </div>
                 <div className={styles.cardImage}>
                   <div className={styles.imageWrapper}>
