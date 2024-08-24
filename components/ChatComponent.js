@@ -57,8 +57,8 @@ export default function ChatComponent() {
 
   useEffect(() => {
     const fullText = userName
-      ? `${userName}님, 지금 무엇이든 만들어보세요!`
-      : "웹 사이트 만들기, 누구나 쉽게 할 수 있어요!";
+      ? `${userName}님, 지금 무엇이든 만들어 보세요!`
+      : "웹사이트 만들기, 누구나 쉽게 할 수 있어요!";
 
     let index = 0;
     const typingInterval = setInterval(() => {

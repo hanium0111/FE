@@ -815,7 +815,7 @@ export default function Dash() {
                             data-tooltip-id={`tooltip-${template.id}`}
                             data-tooltip-content={
                               template.shared
-                                ? "템플릿으로 공유중입니다."
+                                ? "템플릿으로 공유 중입니다."
                                 : "공유하고 있지 않습니다."
                             }
                           ></div>
