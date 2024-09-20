@@ -17,6 +17,7 @@ const GenerateBox = ({ projectPath }) => {
   const [indexFileState, setIndexFileState] = useState(null);
   const [inputValue, setInputValue] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showOverlay, setShowOverlay] = useState(false);
   const contentRef = useRef(null);
 
   const router = useRouter();
@@ -94,21 +95,21 @@ const GenerateBox = ({ projectPath }) => {
     (event) => {
       event.stopPropagation();
       event.preventDefault();
-
       const targetElement = event.target;
 
       if (clickedElement === targetElement) {
         clearHighlight();
         setClickedElement(null);
+        setShowOverlay(false);
       } else {
         clearHighlight();
         targetElement.classList.add(styles.DOMhighlighted);
         setClickedElement(targetElement);
+        setShowOverlay(true);
       }
     },
     [clickedElement, clearHighlight]
   );
-
   useEffect(() => {
     const currentContentRef = contentRef.current;
 
@@ -122,6 +123,19 @@ const GenerateBox = ({ projectPath }) => {
       }
     };
   }, [handleElementClick]);
+
+  useEffect(() => {
+    const body = document.body;
+    if (showOverlay) {
+      body.classList.add(styles.dimmed);
+    } else {
+      body.classList.remove(styles.dimmed);
+    }
+
+    return () => {
+      body.classList.remove(styles.dimmed);
+    };
+  }, [showOverlay]);
 
   const applyDataSetbg = () => {
     if (contentRef.current) {
@@ -330,6 +344,7 @@ const GenerateBox = ({ projectPath }) => {
 
   return (
     <div className={styles.wrap}>
+      {showOverlay && <div className={styles.overlay}></div>}
       {renderFileContent()}
       <div className={styles.editorWrap}>
         <form className={styles.form} onSubmit={handleEditSubmit}>
