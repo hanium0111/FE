@@ -4,7 +4,11 @@ import { useRouter } from "next/router";
 import styles from "@/components/GenerateBox.module.css";
 import Btn from "./Btn";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowRight, faCheck } from "@fortawesome/free-solid-svg-icons";
+import {
+  faArrowRight,
+  faCheck,
+  faSpinner,
+} from "@fortawesome/free-solid-svg-icons";
 
 const GenerateBox = ({ projectPath }) => {
   const [indexFile, setIndexFile] = useState(null);
@@ -12,6 +16,7 @@ const GenerateBox = ({ projectPath }) => {
   const [clickedElement, setClickedElement] = useState(null);
   const [indexFileState, setIndexFileState] = useState(null);
   const [inputValue, setInputValue] = useState("");
+  const [loading, setLoading] = useState(false);
   const contentRef = useRef(null);
 
   const router = useRouter();
@@ -255,6 +260,7 @@ const GenerateBox = ({ projectPath }) => {
 
   const handleEditSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true); // Start loading
 
     try {
       let elementHtml = clickedElement
@@ -301,6 +307,8 @@ const GenerateBox = ({ projectPath }) => {
     } catch (error) {
       console.error("Failed to Submit:", error);
       alert("수정 사항 전송에 실패했습니다.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -332,7 +340,13 @@ const GenerateBox = ({ projectPath }) => {
             onChange={handleInputChange}
           />
           <Btn
-            text={<FontAwesomeIcon icon={faArrowRight} />}
+            text={
+              loading ? (
+                <FontAwesomeIcon icon={faSpinner} spin />
+              ) : (
+                <FontAwesomeIcon icon={faArrowRight} />
+              )
+            }
             background={"#4629f2"}
             textColor={"#FFF"}
             border={"none"}
