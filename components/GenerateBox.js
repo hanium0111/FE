@@ -127,7 +127,7 @@ const GenerateBox = ({ projectPath }) => {
   useEffect(() => {
     const body = document.body;
     if (showOverlay) {
-      body.classList.add(styles.dimmed);
+      //body.classList.add(styles.dimmed);
     } else {
       body.classList.remove(styles.dimmed);
     }
@@ -274,7 +274,7 @@ const GenerateBox = ({ projectPath }) => {
 
   const handleEditSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true); // Start loading
+    setLoading(true);
 
     try {
       let elementHtml = clickedElement
